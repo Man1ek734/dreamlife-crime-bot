@@ -526,6 +526,11 @@ client.on(Events.ChannelDelete, async channel => {
 
 client.on(Events.InteractionCreate, async interaction => {
   try {
+    if (interaction.isModalSubmit() && interaction.customId.startsWith('warn_modal:')) {
+      await warn.handleModal(interaction);
+      return;
+    }
+
     if (interaction.isStringSelectMenu() && interaction.customId === 'ticket_select') {
       const selected = interaction.values[0];
       const ticketType = TICKET_OPTIONS[selected];
