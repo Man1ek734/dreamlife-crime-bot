@@ -21,6 +21,7 @@ const warn = require('./commands/warn');
 const dodaj = require('./commands/dodaj');
 const dodajgang = require('./commands/dodajgang');
 const usun = require('./commands/usun');
+const usun = require('./commands/usun');
 
 const WELCOME_CHANNEL_ID = '1437087479089074303';
 const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
@@ -98,6 +99,7 @@ client.commands.set(ping.data.name, ping);
 client.commands.set(warn.data.name, warn);
 client.commands.set(dodaj.data.name, dodaj);
 client.commands.set(dodajgang.data.name, dodajgang);
+client.commands.set(usun.data.name, usun);
 client.commands.set(usun.data.name, usun);
 
 const messageCache = new Map();
@@ -252,6 +254,7 @@ client.once(Events.ClientReady, async readyClient => {
       warn.data.toJSON(),
       dodaj.data.toJSON(),
       dodajgang.data.toJSON(),
+      usun.data.toJSON(),
       usun.data.toJSON(),
     ]);
     console.log('Komendy slash zsynchronizowane.');
