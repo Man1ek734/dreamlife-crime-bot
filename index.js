@@ -70,7 +70,7 @@ client.commands.set(ping.data.name, ping);
 
 function buildTicketPanel() {
   const embed = new EmbedBuilder()
-    .setTitle('🎫 Tickety — DreamLifeRP Crime')
+    .setTitle('Tickety — DreamLifeRP Crime')
     .setDescription(
       'Wybierz kategorię poniżej, aby utworzyć prywatny ticket.\n' +
       'Po wybraniu odpowiedniej opcji bot utworzy dla Ciebie osobny kanał.'
