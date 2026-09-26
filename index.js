@@ -152,11 +152,10 @@ async function ensureReactionRolePanel() {
     );
 
     if (panel) {
-      await panel.edit({ embeds: [buildReactionRolePanel()] });
-    } else {
-      panel = await channel.send({ embeds: [buildReactionRolePanel()] });
+      await panel.delete().catch(() => {});
     }
 
+    panel = await channel.send({ embeds: [buildReactionRolePanel()] });
     reactionRoleMessageId = panel.id;
 
     const oldGunReaction = panel.reactions.cache.get('🔫');
