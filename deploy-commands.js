@@ -6,8 +6,9 @@ const dodaj = require('./commands/dodaj');
 const dodajgang = require('./commands/dodajgang');
 const usunorg = require('./commands/usunorg');
 const usungang = require('./commands/usungang');
+const zawieszenie = require('./commands/zawieszenie');
 
-const commands = [ping.data.toJSON(), warn.data.toJSON(), dodaj.data.toJSON(), dodajgang.data.toJSON(), usunorg.data.toJSON(), usungang.data.toJSON()];
+const commands = [ping.data.toJSON(), warn.data.toJSON(), dodaj.data.toJSON(), dodajgang.data.toJSON(), usunorg.data.toJSON(), usungang.data.toJSON(), zawieszenie.data.toJSON()];
 const GUILD_ID = '1437087475704266928';
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
