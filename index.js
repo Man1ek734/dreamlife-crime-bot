@@ -79,6 +79,8 @@ const client = new Client({
 client.commands = new Collection();
 client.commands.set(ping.data.name, ping);
 
+const messageCache = new Map();
+
 async function sendBotLog(guild, embed) {
   try {
     const logChannel =
@@ -195,6 +197,20 @@ client.on(Events.GuildMemberAdd, async member => {
 });
 
 client.on(Events.MessageCreate, async message => {
+  if (message.guild && !message.author?.bot && !message.system) {
+    messageCache.set(message.id, {
+      content: message.content,
+      authorId: message.author.id,
+      authorTag: message.author.tag,
+      channelId: message.channelId,
+    });
+
+    if (messageCache.size > 5000) {
+      const oldestKey = messageCache.keys().next().value;
+      messageCache.delete(oldestKey);
+    }
+  }
+
   if (message.channelId !== WELCOME_CHANNEL_ID) return;
   if (message.type !== MessageType.UserJoin) return;
 
@@ -210,16 +226,25 @@ client.on(Events.MessageDelete, async message => {
   if (!message.guild || message.channelId === BOT_LOG_CHANNEL_ID) return;
   if (message.author?.bot || message.system) return;
 
+  const cached = messageCache.get(message.id);
+  const deletedContent = message.content || cached?.content || '*treść niedostępna*';
+  const authorText = message.author
+    ? `${message.author} (\`${message.author.tag}\`)`
+    : cached?.authorId
+      ? `<@${cached.authorId}> (\`${cached.authorTag || 'nieznany'}\`)`
+      : 'Nieznany';
+
   const embed = new EmbedBuilder()
     .setTitle('🗑️ Wiadomość usunięta')
     .addFields(
-      { name: 'Autor', value: message.author ? `${message.author} (\`${message.author.tag}\`)` : 'Nieznany', inline: true },
-      { name: 'Kanał', value: `<#${message.channelId}>`, inline: true },
-      { name: 'Treść', value: trimLogText(message.content, '*treść niedostępna*') }
+      { name: 'Autor', value: authorText, inline: true },
+      { name: 'Kanał', value: `<#${message.channelId || cached?.channelId}>`, inline: true },
+      { name: 'Usunięta treść', value: trimLogText(deletedContent, '*treść niedostępna*') }
     )
     .setColor(0xed4245)
     .setTimestamp();
 
+  messageCache.delete(message.id);
   await sendBotLog(message.guild, embed);
 });
 
@@ -231,8 +256,9 @@ client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
     await newMessage.fetch().catch(() => {});
   }
 
-  const oldContent = oldMessage.content;
-  const newContent = newMessage.content;
+  const cached = messageCache.get(newMessage.id);
+  const oldContent = oldMessage.content || cached?.content || '*treść niedostępna*';
+  const newContent = newMessage.content || '*treść niedostępna*';
 
   if (oldContent === newContent) return;
 
@@ -241,11 +267,18 @@ client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
     .addFields(
       { name: 'Autor', value: newMessage.author ? `${newMessage.author} (\`${newMessage.author.tag}\`)` : 'Nieznany', inline: true },
       { name: 'Kanał', value: `<#${newMessage.channelId}>`, inline: true },
-      { name: 'Przed', value: trimLogText(oldContent, '*treść niedostępna*') },
-      { name: 'Po', value: trimLogText(newContent, '*treść niedostępna*') }
+      { name: 'Wcześniejsza wiadomość', value: trimLogText(oldContent, '*treść niedostępna*') },
+      { name: 'Poprawiona wiadomość', value: trimLogText(newContent, '*treść niedostępna*') }
     )
     .setColor(0xfee75c)
     .setTimestamp();
+
+  messageCache.set(newMessage.id, {
+    content: newContent,
+    authorId: newMessage.author?.id,
+    authorTag: newMessage.author?.tag,
+    channelId: newMessage.channelId,
+  });
 
   await sendBotLog(newMessage.guild, embed);
 });
