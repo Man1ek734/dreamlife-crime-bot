@@ -21,6 +21,13 @@ const ping = require('./commands/ping');
 const WELCOME_CHANNEL_ID = '1437087479089074303';
 const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
 const BOT_LOG_CHANNEL_ID = '1437087481542479904';
+const REACTION_ROLE_CHANNEL_ID = '1553474554125361262';
+const REACTION_ROLE_MAP = {
+  '🔫': '1437087476140216331',
+  '🔪': '1517919913543467008',
+};
+
+let reactionRoleMessageId = null;
 
 const TICKET_OPTIONS = {
   zarzad: {
@@ -65,12 +72,14 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildModeration,
     GatewayIntentBits.MessageContent,
   ],
   partials: [
     Partials.Channel,
     Partials.Message,
+    Partials.Reaction,
     Partials.GuildMember,
     Partials.User,
   ],
@@ -116,6 +125,48 @@ function trimLogText(text, fallback = '*brak treści*') {
   return text.length > 900 ? `${text.slice(0, 897)}...` : text;
 }
 
+
+
+function buildReactionRolePanel() {
+  return new EmbedBuilder()
+    .setTitle('◢  Crime DreamLife Roleplay')
+    .setDescription(
+      '**ODBIÓR RANGI**\n\n' +
+      'Zaznaczcie w jakim teamie jesteście abyśmy mogli pingować was po teamach a nie everyone.\n\n' +
+      '🔫 = Organizacja Team, 🔪 = Gang Team'
+    )
+    .setColor(0x2b2d31)
+    .setFooter({ text: 'DreamLife RolePlay © 2026' });
+}
+
+async function ensureReactionRolePanel() {
+  try {
+    const channel = await client.channels.fetch(REACTION_ROLE_CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) return;
+
+    const messages = await channel.messages.fetch({ limit: 50 });
+    let panel = messages.find(
+      message =>
+        message.author.id === client.user.id &&
+        message.embeds.some(embed => embed.title === '◢  Crime DreamLife Roleplay')
+    );
+
+    if (panel) {
+      await panel.edit({ embeds: [buildReactionRolePanel()] });
+    } else {
+      panel = await channel.send({ embeds: [buildReactionRolePanel()] });
+    }
+
+    reactionRoleMessageId = panel.id;
+
+    if (!panel.reactions.cache.has('🔫')) await panel.react('🔫');
+    if (!panel.reactions.cache.has('🔪')) await panel.react('🔪');
+
+    console.log('Panel reaction roles jest gotowy.');
+  } catch (error) {
+    console.error('Błąd podczas tworzenia panelu reaction roles:', error);
+  }
+}
 
 function buildTicketPanel() {
   const embed = new EmbedBuilder()
@@ -173,6 +224,54 @@ async function ensureTicketPanel() {
 client.once(Events.ClientReady, async readyClient => {
   console.log(`Zalogowano jako ${readyClient.user.tag}`);
   await ensureTicketPanel();
+  await ensureReactionRolePanel();
+});
+
+
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+  if (user.bot) return;
+
+  try {
+    if (reaction.partial) await reaction.fetch();
+    if (reaction.message.partial) await reaction.message.fetch();
+
+    if (reaction.message.channelId !== REACTION_ROLE_CHANNEL_ID) return;
+    if (reaction.message.id !== reactionRoleMessageId) return;
+
+    const emoji = reaction.emoji.name;
+    const roleId = REACTION_ROLE_MAP[emoji];
+    if (!roleId) return;
+
+    const member = await reaction.message.guild.members.fetch(user.id);
+    if (!member.roles.cache.has(roleId)) {
+      await member.roles.add(roleId, `Reaction role: ${emoji}`);
+    }
+  } catch (error) {
+    console.error('Nie udało się nadać reaction role:', error);
+  }
+});
+
+client.on(Events.MessageReactionRemove, async (reaction, user) => {
+  if (user.bot) return;
+
+  try {
+    if (reaction.partial) await reaction.fetch();
+    if (reaction.message.partial) await reaction.message.fetch();
+
+    if (reaction.message.channelId !== REACTION_ROLE_CHANNEL_ID) return;
+    if (reaction.message.id !== reactionRoleMessageId) return;
+
+    const emoji = reaction.emoji.name;
+    const roleId = REACTION_ROLE_MAP[emoji];
+    if (!roleId) return;
+
+    const member = await reaction.message.guild.members.fetch(user.id);
+    if (member.roles.cache.has(roleId)) {
+      await member.roles.remove(roleId, `Reaction role removed: ${emoji}`);
+    }
+  } catch (error) {
+    console.error('Nie udało się zabrać reaction role:', error);
+  }
 });
 
 client.on(Events.GuildMemberAdd, async member => {
