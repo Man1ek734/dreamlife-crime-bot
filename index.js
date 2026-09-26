@@ -18,6 +18,7 @@ const ping = require('./commands/ping');
 
 const WELCOME_CHANNEL_ID = '1437087479089074303';
 const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
+const CLOSED_TICKETS_CATEGORY_ID = '1525297557448822835';
 
 const TICKET_OPTIONS = {
   zarzad: {
@@ -278,15 +279,11 @@ client.on(Events.InteractionCreate, async interaction => {
       await interaction.deferReply({ ephemeral: true });
 
       try {
-        const closedCategory = interaction.guild.channels.cache.find(
-          channel =>
-            channel.type === ChannelType.GuildCategory &&
-            channel.name.toLowerCase() === 'tickety zamknięte'
-        );
+        const closedCategory = interaction.guild.channels.cache.get(CLOSED_TICKETS_CATEGORY_ID);
 
-        if (!closedCategory) {
+        if (!closedCategory || closedCategory.type !== ChannelType.GuildCategory) {
           await interaction.editReply(
-            'Nie znaleziono kategorii **Tickety zamknięte**. Utwórz kategorię o dokładnie takiej nazwie.'
+            'Nie znaleziono ustawionej kategorii zamkniętych ticketów.'
           );
           return;
         }
