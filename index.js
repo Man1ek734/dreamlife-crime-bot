@@ -17,6 +17,8 @@ const {
 } = require('discord.js');
 
 const ping = require('./commands/ping');
+const warn = require('./commands/warn');
+const dodaj = require('./commands/dodaj');
 
 const WELCOME_CHANNEL_ID = '1437087479089074303';
 const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
@@ -90,6 +92,8 @@ const client = new Client({
 
 client.commands = new Collection();
 client.commands.set(ping.data.name, ping);
+client.commands.set(warn.data.name, warn);
+client.commands.set(dodaj.data.name, dodaj);
 
 const messageCache = new Map();
 
@@ -235,6 +239,18 @@ async function ensureTicketPanel() {
 
 client.once(Events.ClientReady, async readyClient => {
   console.log(`Zalogowano jako ${readyClient.user.tag}`);
+
+  try {
+    await readyClient.application.commands.set([
+      ping.data.toJSON(),
+      warn.data.toJSON(),
+      dodaj.data.toJSON(),
+    ]);
+    console.log('Komendy slash zsynchronizowane.');
+  } catch (error) {
+    console.error('Błąd synchronizacji komend slash:', error);
+  }
+
   await ensureTicketPanel();
   await ensureReactionRolePanel();
 });
