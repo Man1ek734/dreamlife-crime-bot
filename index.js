@@ -129,11 +129,11 @@ function trimLogText(text, fallback = '*brak treści*') {
 
 function buildReactionRolePanel() {
   return new EmbedBuilder()
-    .setTitle('Crime DreamLife Roleplay')
+    .setTitle('<:org:1553529625898909696> Crime DreamLife Roleplay')
     .setDescription(
       '**ODBIÓR RANGI**\n\n' +
       'Zaznaczcie w jakim teamie jesteście abyśmy mogli pingować was po teamach a nie everyone.\n\n' +
-      '🔫 ・ Organizacja Team, 🔪 ・ Gang Team'
+      '<:org:1553529625898909696> ・ Organizacja Team, <:gang:1553529685110034615> ・ Gang Team'
     )
     .setColor(0x2b2d31)
     .setFooter({ text: 'DreamLife RolePlay © 2026' });
@@ -148,7 +148,7 @@ async function ensureReactionRolePanel() {
     let panel = messages.find(
       message =>
         message.author.id === client.user.id &&
-        message.embeds.some(embed => embed.title === 'Crime DreamLife Roleplay')
+        message.embeds.some(embed => embed.title === '<:org:1553529625898909696> Crime DreamLife Roleplay')
     );
 
     if (panel) {
