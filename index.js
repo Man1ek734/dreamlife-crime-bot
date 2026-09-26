@@ -133,7 +133,7 @@ function buildReactionRolePanel() {
     .setDescription(
       '**ODBIÓR RANGI**\n\n' +
       'Zaznaczcie w jakim teamie jesteście abyśmy mogli pingować was po teamach a nie everyone.\n\n' +
-      '🔫 = Organizacja Team, 🔪 = Gang Team'
+      '🔫 ・ Organizacja Team, 🔪 ・ Gang Team'
     )
     .setColor(0x2b2d31)
     .setFooter({ text: 'DreamLife RolePlay © 2026' });
