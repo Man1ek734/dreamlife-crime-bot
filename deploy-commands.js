@@ -3,8 +3,9 @@ const { REST, Routes } = require('discord.js');
 const ping = require('./commands/ping');
 const warn = require('./commands/warn');
 const dodaj = require('./commands/dodaj');
+const dodajgang = require('./commands/dodajgang');
 
-const commands = [ping.data.toJSON(), warn.data.toJSON(), dodaj.data.toJSON()];
+const commands = [ping.data.toJSON(), warn.data.toJSON(), dodaj.data.toJSON(), dodajgang.data.toJSON()];
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
