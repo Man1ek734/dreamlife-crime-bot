@@ -67,10 +67,26 @@ module.exports = {
       .setRequired(true)
       .setPlaceholder('Podaj powód zawieszenia');
 
+    const fromInput = new TextInputBuilder()
+      .setCustomId('zawieszenie_od')
+      .setLabel('Od kiedy')
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true)
+      .setPlaceholder('Np. 27.09.2026');
+
+    const toInput = new TextInputBuilder()
+      .setCustomId('zawieszenie_do')
+      .setLabel('Do kiedy')
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true)
+      .setPlaceholder('Np. 04.10.2026');
+
     modal.addComponents(
       new ActionRowBuilder().addComponents(guardianInput),
       new ActionRowBuilder().addComponents(organizationInput),
       new ActionRowBuilder().addComponents(reasonInput),
+      new ActionRowBuilder().addComponents(fromInput),
+      new ActionRowBuilder().addComponents(toInput),
     );
 
     await interaction.showModal(modal);
@@ -99,6 +115,8 @@ module.exports = {
     }
 
     const reason = interaction.fields.getTextInputValue('zawieszenie_powod').trim();
+    const from = interaction.fields.getTextInputValue('zawieszenie_od').trim();
+    const to = interaction.fields.getTextInputValue('zawieszenie_do').trim();
 
     const embed = new EmbedBuilder()
       .setTitle('⛔ ZAWIESZENIE')
@@ -106,7 +124,9 @@ module.exports = {
       .addFields(
         { name: 'Opiekun:', value: String(guardian), inline: false },
         { name: 'Organizacja/Gang:', value: String(organization), inline: false },
-        { name: 'Za co:', value: reason, inline: false }
+        { name: 'Za co:', value: reason, inline: false },
+        { name: 'Od kiedy:', value: from, inline: true },
+        { name: 'Do kiedy:', value: to, inline: true }
       )
       .setFooter({ text: 'Wystawił: ' + interaction.user.tag })
       .setTimestamp();
