@@ -446,15 +446,18 @@ client.on(Events.InteractionCreate, async interaction => {
         .setStyle(ButtonStyle.Danger);
 
       const przyszlyGangsterRole = interaction.guild.roles.cache.find(
-        role => role.name === 'Przyszły Gangster'
+        role => role.name.trim().toLocaleLowerCase('pl-PL').includes('przyszły gangster')
       );
 
       await ticketChannel.send({
         content: przyszlyGangsterRole
-          ? `${interaction.user} ・${przyszlyGangsterRole}`
-          : `${interaction.user} ・Przyszły Gangster`,
+          ? `${interaction.user} ・<@&${przyszlyGangsterRole.id}>`
+          : `${interaction.user} ・@Przyszły Gangster`,
         embeds: [ticketEmbed],
         components: [new ActionRowBuilder().addComponents(closeButton)],
+        allowedMentions: przyszlyGangsterRole
+          ? { users: [interaction.user.id], roles: [przyszlyGangsterRole.id] }
+          : { users: [interaction.user.id] },
       });
 
       await interaction.editReply({
