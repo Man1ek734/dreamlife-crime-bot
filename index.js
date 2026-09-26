@@ -129,7 +129,7 @@ function trimLogText(text, fallback = '*brak treści*') {
 
 function buildReactionRolePanel() {
   return new EmbedBuilder()
-    .setTitle('◢  Crime DreamLife Roleplay')
+    .setTitle('Crime DreamLife Roleplay')
     .setDescription(
       '**ODBIÓR RANGI**\n\n' +
       'Zaznaczcie w jakim teamie jesteście abyśmy mogli pingować was po teamach a nie everyone.\n\n' +
@@ -148,7 +148,7 @@ async function ensureReactionRolePanel() {
     let panel = messages.find(
       message =>
         message.author.id === client.user.id &&
-        message.embeds.some(embed => embed.title === '◢  Crime DreamLife Roleplay')
+        message.embeds.some(embed => embed.title === 'Crime DreamLife Roleplay')
     );
 
     if (panel) {
