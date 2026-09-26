@@ -20,7 +20,6 @@ const ping = require('./commands/ping');
 
 const WELCOME_CHANNEL_ID = '1437087479089074303';
 const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
-const CLOSED_TICKETS_CATEGORY_ID = '1525297557448822835';
 const BOT_LOG_CHANNEL_ID = '1437087481542479904';
 
 const TICKET_OPTIONS = {
@@ -498,66 +497,29 @@ client.on(Events.InteractionCreate, async interaction => {
       await interaction.deferReply({ ephemeral: true });
 
       try {
-        const closedCategory = interaction.guild.channels.cache.get(CLOSED_TICKETS_CATEGORY_ID);
-
-        if (!closedCategory || closedCategory.type !== ChannelType.GuildCategory) {
-          await interaction.editReply(
-            'Nie znaleziono ustawionej kategorii zamkniętych ticketów.'
-          );
-          return;
-        }
-
-        const closedTickets = interaction.guild.channels.cache.filter(
-          channel =>
-            channel.parentId === closedCategory.id &&
-            channel.type === ChannelType.GuildText &&
-            /^zamkniety-\\d{4}$/.test(channel.name)
-        );
-
-        let maxNumber = 0;
-        for (const channel of closedTickets.values()) {
-          const match = channel.name.match(/^zamkniety-(\\d{4})$/);
-          if (match) maxNumber = Math.max(maxNumber, Number(match[1]));
-        }
-
-        const nextNumber = String(maxNumber + 1).padStart(4, '0');
-
-        if (ownerId) {
-          await interaction.channel.permissionOverwrites.edit(ownerId, {
-            ViewChannel: false,
-            SendMessages: false,
-            ReadMessageHistory: false,
-          });
-        }
-
-        const previousTicketName = interaction.channel.name;
-
-        await interaction.channel.setParent(closedCategory.id, { lockPermissions: false });
-        await interaction.channel.setName(`zamkniety-${nextNumber}`);
-
-        const closedEmbed = new EmbedBuilder()
-          .setTitle('🔒 Ticket zamknięty')
-          .setDescription(
-            `Ticket został zamknięty przez ${interaction.user}.\nUżytkownik, który go utworzył, nie ma już do niego dostępu.`
-          )
-          .setColor(0xed4245)
-          .setTimestamp();
-
-        await interaction.channel.send({ embeds: [closedEmbed] });
-        await interaction.editReply('✅ Ticket został przeniesiony do **Tickety zamknięte**.');
+        const ticketName = interaction.channel.name;
 
         await sendBotLog(
           interaction.guild,
           new EmbedBuilder()
             .setTitle('🔒 Zamknięto ticket')
             .addFields(
-              { name: 'Ticket', value: `\`${previousTicketName}\``, inline: true },
+              { name: 'Ticket', value: `\`${ticketName}\``, inline: true },
               { name: 'Zamknął', value: `${interaction.user}`, inline: true },
-              { name: 'Nowa nazwa', value: `\`zamkniety-${nextNumber}\``, inline: true }
+              { name: 'Autor ticketu', value: ownerId ? `<@${ownerId}>` : 'Nieznany', inline: true }
             )
             .setColor(0xed4245)
             .setTimestamp()
         );
+
+        await interaction.editReply('✅ Ticket zostanie usunięty.');
+        setTimeout(async () => {
+          try {
+            await interaction.channel.delete('Ticket zamknięty');
+          } catch (error) {
+            console.error('Nie udało się usunąć ticketu:', error);
+          }
+        }, 1500);
       } catch (error) {
         console.error('Nie udało się zamknąć ticketu:', error);
         await interaction.editReply('Nie udało się zamknąć ticketu.');
