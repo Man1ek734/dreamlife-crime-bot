@@ -269,15 +269,62 @@ client.on(Events.InteractionCreate, async interaction => {
         return;
       }
 
-      await interaction.reply('🔒 Ticket zostanie zamknięty za 3 sekundy...');
+      await interaction.deferReply({ ephemeral: true });
 
-      setTimeout(async () => {
-        try {
-          await interaction.channel.delete('Ticket zamknięty');
-        } catch (error) {
-          console.error('Nie udało się usunąć ticketu:', error);
+      try {
+        const closedCategory = interaction.guild.channels.cache.find(
+          channel =>
+            channel.type === ChannelType.GuildCategory &&
+            channel.name.toLowerCase() === 'tickety zamknięte'
+        );
+
+        if (!closedCategory) {
+          await interaction.editReply(
+            'Nie znaleziono kategorii **Tickety zamknięte**. Utwórz kategorię o dokładnie takiej nazwie.'
+          );
+          return;
         }
-      }, 3000);
+
+        const closedTickets = interaction.guild.channels.cache.filter(
+          channel =>
+            channel.parentId === closedCategory.id &&
+            channel.type === ChannelType.GuildText &&
+            /^closed-\\d{4}$/.test(channel.name)
+        );
+
+        let maxNumber = 0;
+        for (const channel of closedTickets.values()) {
+          const match = channel.name.match(/^closed-(\\d{4})$/);
+          if (match) maxNumber = Math.max(maxNumber, Number(match[1]));
+        }
+
+        const nextNumber = String(maxNumber + 1).padStart(4, '0');
+
+        if (ownerId) {
+          await interaction.channel.permissionOverwrites.edit(ownerId, {
+            ViewChannel: false,
+            SendMessages: false,
+            ReadMessageHistory: false,
+          });
+        }
+
+        await interaction.channel.setParent(closedCategory.id, { lockPermissions: false });
+        await interaction.channel.setName(`closed-${nextNumber}`);
+
+        const closedEmbed = new EmbedBuilder()
+          .setTitle('🔒 Ticket zamknięty')
+          .setDescription(
+            `Ticket został zamknięty przez ${interaction.user}.\nUżytkownik, który go utworzył, nie ma już do niego dostępu.`
+          )
+          .setColor(0xed4245)
+          .setTimestamp();
+
+        await interaction.channel.send({ embeds: [closedEmbed] });
+        await interaction.editReply('✅ Ticket został przeniesiony do **Tickety zamknięte**.');
+      } catch (error) {
+        console.error('Nie udało się zamknąć ticketu:', error);
+        await interaction.editReply('Nie udało się zamknąć ticketu.');
+      }
 
       return;
     }
