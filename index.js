@@ -240,7 +240,7 @@ client.on(Events.InteractionCreate, async interaction => {
         .setStyle(ButtonStyle.Danger);
 
       await ticketChannel.send({
-        content: `${interaction.user}`,
+        content: `${interaction.user} ・Przyszły Gangster`,
         embeds: [ticketEmbed],
         components: [new ActionRowBuilder().addComponents(closeButton)],
       });
