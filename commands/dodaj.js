@@ -59,7 +59,8 @@ module.exports = {
         name: name,
         color: color,
         hoist: true,
-        mentionable: true,
+        mentionable: false,
+        permissions: [],
         reason: 'Utworzono przez ' + interaction.user.tag + ' komendą /dodajorg'
       });
 
