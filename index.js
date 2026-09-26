@@ -1,6 +1,7 @@
 require('dotenv').config();
 const {
   ActionRowBuilder,
+  AuditLogEvent,
   ButtonBuilder,
   ButtonStyle,
   ChannelType,
@@ -10,6 +11,7 @@ const {
   Events,
   GatewayIntentBits,
   MessageType,
+  Partials,
   PermissionFlagsBits,
   StringSelectMenuBuilder,
 } = require('discord.js');
@@ -19,6 +21,7 @@ const ping = require('./commands/ping');
 const WELCOME_CHANNEL_ID = '1437087479089074303';
 const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
 const CLOSED_TICKETS_CATEGORY_ID = '1525297557448822835';
+const BOT_LOG_CHANNEL_ID = '1437087481542479904';
 
 const TICKET_OPTIONS = {
   zarzad: {
@@ -63,11 +66,55 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildModeration,
+    GatewayIntentBits.MessageContent,
+  ],
+  partials: [
+    Partials.Channel,
+    Partials.Message,
+    Partials.GuildMember,
+    Partials.User,
   ],
 });
 
 client.commands = new Collection();
 client.commands.set(ping.data.name, ping);
+
+async function sendBotLog(guild, embed) {
+  try {
+    const logChannel =
+      guild.channels.cache.get(BOT_LOG_CHANNEL_ID) ||
+      await guild.channels.fetch(BOT_LOG_CHANNEL_ID).catch(() => null);
+
+    if (!logChannel || !logChannel.isTextBased()) return;
+    await logChannel.send({ embeds: [embed] });
+  } catch (error) {
+    console.error('Błąd wysyłania logu:', error);
+  }
+}
+
+async function getAuditExecutor(guild, type, targetId) {
+  try {
+    const logs = await guild.fetchAuditLogs({ type, limit: 6 });
+    const now = Date.now();
+
+    const entry = logs.entries.find(item => {
+      const sameTarget = !targetId || item.target?.id === targetId;
+      const recent = now - item.createdTimestamp < 8000;
+      return sameTarget && recent;
+    });
+
+    return entry?.executor ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function trimLogText(text, fallback = '*brak treści*') {
+  if (!text) return fallback;
+  return text.length > 900 ? `${text.slice(0, 897)}...` : text;
+}
+
 
 function buildTicketPanel() {
   const embed = new EmbedBuilder()
@@ -157,6 +204,165 @@ client.on(Events.MessageCreate, async message => {
   } catch (error) {
     console.error('Nie udało się usunąć domyślnej wiadomości powitalnej:', error);
   }
+});
+
+
+client.on(Events.MessageDelete, async message => {
+  if (!message.guild || message.channelId === BOT_LOG_CHANNEL_ID) return;
+  if (message.author?.bot || message.system) return;
+
+  const embed = new EmbedBuilder()
+    .setTitle('🗑️ Wiadomość usunięta')
+    .addFields(
+      { name: 'Autor', value: message.author ? `${message.author} (\`${message.author.tag}\`)` : 'Nieznany', inline: true },
+      { name: 'Kanał', value: `<#${message.channelId}>`, inline: true },
+      { name: 'Treść', value: trimLogText(message.content, '*treść niedostępna*') }
+    )
+    .setColor(0xed4245)
+    .setTimestamp();
+
+  await sendBotLog(message.guild, embed);
+});
+
+client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
+  if (!newMessage.guild || newMessage.channelId === BOT_LOG_CHANNEL_ID) return;
+  if (newMessage.author?.bot || newMessage.system) return;
+
+  if (newMessage.partial) {
+    await newMessage.fetch().catch(() => {});
+  }
+
+  const oldContent = oldMessage.content;
+  const newContent = newMessage.content;
+
+  if (oldContent === newContent) return;
+
+  const embed = new EmbedBuilder()
+    .setTitle('✏️ Wiadomość edytowana')
+    .addFields(
+      { name: 'Autor', value: newMessage.author ? `${newMessage.author} (\`${newMessage.author.tag}\`)` : 'Nieznany', inline: true },
+      { name: 'Kanał', value: `<#${newMessage.channelId}>`, inline: true },
+      { name: 'Przed', value: trimLogText(oldContent, '*treść niedostępna*') },
+      { name: 'Po', value: trimLogText(newContent, '*treść niedostępna*') }
+    )
+    .setColor(0xfee75c)
+    .setTimestamp();
+
+  await sendBotLog(newMessage.guild, embed);
+});
+
+client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
+  const addedRoles = newMember.roles.cache.filter(role => !oldMember.roles.cache.has(role.id));
+  const removedRoles = oldMember.roles.cache.filter(role => !newMember.roles.cache.has(role.id));
+
+  for (const role of addedRoles.values()) {
+    const executor = await getAuditExecutor(newMember.guild, AuditLogEvent.MemberRoleUpdate, newMember.id);
+    const embed = new EmbedBuilder()
+      .setTitle('➕ Nadano rolę')
+      .addFields(
+        { name: 'Użytkownik', value: `${newMember}`, inline: true },
+        { name: 'Rola', value: `${role}`, inline: true },
+        { name: 'Nadał', value: executor ? `${executor}` : 'Nie udało się ustalić', inline: true }
+      )
+      .setColor(0x57f287)
+      .setTimestamp();
+    await sendBotLog(newMember.guild, embed);
+  }
+
+  for (const role of removedRoles.values()) {
+    const executor = await getAuditExecutor(newMember.guild, AuditLogEvent.MemberRoleUpdate, newMember.id);
+    const embed = new EmbedBuilder()
+      .setTitle('➖ Zabrano rolę')
+      .addFields(
+        { name: 'Użytkownik', value: `${newMember}`, inline: true },
+        { name: 'Rola', value: `@${role.name}`, inline: true },
+        { name: 'Zabrał', value: executor ? `${executor}` : 'Nie udało się ustalić', inline: true }
+      )
+      .setColor(0xed4245)
+      .setTimestamp();
+    await sendBotLog(newMember.guild, embed);
+  }
+
+  const oldTimeout = oldMember.communicationDisabledUntilTimestamp ?? 0;
+  const newTimeout = newMember.communicationDisabledUntilTimestamp ?? 0;
+
+  if (oldTimeout !== newTimeout) {
+    const executor = await getAuditExecutor(newMember.guild, AuditLogEvent.MemberUpdate, newMember.id);
+    const muted = newTimeout > Date.now();
+
+    const embed = new EmbedBuilder()
+      .setTitle(muted ? '🔇 Nadano mute / timeout' : '🔊 Zdjęto mute / timeout')
+      .addFields(
+        { name: 'Użytkownik', value: `${newMember}`, inline: true },
+        { name: muted ? 'Do' : 'Status', value: muted ? `<t:${Math.floor(newTimeout / 1000)}:F>` : 'Timeout zakończony/usunięty', inline: true },
+        { name: muted ? 'Nadał' : 'Zmienił', value: executor ? `${executor}` : 'Nie udało się ustalić', inline: true }
+      )
+      .setColor(muted ? 0xfaa61a : 0x57f287)
+      .setTimestamp();
+
+    await sendBotLog(newMember.guild, embed);
+  }
+});
+
+client.on(Events.GuildBanAdd, async ban => {
+  const executor = await getAuditExecutor(ban.guild, AuditLogEvent.MemberBanAdd, ban.user.id);
+  const embed = new EmbedBuilder()
+    .setTitle('🔨 Ban')
+    .addFields(
+      { name: 'Użytkownik', value: `${ban.user} (\`${ban.user.tag}\`)`, inline: true },
+      { name: 'Zbanował', value: executor ? `${executor}` : 'Nie udało się ustalić', inline: true }
+    )
+    .setColor(0xed4245)
+    .setTimestamp();
+  await sendBotLog(ban.guild, embed);
+});
+
+client.on(Events.GuildMemberRemove, async member => {
+  const executor = await getAuditExecutor(member.guild, AuditLogEvent.MemberKick, member.id);
+  if (!executor) return;
+
+  const embed = new EmbedBuilder()
+    .setTitle('👢 Kick')
+    .addFields(
+      { name: 'Użytkownik', value: `${member.user} (\`${member.user.tag}\`)`, inline: true },
+      { name: 'Wyrzucił', value: `${executor}`, inline: true }
+    )
+    .setColor(0xed4245)
+    .setTimestamp();
+  await sendBotLog(member.guild, embed);
+});
+
+client.on(Events.ChannelCreate, async channel => {
+  if (!channel.guild || channel.id === BOT_LOG_CHANNEL_ID) return;
+  const executor = await getAuditExecutor(channel.guild, AuditLogEvent.ChannelCreate, channel.id);
+
+  const embed = new EmbedBuilder()
+    .setTitle('📁 Utworzono kanał')
+    .addFields(
+      { name: 'Kanał', value: `${channel}`, inline: true },
+      { name: 'Nazwa', value: `\`${channel.name}\``, inline: true },
+      { name: 'Utworzył', value: executor ? `${executor}` : 'Nie udało się ustalić', inline: true }
+    )
+    .setColor(0x57f287)
+    .setTimestamp();
+
+  await sendBotLog(channel.guild, embed);
+});
+
+client.on(Events.ChannelDelete, async channel => {
+  if (!channel.guild || channel.id === BOT_LOG_CHANNEL_ID) return;
+  const executor = await getAuditExecutor(channel.guild, AuditLogEvent.ChannelDelete, channel.id);
+
+  const embed = new EmbedBuilder()
+    .setTitle('🗑️ Usunięto kanał')
+    .addFields(
+      { name: 'Nazwa', value: `\`${channel.name}\``, inline: true },
+      { name: 'Usunął', value: executor ? `${executor}` : 'Nie udało się ustalić', inline: true }
+    )
+    .setColor(0xed4245)
+    .setTimestamp();
+
+  await sendBotLog(channel.guild, embed);
 });
 
 client.on(Events.InteractionCreate, async interaction => {
@@ -256,6 +462,19 @@ client.on(Events.InteractionCreate, async interaction => {
         content: `✅ Ticket został utworzony: ${ticketChannel}`,
       });
 
+      await sendBotLog(
+        interaction.guild,
+        new EmbedBuilder()
+          .setTitle('🎟️ Utworzono ticket')
+          .addFields(
+            { name: 'Autor', value: `${interaction.user}`, inline: true },
+            { name: 'Kategoria', value: ticketType.label, inline: true },
+            { name: 'Kanał', value: `${ticketChannel}`, inline: true }
+          )
+          .setColor(0x5865f2)
+          .setTimestamp()
+      );
+
       return;
     }
 
@@ -311,6 +530,8 @@ client.on(Events.InteractionCreate, async interaction => {
           });
         }
 
+        const previousTicketName = interaction.channel.name;
+
         await interaction.channel.setParent(closedCategory.id, { lockPermissions: false });
         await interaction.channel.setName(`zamkniety-${nextNumber}`);
 
@@ -324,6 +545,19 @@ client.on(Events.InteractionCreate, async interaction => {
 
         await interaction.channel.send({ embeds: [closedEmbed] });
         await interaction.editReply('✅ Ticket został przeniesiony do **Tickety zamknięte**.');
+
+        await sendBotLog(
+          interaction.guild,
+          new EmbedBuilder()
+            .setTitle('🔒 Zamknięto ticket')
+            .addFields(
+              { name: 'Ticket', value: `\`${previousTicketName}\``, inline: true },
+              { name: 'Zamknął', value: `${interaction.user}`, inline: true },
+              { name: 'Nowa nazwa', value: `\`zamkniety-${nextNumber}\``, inline: true }
+            )
+            .setColor(0xed4245)
+            .setTimestamp()
+        );
       } catch (error) {
         console.error('Nie udało się zamknąć ticketu:', error);
         await interaction.editReply('Nie udało się zamknąć ticketu.');
