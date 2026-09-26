@@ -109,7 +109,10 @@ async function ensureTicketPanel() {
         )
     );
 
-    if (!existingPanel) {
+    if (existingPanel) {
+      await existingPanel.edit(buildTicketPanel());
+      console.log('Panel ticketów został zaktualizowany.');
+    } else {
       await channel.send(buildTicketPanel());
       console.log('Panel ticketów został wysłany.');
     }
