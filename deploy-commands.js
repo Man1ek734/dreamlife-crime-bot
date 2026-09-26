@@ -4,8 +4,9 @@ const ping = require('./commands/ping');
 const warn = require('./commands/warn');
 const dodaj = require('./commands/dodaj');
 const dodajgang = require('./commands/dodajgang');
+const usun = require('./commands/usun');
 
-const commands = [ping.data.toJSON(), warn.data.toJSON(), dodaj.data.toJSON(), dodajgang.data.toJSON()];
+const commands = [ping.data.toJSON(), warn.data.toJSON(), dodaj.data.toJSON(), dodajgang.data.toJSON(), usun.data.toJSON()];
 const GUILD_ID = '1437087475704266928';
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
