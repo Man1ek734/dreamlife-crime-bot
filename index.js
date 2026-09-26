@@ -23,6 +23,7 @@ const dodajgang = require('./commands/dodajgang');
 const usunorg = require('./commands/usunorg');
 const usungang = require('./commands/usungang');
 const zawieszenie = require('./commands/zawieszenie');
+const nadajrange = require('./commands/nadajrange');
 const dodajrange = require('./commands/dodajrange');
 
 const WELCOME_CHANNEL_ID = '1437087479089074303';
@@ -104,6 +105,7 @@ client.commands.set(dodajgang.data.name, dodajgang);
 client.commands.set(usunorg.data.name, usunorg);
 client.commands.set(usungang.data.name, usungang);
 client.commands.set(zawieszenie.data.name, zawieszenie);
+client.commands.set(nadajrange.data.name, nadajrange);
 client.commands.set(dodajrange.data.name, dodajrange);
 
 const messageCache = new Map();
@@ -261,6 +263,7 @@ client.once(Events.ClientReady, async readyClient => {
       usunorg.data.toJSON(),
       usungang.data.toJSON(),
       zawieszenie.data.toJSON(),
+      nadajrange.data.toJSON(),
       dodajrange.data.toJSON(),
     ]);
     console.log('Komendy slash zsynchronizowane.');
@@ -550,6 +553,11 @@ client.on(Events.InteractionCreate, async interaction => {
 
     if (interaction.isModalSubmit() && interaction.customId.startsWith('zawieszenie_modal:')) {
       await zawieszenie.handleModal(interaction);
+      return;
+    }
+
+    if (interaction.isRoleSelectMenu() && interaction.customId.startsWith('nadajrange_select:')) {
+      await nadajrange.handleSelect(interaction);
       return;
     }
 
