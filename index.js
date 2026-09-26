@@ -239,8 +239,14 @@ client.on(Events.InteractionCreate, async interaction => {
         .setEmoji('🔒')
         .setStyle(ButtonStyle.Danger);
 
+      const przyszlyGangsterRole = interaction.guild.roles.cache.find(
+        role => role.name === 'Przyszły Gangster'
+      );
+
       await ticketChannel.send({
-        content: `${interaction.user} ・Przyszły Gangster`,
+        content: przyszlyGangsterRole
+          ? `${interaction.user} ・${przyszlyGangsterRole}`
+          : `${interaction.user} ・Przyszły Gangster`,
         embeds: [ticketEmbed],
         components: [new ActionRowBuilder().addComponents(closeButton)],
       });
