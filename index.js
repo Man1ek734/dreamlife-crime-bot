@@ -289,12 +289,12 @@ client.on(Events.InteractionCreate, async interaction => {
           channel =>
             channel.parentId === closedCategory.id &&
             channel.type === ChannelType.GuildText &&
-            /^closed-\\d{4}$/.test(channel.name)
+            /^zamkniety-\\d{4}$/.test(channel.name)
         );
 
         let maxNumber = 0;
         for (const channel of closedTickets.values()) {
-          const match = channel.name.match(/^closed-(\\d{4})$/);
+          const match = channel.name.match(/^zamkniety-(\\d{4})$/);
           if (match) maxNumber = Math.max(maxNumber, Number(match[1]));
         }
 
@@ -309,7 +309,7 @@ client.on(Events.InteractionCreate, async interaction => {
         }
 
         await interaction.channel.setParent(closedCategory.id, { lockPermissions: false });
-        await interaction.channel.setName(`closed-${nextNumber}`);
+        await interaction.channel.setName(`zamkniety-${nextNumber}`);
 
         const closedEmbed = new EmbedBuilder()
           .setTitle('🔒 Ticket zamknięty')
