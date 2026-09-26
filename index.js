@@ -23,8 +23,8 @@ const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
 const BOT_LOG_CHANNEL_ID = '1437087481542479904';
 const REACTION_ROLE_CHANNEL_ID = '1553474554125361262';
 const REACTION_ROLE_MAP = {
-  '🔫': '1437087476140216331',
-  '🔪': '1517919913543467008',
+  '1553529625898909696': '1437087476140216331',
+  '1553529685110034615': '1517919913543467008',
 };
 
 let reactionRoleMessageId = null;
@@ -133,7 +133,7 @@ function buildReactionRolePanel() {
     .setDescription(
       '**ODBIÓR RANGI**\n\n' +
       'Zaznaczcie w jakim teamie jesteście abyśmy mogli pingować was po teamach a nie everyone.\n\n' +
-      '<:org:1553529625898909696> ・ Organizacja Team, <:gang:1553529685110034615> ・ Gang Team'
+      '<:org:1553529625898909696> - Organizacja Team, <:gang:1553529685110034615> - Gang Team'
     )
     .setColor(0x2b2d31)
     .setFooter({ text: 'DreamLife RolePlay © 2026' });
@@ -159,8 +159,12 @@ async function ensureReactionRolePanel() {
 
     reactionRoleMessageId = panel.id;
 
-    if (!panel.reactions.cache.has('🔫')) await panel.react('🔫');
-    if (!panel.reactions.cache.has('🔪')) await panel.react('🔪');
+    if (!panel.reactions.cache.has('1553529625898909696')) {
+      await panel.react('1553529625898909696');
+    }
+    if (!panel.reactions.cache.has('1553529685110034615')) {
+      await panel.react('1553529685110034615');
+    }
 
     console.log('Panel reaction roles jest gotowy.');
   } catch (error) {
@@ -238,13 +242,13 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     if (reaction.message.channelId !== REACTION_ROLE_CHANNEL_ID) return;
     if (reaction.message.id !== reactionRoleMessageId) return;
 
-    const emoji = reaction.emoji.name;
-    const roleId = REACTION_ROLE_MAP[emoji];
+    const emojiKey = reaction.emoji.id || reaction.emoji.name;
+    const roleId = REACTION_ROLE_MAP[emojiKey];
     if (!roleId) return;
 
     const member = await reaction.message.guild.members.fetch(user.id);
     if (!member.roles.cache.has(roleId)) {
-      await member.roles.add(roleId, `Reaction role: ${emoji}`);
+      await member.roles.add(roleId, `Reaction role: ${emojiKey}`);
     }
   } catch (error) {
     console.error('Nie udało się nadać reaction role:', error);
@@ -261,13 +265,13 @@ client.on(Events.MessageReactionRemove, async (reaction, user) => {
     if (reaction.message.channelId !== REACTION_ROLE_CHANNEL_ID) return;
     if (reaction.message.id !== reactionRoleMessageId) return;
 
-    const emoji = reaction.emoji.name;
-    const roleId = REACTION_ROLE_MAP[emoji];
+    const emojiKey = reaction.emoji.id || reaction.emoji.name;
+    const roleId = REACTION_ROLE_MAP[emojiKey];
     if (!roleId) return;
 
     const member = await reaction.message.guild.members.fetch(user.id);
     if (member.roles.cache.has(roleId)) {
-      await member.roles.remove(roleId, `Reaction role removed: ${emoji}`);
+      await member.roles.remove(roleId, `Reaction role removed: ${emojiKey}`);
     }
   } catch (error) {
     console.error('Nie udało się zabrać reaction role:', error);
