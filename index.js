@@ -1,15 +1,61 @@
 require('dotenv').config();
 const {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ChannelType,
   Client,
   Collection,
+  EmbedBuilder,
   Events,
   GatewayIntentBits,
   MessageType,
-  EmbedBuilder,
+  PermissionFlagsBits,
+  StringSelectMenuBuilder,
 } = require('discord.js');
+
 const ping = require('./commands/ping');
 
 const WELCOME_CHANNEL_ID = '1437087479089074303';
+const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
+
+const TICKET_OPTIONS = {
+  zarzad: {
+    label: 'Sprawa do zarządu',
+    description: 'Masz problem lub sprawę, pisz',
+    emoji: '🌐',
+  },
+  opiekunowie: {
+    label: 'Sprawa do opiekunów Crime',
+    description: 'Opiekunowie Crime',
+    emoji: '📩',
+  },
+  pytanie: {
+    label: 'Pytanie',
+    description: 'Zadaj pytanie',
+    emoji: '📜',
+  },
+  warn: {
+    label: 'Odwołania od warna',
+    description: 'Odwołania od warna',
+    emoji: '📞',
+  },
+  zamowienia: {
+    label: 'Zamówienia (IC)',
+    description: 'Zamów sprzęt',
+    emoji: '💼',
+  },
+  fckck: {
+    label: 'Podanie na FCK/CK',
+    description: 'Podanie na FCK/CK',
+    emoji: '☠️',
+  },
+  mafia: {
+    label: 'Kontakt z Mafia (IC)',
+    description: 'Kontakt z Mafia (IC)',
+    emoji: '✉️',
+  },
+};
 
 const client = new Client({
   intents: [
@@ -22,8 +68,59 @@ const client = new Client({
 client.commands = new Collection();
 client.commands.set(ping.data.name, ping);
 
-client.once(Events.ClientReady, readyClient => {
+function buildTicketPanel() {
+  const embed = new EmbedBuilder()
+    .setTitle('🎫 Tickety — DreamLifeRP Crime')
+    .setDescription(
+      'Wybierz kategorię poniżej, aby utworzyć prywatny ticket.\n' +
+      'Po wybraniu odpowiedniej opcji bot utworzy dla Ciebie osobny kanał.'
+    )
+    .setColor(0x2b2d31);
+
+  const menu = new StringSelectMenuBuilder()
+    .setCustomId('ticket_select')
+    .setPlaceholder('Wybierz opcję')
+    .addOptions(
+      Object.entries(TICKET_OPTIONS).map(([value, option]) => ({
+        label: option.label,
+        description: option.description,
+        value,
+        emoji: option.emoji,
+      }))
+    );
+
+  return {
+    embeds: [embed],
+    components: [new ActionRowBuilder().addComponents(menu)],
+  };
+}
+
+async function ensureTicketPanel() {
+  try {
+    const channel = await client.channels.fetch(TICKET_PANEL_CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) return;
+
+    const messages = await channel.messages.fetch({ limit: 50 });
+    const existingPanel = messages.find(
+      message =>
+        message.author.id === client.user.id &&
+        message.components.some(row =>
+          row.components.some(component => component.customId === 'ticket_select')
+        )
+    );
+
+    if (!existingPanel) {
+      await channel.send(buildTicketPanel());
+      console.log('Panel ticketów został wysłany.');
+    }
+  } catch (error) {
+    console.error('Błąd podczas tworzenia panelu ticketów:', error);
+  }
+}
+
+client.once(Events.ClientReady, async readyClient => {
   console.log(`Zalogowano jako ${readyClient.user.tag}`);
+  await ensureTicketPanel();
 });
 
 client.on(Events.GuildMemberAdd, async member => {
@@ -47,8 +144,6 @@ client.on(Events.GuildMemberAdd, async member => {
   }
 });
 
-// Usuwa domyślne discordowe wiadomości typu „X dołączył(a) do drużyny”
-// z kanału powitalnego.
 client.on(Events.MessageCreate, async message => {
   if (message.channelId !== WELCOME_CHANNEL_ID) return;
   if (message.type !== MessageType.UserJoin) return;
@@ -61,21 +156,143 @@ client.on(Events.MessageCreate, async message => {
 });
 
 client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isChatInputCommand()) return;
-
-  const command = client.commands.get(interaction.commandName);
-  if (!command) return;
-
   try {
+    if (interaction.isStringSelectMenu() && interaction.customId === 'ticket_select') {
+      const selected = interaction.values[0];
+      const ticketType = TICKET_OPTIONS[selected];
+      if (!ticketType) return;
+
+      const existingTicket = interaction.guild.channels.cache.find(
+        channel =>
+          channel.type === ChannelType.GuildText &&
+          channel.topic?.includes(`ticketOwner:${interaction.user.id}`)
+      );
+
+      if (existingTicket) {
+        await interaction.reply({
+          content: `Masz już otwarty ticket: ${existingTicket}`,
+          ephemeral: true,
+        });
+        return;
+      }
+
+      await interaction.deferReply({ ephemeral: true });
+
+      const safeName = interaction.user.username
+        .toLowerCase()
+        .replace(/[^a-z0-9-_]/g, '')
+        .slice(0, 20) || 'uzytkownik';
+
+      const parentId = interaction.channel.parentId ?? undefined;
+
+      const ticketChannel = await interaction.guild.channels.create({
+        name: `ticket-${safeName}`,
+        type: ChannelType.GuildText,
+        parent: parentId,
+        topic: `ticketOwner:${interaction.user.id} | type:${selected}`,
+        permissionOverwrites: [
+          {
+            id: interaction.guild.roles.everyone.id,
+            deny: [PermissionFlagsBits.ViewChannel],
+          },
+          {
+            id: interaction.user.id,
+            allow: [
+              PermissionFlagsBits.ViewChannel,
+              PermissionFlagsBits.SendMessages,
+              PermissionFlagsBits.ReadMessageHistory,
+              PermissionFlagsBits.AttachFiles,
+              PermissionFlagsBits.EmbedLinks,
+            ],
+          },
+          {
+            id: client.user.id,
+            allow: [
+              PermissionFlagsBits.ViewChannel,
+              PermissionFlagsBits.SendMessages,
+              PermissionFlagsBits.ReadMessageHistory,
+              PermissionFlagsBits.ManageChannels,
+              PermissionFlagsBits.ManageMessages,
+            ],
+          },
+        ],
+      });
+
+      const ticketEmbed = new EmbedBuilder()
+        .setTitle(`${ticketType.emoji} ${ticketType.label}`)
+        .setDescription(
+          `Witaj ${interaction.user}!\n\nOpisz dokładnie swoją sprawę. Administracja odpowie, gdy będzie dostępna.`
+        )
+        .addFields(
+          { name: 'Kategoria', value: ticketType.label, inline: true },
+          { name: 'Autor', value: `${interaction.user}`, inline: true }
+        )
+        .setColor(0x2b2d31)
+        .setTimestamp();
+
+      const closeButton = new ButtonBuilder()
+        .setCustomId('ticket_close')
+        .setLabel('Zamknij ticket')
+        .setEmoji('🔒')
+        .setStyle(ButtonStyle.Danger);
+
+      await ticketChannel.send({
+        content: `${interaction.user}`,
+        embeds: [ticketEmbed],
+        components: [new ActionRowBuilder().addComponents(closeButton)],
+      });
+
+      await interaction.editReply({
+        content: `✅ Ticket został utworzony: ${ticketChannel}`,
+      });
+
+      return;
+    }
+
+    if (interaction.isButton() && interaction.customId === 'ticket_close') {
+      const ownerMatch = interaction.channel.topic?.match(/ticketOwner:(\d+)/);
+      const ownerId = ownerMatch?.[1];
+
+      const canClose =
+        interaction.user.id === ownerId ||
+        interaction.memberPermissions?.has(PermissionFlagsBits.ManageChannels) ||
+        interaction.memberPermissions?.has(PermissionFlagsBits.Administrator);
+
+      if (!canClose) {
+        await interaction.reply({
+          content: 'Nie masz uprawnień do zamknięcia tego ticketu.',
+          ephemeral: true,
+        });
+        return;
+      }
+
+      await interaction.reply('🔒 Ticket zostanie zamknięty za 3 sekundy...');
+
+      setTimeout(async () => {
+        try {
+          await interaction.channel.delete('Ticket zamknięty');
+        } catch (error) {
+          console.error('Nie udało się usunąć ticketu:', error);
+        }
+      }, 3000);
+
+      return;
+    }
+
+    if (!interaction.isChatInputCommand()) return;
+
+    const command = client.commands.get(interaction.commandName);
+    if (!command) return;
+
     await command.execute(interaction);
   } catch (error) {
-    console.error(error);
+    console.error('Błąd interakcji:', error);
 
-    const message = 'Wystąpił błąd podczas wykonywania tej komendy.';
+    const message = 'Wystąpił błąd podczas wykonywania tej akcji.';
     if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({ content: message, ephemeral: true });
+      await interaction.followUp({ content: message, ephemeral: true }).catch(() => {});
     } else {
-      await interaction.reply({ content: message, ephemeral: true });
+      await interaction.reply({ content: message, ephemeral: true }).catch(() => {});
     }
   }
 });
