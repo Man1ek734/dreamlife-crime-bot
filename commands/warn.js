@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
-const AUTHORIZED_ROLE_ID = '1517965039670132796';
+const AUTHORIZED_ROLE_IDS = ['1517965039670132796', '1465810885489725533'];
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,7 +12,7 @@ module.exports = {
         .setDescription('Kto otrzymuje warna?')
         .setRequired(true)
     )
-    .addStringOption(option =>
+    .addRoleOption(option =>
       option
         .setName('organizacja')
         .setDescription('Jakiej organizacji/gangowi?')
@@ -26,7 +26,7 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    if (!interaction.member.roles.cache.has(AUTHORIZED_ROLE_ID)) {
+    if (!AUTHORIZED_ROLE_IDS.some(roleId => interaction.member.roles.cache.has(roleId))) {
       await interaction.reply({
         content: '❌ Nie masz uprawnień do użycia tej komendy.',
         ephemeral: true,
@@ -35,14 +35,14 @@ module.exports = {
     }
 
     const target = interaction.options.getUser('kto', true);
-    const organization = interaction.options.getString('organizacja', true);
+    const organization = interaction.options.getRole('organizacja', true);
     const reason = interaction.options.getString('za_co', true);
 
     const embed = new EmbedBuilder()
       .setTitle('⚠️ WARN')
       .addFields(
         { name: 'Kto', value: String(target), inline: true },
-        { name: 'Jakiej organizacji/gangowi', value: organization, inline: true },
+        { name: 'Jakiej organizacji/gangowi', value: String(organization), inline: true },
         { name: 'Za co', value: reason }
       )
       .setColor(0xed4245)
