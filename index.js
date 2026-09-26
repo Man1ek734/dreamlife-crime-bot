@@ -24,6 +24,7 @@ const dodajgang = require('./commands/dodajgang');
 const WELCOME_CHANNEL_ID = '1437087479089074303';
 const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
 const BOT_LOG_CHANNEL_ID = '1437087481542479904';
+const GUILD_ID = '1437087475704266928';
 const REACTION_ROLE_CHANNEL_ID = '1553474554125361262';
 const REACTION_ROLE_MAP = {
   // szara ikonka -> Organizacja Team
@@ -243,7 +244,8 @@ client.once(Events.ClientReady, async readyClient => {
   console.log(`Zalogowano jako ${readyClient.user.tag}`);
 
   try {
-    await readyClient.application.commands.set([
+    const guild = await readyClient.guilds.fetch(GUILD_ID);
+    await guild.commands.set([
       ping.data.toJSON(),
       warn.data.toJSON(),
       dodaj.data.toJSON(),
