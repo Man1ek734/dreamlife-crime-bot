@@ -545,6 +545,11 @@ client.on(Events.InteractionCreate, async interaction => {
       return;
     }
 
+    if (interaction.isModalSubmit() && interaction.customId.startsWith('zawieszenie_modal:')) {
+      await zawieszenie.handleModal(interaction);
+      return;
+    }
+
     if (interaction.isStringSelectMenu() && interaction.customId === 'ticket_select') {
       const selected = interaction.values[0];
       const ticketType = TICKET_OPTIONS[selected];
