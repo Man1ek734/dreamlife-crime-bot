@@ -1,0 +1,14 @@
+{
+  "name": "dreamlife-crime-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for Dream Life RP Crime",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.5.0"
+  }
+}
