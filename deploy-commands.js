@@ -6,6 +6,7 @@ const dodaj = require('./commands/dodaj');
 const dodajgang = require('./commands/dodajgang');
 
 const commands = [ping.data.toJSON(), warn.data.toJSON(), dodaj.data.toJSON(), dodajgang.data.toJSON()];
+const GUILD_ID = '1437087475704266928';
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
@@ -13,7 +14,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
     console.log('Rejestruję komendy slash...');
 
     await rest.put(
-      Routes.applicationCommands(process.env.CLIENT_ID),
+      Routes.applicationGuildCommands(process.env.CLIENT_ID, GUILD_ID),
       { body: commands },
     );
 
