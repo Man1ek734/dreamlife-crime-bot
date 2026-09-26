@@ -11,14 +11,10 @@ function parseHex(input) {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('dodaj')
-    .setDescription('Dodawanie elementów Crime.')
-    .addSubcommand(sub =>
-      sub.setName('org')
-        .setDescription('Utwórz rangę organizacji.')
-        .addStringOption(o => o.setName('nazwa').setDescription('Nazwa organizacji').setRequired(true))
-        .addStringOption(o => o.setName('kolor').setDescription('Kolor HEX, np. #FF0000').setRequired(true))
-    ),
+    .setName('dodajorg')
+    .setDescription('Utwórz rangę organizacji.')
+    .addStringOption(o => o.setName('nazwa_organizacji').setDescription('Nazwa organizacji').setRequired(true))
+    .addStringOption(o => o.setName('kolor').setDescription('Hex, np. #FF0000').setRequired(true)),
 
   async execute(interaction) {
     if (!AUTHORIZED_ROLE_IDS.some(roleId => interaction.member.roles.cache.has(roleId))) {
@@ -28,7 +24,7 @@ module.exports = {
 
     await interaction.deferReply({ ephemeral: true });
 
-    const name = interaction.options.getString('nazwa', true).trim();
+    const name = interaction.options.getString('nazwa_organizacji', true).trim();
     const color = parseHex(interaction.options.getString('kolor', true));
     if (color === null) {
       await interaction.editReply('❌ Podaj poprawny HEX, np. #FF0000.');
@@ -64,7 +60,7 @@ module.exports = {
         color: color,
         hoist: true,
         mentionable: true,
-        reason: 'Utworzono przez ' + interaction.user.tag + ' komendą /dodaj org'
+        reason: 'Utworzono przez ' + interaction.user.tag + ' komendą /dodajorg'
       });
 
       await role.setPosition(Math.max(parentRole.position - 1, 1));
