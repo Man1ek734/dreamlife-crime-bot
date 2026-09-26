@@ -159,6 +159,12 @@ async function ensureReactionRolePanel() {
 
     reactionRoleMessageId = panel.id;
 
+    const oldGunReaction = panel.reactions.cache.get('🔫');
+    if (oldGunReaction) await oldGunReaction.remove().catch(() => {});
+
+    const oldKnifeReaction = panel.reactions.cache.get('🔪');
+    if (oldKnifeReaction) await oldKnifeReaction.remove().catch(() => {});
+
     if (!panel.reactions.cache.has('1553529625898909696')) {
       await panel.react('1553529625898909696');
     }
