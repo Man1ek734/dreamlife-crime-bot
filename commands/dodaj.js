@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 
-const AUTHORIZED_ROLE_ID = '1517965039670132796';
+const AUTHORIZED_ROLE_IDS = ['1517965039670132796', '1465810885489725533'];
 const ORGANIZACJA_PARENT_ROLE_ID = '1437206381856948334';
 
 function parseHex(input) {
@@ -21,7 +21,7 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    if (!interaction.member.roles.cache.has(AUTHORIZED_ROLE_ID)) {
+    if (!AUTHORIZED_ROLE_IDS.some(roleId => interaction.member.roles.cache.has(roleId))) {
       await interaction.reply({ content: '❌ Nie masz uprawnień do tej komendy.', ephemeral: true });
       return;
     }
