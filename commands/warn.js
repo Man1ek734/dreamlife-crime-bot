@@ -119,9 +119,6 @@ module.exports = {
           reason,
         ].join('\n')
       )
-      .addFields(
-        { name: 'Dane z formularza', value: `**Kto:** ${targetText}\n**Organizacja/Gang:** ${organizationText}`, inline: false },
-      )
       .setFooter({ text: `Wystawił: ${interaction.user.tag}` })
       .setTimestamp();
 
