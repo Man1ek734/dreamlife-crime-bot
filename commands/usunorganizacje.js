@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const listaorganizacji = require('./listaorganizacji');
+const kolory = require('./kolory');
 
 const AUTHORIZED_ROLE_IDS = ['1517965039670132796', '1465810885489725533'];
 const ORGANIZACJA_PARENT_ROLE_ID = '1437206381856948334';
@@ -54,6 +55,10 @@ module.exports = {
 
     try {
       await role.delete('Usunięto rangę organizacji przez ' + interaction.user.tag + ' komendą /usunorganizacje');
+
+      await kolory.removeColor(interaction.client, 'organization', roleName).catch(error => {
+        console.error('Nie udało się usunąć koloru organizacji z panelu:', error);
+      });
 
       await listaorganizacji.updateOrganizationList(interaction.client, role.id).catch(error => {
         console.error('Nie udało się odświeżyć listy organizacji po usunięciu:', error);
