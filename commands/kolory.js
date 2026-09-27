@@ -1,5 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
+const REMOVED_COLOR_NAMES = new Set(['pety', 'peciki']);
+
 const CONFIG = {
   gang: {
     channelId: '1526702996690440292',
@@ -44,7 +46,9 @@ function parseEntries(description = '') {
       hex: match[3].toUpperCase(),
     });
   }
-  return entries;
+  return entries.filter(entry =>
+    !REMOVED_COLOR_NAMES.has(entry.name.toLocaleLowerCase('pl-PL'))
+  );
 }
 
 function buildDescription(config, entries) {
