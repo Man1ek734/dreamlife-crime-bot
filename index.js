@@ -28,7 +28,6 @@ const nadajrange = require('./commands/nadajrange');
 const changlog = require('./commands/changlog');
 const listagangow = require('./commands/listagangow');
 const listaorganizacji = require('./commands/listaorganizacji');
-const dodajrange = require('./commands/dodajrange');
 const dodajticket = require('./commands/dodajticket');
 
 const WELCOME_CHANNEL_ID = '1437087479089074303';
@@ -139,7 +138,6 @@ client.commands.set(nadajrange.data.name, nadajrange);
 client.commands.set(changlog.data.name, changlog);
 client.commands.set(listagangow.data.name, listagangow);
 client.commands.set(listaorganizacji.data.name, listaorganizacji);
-client.commands.set(dodajrange.data.name, dodajrange);
 client.commands.set(dodajticket.data.name, dodajticket);
 
 const messageCache = new Map();
@@ -519,7 +517,6 @@ client.once(Events.ClientReady, async readyClient => {
       changlog.data.toJSON(),
       listagangow.data.toJSON(),
       listaorganizacji.data.toJSON(),
-      dodajrange.data.toJSON(),
       dodajticket.data.toJSON(),
     ]);
     console.log('Komendy slash zsynchronizowane.');
