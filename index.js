@@ -306,12 +306,11 @@ async function ensureTicketPanel() {
     );
 
     if (existingPanel) {
-      await existingPanel.edit(buildTicketPanel());
-      console.log('Panel ticketów został zaktualizowany.');
-    } else {
-      await channel.send(buildTicketPanel());
-      console.log('Panel ticketów został wysłany.');
+      await existingPanel.delete().catch(() => {});
     }
+
+    await channel.send(buildTicketPanel());
+    console.log('Panel ticketów został wysłany ponownie.');
   } catch (error) {
     console.error('Błąd podczas tworzenia panelu ticketów:', error);
   }
