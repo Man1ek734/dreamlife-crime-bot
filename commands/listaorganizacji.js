@@ -9,41 +9,18 @@ const DEFAULT_ORGANIZATIONS = [
 
 const PANEL_TITLE = '🏢 Lista organizacji';
 
-function extractRoleIdsFromPanel(panel) {
+function extractRoleIdsFromPanels(panels) {
   const ids = new Set();
 
-  const description = panel?.embeds?.[0]?.description || '';
-  for (const match of description.matchAll(/<@&(\d+)>/g)) {
-    ids.add(match[1]);
+  for (const panel of panels) {
+    const description = panel.embeds?.[0]?.description || '';
+
+    for (const match of description.matchAll(/<@&(\d+)>/g)) {
+      ids.add(match[1]);
+    }
   }
 
   return ids;
-}
-
-async function findPanel(channel, client) {
-  const messages = await channel.messages.fetch({ limit: 50 }).catch(() => null);
-  if (!messages) return null;
-
-  return messages.find(message =>
-    message.author.id === client.user.id &&
-    message.embeds.some(embed => embed.title === PANEL_TITLE)
-  ) || null;
-}
-
-function getOrganizations(guild, panel, extraRole = null) {
-  const roleIds = new Set(DEFAULT_ORGANIZATIONS.map(org => org.roleId));
-
-  for (const roleId of extractRoleIdsFromPanel(panel)) {
-    roleIds.add(roleId);
-  }
-
-  if (extraRole) {
-    roleIds.add(extraRole.id);
-  }
-
-  return [...roleIds]
-    .map(roleId => guild.roles.cache.get(roleId))
-    .filter(Boolean);
 }
 
 function buildOrganizationEmbed(roles) {
@@ -58,27 +35,56 @@ function buildOrganizationEmbed(roles) {
       list
     )
     .setColor(0x5865f2)
-    .setFooter({ text: 'Lista aktualizuje się automatycznie' })
+    .setFooter({ text: 'DreamLife RolePlay © 2026 • Lista aktualizuje się automatycznie' })
     .setTimestamp();
 }
 
 async function updateOrganizationList(client, extraRole = null) {
   const channel = await client.channels.fetch(CHANNEL_ID).catch(() => null);
-  if (!channel || !channel.isTextBased() || !channel.guild) return;
 
-  await channel.guild.roles.fetch().catch(() => {});
-
-  let panel = await findPanel(channel, client);
-  const organizations = getOrganizations(channel.guild, panel, extraRole);
-  const payload = { embeds: [buildOrganizationEmbed(organizations)] };
-
-  if (panel) {
-    await panel.edit(payload);
-  } else {
-    panel = await channel.send(payload);
+  if (!channel || !channel.isTextBased() || !channel.guild) {
+    throw new Error('Nie znaleziono kanału listy organizacji: ' + CHANNEL_ID);
   }
 
-  return panel;
+  await channel.guild.roles.fetch();
+
+  const messages = await channel.messages.fetch({ limit: 100 });
+
+  const panels = [...messages.values()].filter(message =>
+    message.author.id === client.user.id &&
+    message.embeds.some(embed => embed.title === PANEL_TITLE)
+  );
+
+  const roleIds = new Set(DEFAULT_ORGANIZATIONS.map(org => org.roleId));
+
+  for (const roleId of extractRoleIdsFromPanels(panels)) {
+    roleIds.add(roleId);
+  }
+
+  if (extraRole) {
+    roleIds.add(extraRole.id);
+  }
+
+  const organizations = [...roleIds]
+    .map(roleId => channel.guild.roles.cache.get(roleId))
+    .filter(Boolean);
+
+  for (const panel of panels) {
+    await panel.delete().catch(() => {});
+  }
+
+  const newPanel = await channel.send({
+    embeds: [buildOrganizationEmbed(organizations)],
+  });
+
+  console.log(
+    'Lista organizacji odświeżona na kanale ' +
+    CHANNEL_ID +
+    '. Liczba organizacji: ' +
+    organizations.length
+  );
+
+  return newPanel;
 }
 
 module.exports = {
@@ -98,8 +104,14 @@ module.exports = {
     }
 
     await interaction.deferReply({ ephemeral: true });
-    await updateOrganizationList(interaction.client);
-    await interaction.editReply('✅ Lista organizacji została odświeżona.');
+
+    try {
+      await updateOrganizationList(interaction.client);
+      await interaction.editReply('✅ Lista organizacji została odświeżona.');
+    } catch (error) {
+      console.error('Błąd odświeżania listy organizacji:', error);
+      await interaction.editReply('❌ Nie udało się odświeżyć listy organizacji.');
+    }
   },
 
   async updateOrganizationList(client) {
