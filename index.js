@@ -28,6 +28,9 @@ const nadajrange = require('./commands/nadajrange');
 const changlog = require('./commands/changlog');
 const listagangow = require('./commands/listagangow');
 const listaorganizacji = require('./commands/listaorganizacji');
+const kolorgang = require('./commands/kolorgang');
+const kolororganizacje = require('./commands/kolororganizacje');
+const kolory = require('./commands/kolory');
 const dodajticket = require('./commands/dodajticket');
 
 const WELCOME_CHANNEL_ID = '1437087479089074303';
@@ -143,6 +146,8 @@ client.commands.set(nadajrange.data.name, nadajrange);
 client.commands.set(changlog.data.name, changlog);
 client.commands.set(listagangow.data.name, listagangow);
 client.commands.set(listaorganizacji.data.name, listaorganizacji);
+client.commands.set(kolorgang.data.name, kolorgang);
+client.commands.set(kolororganizacje.data.name, kolororganizacje);
 client.commands.set(dodajticket.data.name, dodajticket);
 
 const messageCache = new Map();
@@ -702,6 +707,8 @@ client.once(Events.ClientReady, async readyClient => {
       changlog.data.toJSON(),
       listagangow.data.toJSON(),
       listaorganizacji.data.toJSON(),
+      kolorgang.data.toJSON(),
+      kolororganizacje.data.toJSON(),
       dodajticket.data.toJSON(),
     ]);
     console.log('Komendy slash zsynchronizowane.');
@@ -716,8 +723,8 @@ client.once(Events.ClientReady, async readyClient => {
   await ensureOrganizationPenaltiesPanel();
   await ensureStarterPackPanel();
   await ensureGangStarterPackPanel();
-  await ensureOrganizationColorsPanel();
-  await ensureGangColorsPanel();
+  await kolory.ensurePanel(readyClient, 'organization');
+  await kolory.ensurePanel(readyClient, 'gang');
   await listagangow.updateGangList(readyClient);
   await listaorganizacji.updateOrganizationList(readyClient);
 });
