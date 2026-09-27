@@ -47,10 +47,34 @@ module.exports = {
 
     const changelog = interaction.fields.getTextInputValue('changlog_tresc').trim();
 
+    let nextNumber = 1;
+
+    try {
+      const messages = await interaction.channel.messages.fetch({ limit: 100 });
+
+      for (const message of messages.values()) {
+        if (message.author.id !== interaction.client.user.id) continue;
+
+        for (const messageEmbed of message.embeds) {
+          const title = messageEmbed.title || '';
+          const match = title.match(/CHANGELOG\s*#(\d+)/i);
+
+          if (match) {
+            const number = Number.parseInt(match[1], 10);
+            if (Number.isFinite(number) && number >= nextNumber) {
+              nextNumber = number + 1;
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Nie udało się odczytać numeru changeloga:', error);
+    }
+
     const embed = new EmbedBuilder()
-      .setTitle('📋 CHANGELOG')
+      .setTitle('📋 CHANGELOG #' + nextNumber)
       .setDescription(changelog)
-      .setColor(0x5865f2)
+      .setColor(0xed4245)
       .setFooter({ text: 'Wprowadził: ' + interaction.user.tag })
       .setTimestamp();
 
