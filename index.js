@@ -42,6 +42,7 @@ const ORG_PENALTIES_CHANNEL_ID = '1519105017309696153';
 const STARTER_PACK_CHANNEL_ID = '1536012375314927666';
 const STARTER_PACK_ROLE_ID = '1437087476111114370';
 const GANG_STARTER_PACK_CHANNEL_ID = '1536012429866049606';
+const ORG_COLORS_CHANNEL_ID = '1524480689154691152';
 const ORGANIZACJA_PARENT_ROLE_ID = '1437206381856948334';
 const REACTION_ROLE_MAP = {
   // szara ikonka -> Organizacja Team
@@ -480,6 +481,44 @@ async function ensureGangStarterPackPanel() {
   }
 }
 
+async function ensureOrganizationColorsPanel() {
+  try {
+    const channel = await client.channels.fetch(ORG_COLORS_CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) return;
+
+    const title = '🎨 Kolory Organizacji';
+
+    const embed = new EmbedBuilder()
+      .setTitle(title)
+      .setDescription(
+        '**Przypisane kolory organizacji:**\n\n' +
+        '🟧 **Rose Dominion** — Pomarańczowy\n' +
+        '└ HEX: `#FB8C00`\n\n' +
+        '🩵 **Arizona** — Jasnoniebieski\n' +
+        '└ HEX: `#64B5F6`\n\n' +
+        '━━━━━━━━━━━━━━━━━━━━\n' +
+        '*Każda organizacja posiada swój indywidualny kolor.*'
+      )
+      .setColor(0xed4245)
+      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+
+    const messages = await channel.messages.fetch({ limit: 50 }).catch(() => null);
+    const oldPanel = messages?.find(message =>
+      message.author.id === client.user.id &&
+      message.embeds.some(embed => embed.title === title)
+    );
+
+    if (oldPanel) {
+      await oldPanel.delete().catch(() => {});
+    }
+
+    await channel.send({ embeds: [embed] });
+    console.log('Panel kolorów organizacji został wysłany.');
+  } catch (error) {
+    console.error('Błąd podczas tworzenia panelu kolorów organizacji:', error);
+  }
+}
+
 async function ensureOrganizationPenaltiesPanel() {
   try {
     const channel = await client.channels.fetch(ORG_PENALTIES_CHANNEL_ID);
@@ -630,6 +669,7 @@ client.once(Events.ClientReady, async readyClient => {
   await ensureOrganizationPenaltiesPanel();
   await ensureStarterPackPanel();
   await ensureGangStarterPackPanel();
+  await ensureOrganizationColorsPanel();
   await listagangow.updateGangList(readyClient);
   await listaorganizacji.updateOrganizationList(readyClient);
 });
