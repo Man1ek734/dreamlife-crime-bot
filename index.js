@@ -789,6 +789,22 @@ client.on(Events.GuildMemberRemove, async member => {
   await sendBotLog(member.guild, embed);
 });
 
+client.on(Events.GuildRoleCreate, async role => {
+  const executor = await getAuditExecutor(role.guild, AuditLogEvent.RoleCreate, role.id);
+
+  const embed = new EmbedBuilder()
+    .setTitle('🎭 Utworzono rolę')
+    .addFields(
+      { name: 'Rola', value: `${role} (\`${role.name}\`)`, inline: true },
+      { name: 'ID roli', value: `\`${role.id}\``, inline: true },
+      { name: 'Utworzył', value: executor ? `${executor}` : 'Nie udało się ustalić', inline: true }
+    )
+    .setColor(role.color || 0x57f287)
+    .setTimestamp();
+
+  await sendBotLog(role.guild, embed);
+});
+
 client.on(Events.ChannelCreate, async channel => {
   if (!channel.guild || channel.id === BOT_LOG_CHANNEL_ID) return;
   const executor = await getAuditExecutor(channel.guild, AuditLogEvent.ChannelCreate, channel.id);
