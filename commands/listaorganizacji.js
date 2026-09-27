@@ -34,12 +34,12 @@ function buildOrganizationEmbed(roles) {
       '**Aktualna lista organizacji na DreamLifeRP Crime**\n\n' +
       list
     )
-    .setColor(0x5865f2)
+    .setColor(0xed4245)
     .setFooter({ text: 'DreamLife RolePlay © 2026 • Lista aktualizuje się automatycznie' })
     .setTimestamp();
 }
 
-async function updateOrganizationList(client, extraRole = null) {
+async function updateOrganizationList(client, extraRole = null, removedRoleId = null) {
   const channel = await client.channels.fetch(CHANNEL_ID).catch(() => null);
 
   if (!channel || !channel.isTextBased() || !channel.guild) {
@@ -63,6 +63,10 @@ async function updateOrganizationList(client, extraRole = null) {
 
   if (extraRole) {
     roleIds.add(extraRole.id);
+  }
+
+  if (removedRoleId) {
+    roleIds.delete(removedRoleId);
   }
 
   const organizations = [...roleIds]
@@ -114,11 +118,11 @@ module.exports = {
     }
   },
 
-  async updateOrganizationList(client) {
-    return updateOrganizationList(client);
+  async updateOrganizationList(client, removedRoleId = null) {
+    return updateOrganizationList(client, null, removedRoleId);
   },
 
   async registerOrganization(client, role) {
-    return updateOrganizationList(client, role);
+    return updateOrganizationList(client, role, null);
   },
 };
