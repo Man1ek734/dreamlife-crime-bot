@@ -84,10 +84,34 @@ async function getPanel(client, type) {
 }
 
 async function ensurePanel(client, type) {
-  const { channel, panel, config } = await getPanel(client, type);
-  if (panel) return panel;
+  const config = CONFIG[type];
+  const channel = await client.channels.fetch(config.channelId).catch(() => null);
 
-  return channel.send({ embeds: [buildEmbed(config, config.defaults)] });
+  if (!channel || !channel.isTextBased()) {
+    throw new Error('Nie znaleziono kanału panelu kolorów: ' + config.channelId);
+  }
+
+  const messages = await channel.messages.fetch({ limit: 100 });
+  const panels = [...messages.values()].filter(message =>
+    message.author.id === client.user.id &&
+    message.embeds.some(embed => embed.title === config.title)
+  );
+
+  const sourcePanel = panels[0] || null;
+  const entries = sourcePanel
+    ? parseEntries(sourcePanel.embeds?.[0]?.description || '')
+    : [...config.defaults];
+
+  for (const panel of panels) {
+    await panel.delete().catch(() => {});
+  }
+
+  const newPanel = await channel.send({
+    embeds: [buildEmbed(config, entries.length ? entries : config.defaults)],
+  });
+
+  console.log(config.title + ' wysłany ponownie bez duplikatów.');
+  return newPanel;
 }
 
 async function removeColor(client, type, roleName) {
