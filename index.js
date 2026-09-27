@@ -33,6 +33,7 @@ const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
 const BOT_LOG_CHANNEL_ID = '1437087481542479904';
 const GUILD_ID = '1437087475704266928';
 const REACTION_ROLE_CHANNEL_ID = '1553474554125361262';
+const AUTO_ROLE_ID = '1437087476111114370';
 const REACTION_ROLE_MAP = {
   // szara ikonka -> Organizacja Team
   '1553529625898909696': '1437087476140216331',
@@ -330,6 +331,14 @@ client.on(Events.MessageReactionRemove, async (reaction, user) => {
 });
 
 client.on(Events.GuildMemberAdd, async member => {
+  try {
+    if (!member.roles.cache.has(AUTO_ROLE_ID)) {
+      await member.roles.add(AUTO_ROLE_ID, 'Automatyczna ranga dla nowego członka');
+    }
+  } catch (error) {
+    console.error('Nie udało się nadać automatycznej rangi Przyszły Gangster:', error);
+  }
+
   const channel = member.guild.channels.cache.get(WELCOME_CHANNEL_ID);
   if (!channel || !channel.isTextBased()) return;
 
