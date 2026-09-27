@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const listagangow = require('./listagangow');
 
 const AUTHORIZED_ROLE_IDS = ['1517965039670132796', '1465810885489725533'];
 const GANG_PARENT_ROLE_ID = '1437087475704266929';
@@ -65,6 +66,9 @@ module.exports = {
       });
 
       await role.setPosition(Math.max(parentRole.position - 1, 1));
+      await listagangow.registerGang(interaction.client, role).catch(error => {
+        console.error('Nie udało się dodać gangu do listy:', error);
+      });
       const hex = '#' + color.toString(16).padStart(6, '0').toUpperCase();
       await interaction.editReply('✅ Utworzono rangę ' + role + '\n**Nazwa:** ' + name + '\n**Kolor:** ' + hex + '\n**Wyświetlanie osobno:** włączone');
     } catch (error) {
