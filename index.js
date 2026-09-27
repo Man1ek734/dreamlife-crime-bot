@@ -150,6 +150,29 @@ function trimLogText(text, fallback = '*brak treści*') {
   return text.length > 900 ? `${text.slice(0, 897)}...` : text;
 }
 
+async function ensureAutoRoleForExistingMembers(guild) {
+  try {
+    const members = await guild.members.fetch();
+    let added = 0;
+
+    for (const member of members.values()) {
+      if (member.user.bot) continue;
+      if (member.roles.cache.has(AUTO_ROLE_ID)) continue;
+
+      try {
+        await member.roles.add(AUTO_ROLE_ID, 'Automatyczne nadanie rangi Przyszły Gangster wszystkim członkom');
+        added++;
+      } catch (error) {
+        console.error(`Nie udało się nadać auto-rangi użytkownikowi ${member.user.tag}:`, error);
+      }
+    }
+
+    console.log(`Auto-ranga Przyszły Gangster: nadano ${added} osobom.`);
+  } catch (error) {
+    console.error('Nie udało się nadać auto-rangi obecnym członkom:', error);
+  }
+}
+
 
 
 function buildReactionRolePanel() {
@@ -274,6 +297,7 @@ client.once(Events.ClientReady, async readyClient => {
       dodajrange.data.toJSON(),
     ]);
     console.log('Komendy slash zsynchronizowane.');
+    await ensureAutoRoleForExistingMembers(guild);
   } catch (error) {
     console.error('Błąd synchronizacji komend slash:', error);
   }
