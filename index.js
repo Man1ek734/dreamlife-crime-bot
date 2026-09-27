@@ -798,7 +798,7 @@ client.on(Events.GuildMemberAdd, async member => {
       `Siema ${member}! Witamy na serwerze **DreamLifeRP Crime**.\n\nMiłej gry i powodzenia w crime! 🔥`
     )
     .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
-    .setColor(0x7b2cff)
+    .setColor(0xed4245)
     .setFooter({ text: `Jesteś ${member.guild.memberCount}. osobą na serwerze.` })
     .setTimestamp();
 
