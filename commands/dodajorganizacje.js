@@ -68,9 +68,17 @@ module.exports = {
 
       await role.setPosition(Math.max(parentRole.position - 1, 1));
 
-      await listaorganizacji.registerOrganization(interaction.client, role).catch(error => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        await listaorganizacji.registerOrganization(interaction.client, role);
+        console.log('Dodano organizację do listy:', role.name, role.id);
+      } catch (error) {
         console.error('Nie udało się dodać organizacji do listy:', error);
-      });
+        await interaction.editReply(
+          '⚠️ Ranga została utworzona, ale nie udało się odświeżyć listy organizacji. Sprawdź logi bota.'
+        );
+        return;
+      }
 
       const hex = '#' + color.toString(16).padStart(6, '0').toUpperCase();
 
