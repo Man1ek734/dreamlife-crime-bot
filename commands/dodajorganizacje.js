@@ -69,7 +69,6 @@ module.exports = {
       await role.setPosition(Math.max(parentRole.position - 1, 1));
 
       try {
-        await new Promise(resolve => setTimeout(resolve, 1200));
         await listaorganizacji.registerOrganization(interaction.client, role);
         console.log('Dodano organizację do listy:', role.name, role.id);
       } catch (error) {
