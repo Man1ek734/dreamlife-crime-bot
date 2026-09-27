@@ -4,8 +4,10 @@ const ping = require('./commands/ping');
 const warn = require('./commands/warn');
 const dodaj = require('./commands/dodaj');
 const dodajgang = require('./commands/dodajgang');
+const dodajorganizacje = require('./commands/dodajorganizacje');
 const usunorg = require('./commands/usunorg');
 const usungang = require('./commands/usungang');
+const usunorganizacje = require('./commands/usunorganizacje');
 const zawieszenie = require('./commands/zawieszenie');
 const nadajrange = require('./commands/nadajrange');
 const changlog = require('./commands/changlog');
@@ -14,7 +16,7 @@ const listaorganizacji = require('./commands/listaorganizacji');
 const dodajrange = require('./commands/dodajrange');
 const dodajticket = require('./commands/dodajticket');
 
-const commands = [ping.data.toJSON(), warn.data.toJSON(), dodaj.data.toJSON(), dodajgang.data.toJSON(), usunorg.data.toJSON(), usungang.data.toJSON(), zawieszenie.data.toJSON(), nadajrange.data.toJSON(), changlog.data.toJSON(), listagangow.data.toJSON(), listaorganizacji.data.toJSON(), dodajrange.data.toJSON(), dodajticket.data.toJSON()];
+const commands = [ping.data.toJSON(), warn.data.toJSON(), dodaj.data.toJSON(), dodajgang.data.toJSON(), dodajorganizacje.data.toJSON(), usunorg.data.toJSON(), usungang.data.toJSON(), usunorganizacje.data.toJSON(), zawieszenie.data.toJSON(), nadajrange.data.toJSON(), changlog.data.toJSON(), listagangow.data.toJSON(), listaorganizacji.data.toJSON(), dodajrange.data.toJSON(), dodajticket.data.toJSON()];
 const GUILD_ID = '1437087475704266928';
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
