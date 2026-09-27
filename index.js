@@ -2,6 +2,7 @@ require('dotenv').config();
 const {
   ActionRowBuilder,
   AuditLogEvent,
+  AttachmentBuilder,
   ButtonBuilder,
   ButtonStyle,
   ChannelType,
@@ -141,17 +142,75 @@ client.commands.set(dodajticket.data.name, dodajticket);
 
 const messageCache = new Map();
 
-async function sendBotLog(guild, embed) {
+async function sendBotLog(guild, embed, files = []) {
   try {
     const logChannel =
       guild.channels.cache.get(BOT_LOG_CHANNEL_ID) ||
       await guild.channels.fetch(BOT_LOG_CHANNEL_ID).catch(() => null);
 
     if (!logChannel || !logChannel.isTextBased()) return;
-    await logChannel.send({ embeds: [embed] });
+    await logChannel.send({ embeds: [embed], files });
   } catch (error) {
     console.error('Błąd wysyłania logu:', error);
   }
+}
+
+async function createTicketTranscript(channel) {
+  const allMessages = [];
+  let before;
+
+  while (true) {
+    const batch = await channel.messages.fetch({
+      limit: 100,
+      ...(before ? { before } : {}),
+    });
+
+    if (batch.size === 0) break;
+
+    allMessages.push(...batch.values());
+    before = batch.last().id;
+
+    if (batch.size < 100) break;
+  }
+
+  allMessages.sort((a, b) => a.createdTimestamp - b.createdTimestamp);
+
+  const lines = [
+    'Transcript ticketa: #' + channel.name,
+    'ID kanału: ' + channel.id,
+    'Data wygenerowania: ' + new Date().toLocaleString('pl-PL'),
+    '',
+    '============================================================',
+    '',
+  ];
+
+  for (const message of allMessages) {
+    const timestamp = new Date(message.createdTimestamp).toLocaleString('pl-PL');
+    const author = message.author ? message.author.tag : 'Nieznany użytkownik';
+    const content = message.content?.trim() || '[brak treści tekstowej]';
+
+    lines.push('[' + timestamp + '] ' + author + ' (' + (message.author?.id || 'brak ID') + ')');
+    lines.push(content);
+
+    for (const attachment of message.attachments.values()) {
+      lines.push('Załącznik: ' + attachment.url);
+    }
+
+    if (message.embeds.length > 0) {
+      for (const embed of message.embeds) {
+        if (embed.title) lines.push('Embed — tytuł: ' + embed.title);
+        if (embed.description) lines.push('Embed — treść: ' + embed.description);
+      }
+    }
+
+    lines.push('');
+  }
+
+  const safeName = channel.name.replace(/[^a-zA-Z0-9-_]/g, '-');
+  return new AttachmentBuilder(
+    Buffer.from(lines.join('\n'), 'utf8'),
+    { name: 'transcript-' + safeName + '.txt' }
+  );
 }
 
 async function getAuditExecutor(guild, type, targetId) {
@@ -858,6 +917,7 @@ client.on(Events.InteractionCreate, async interaction => {
 
       try {
         const ticketName = interaction.channel.name;
+        const transcript = await createTicketTranscript(interaction.channel);
 
         await sendBotLog(
           interaction.guild,
@@ -866,10 +926,12 @@ client.on(Events.InteractionCreate, async interaction => {
             .addFields(
               { name: 'Ticket', value: `\`${ticketName}\``, inline: true },
               { name: 'Zamknął', value: `${interaction.user}`, inline: true },
-              { name: 'Autor ticketu', value: ownerId ? `<@${ownerId}>` : 'Nieznany', inline: true }
+              { name: 'Autor ticketu', value: ownerId ? `<@${ownerId}>` : 'Nieznany', inline: true },
+              { name: 'Transcript', value: '📄 Plik z pełną rozmową znajduje się poniżej.' }
             )
             .setColor(0xed4245)
-            .setTimestamp()
+            .setTimestamp(),
+          [transcript]
         );
 
         await interaction.editReply('✅ Ticket zostanie usunięty.');
