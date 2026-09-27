@@ -39,6 +39,7 @@ const REACTION_ROLE_CHANNEL_ID = '1553474554125361262';
 const AUTO_ROLE_ID = '1437087476111114370';
 const APPEAL_INFO_CHANNEL_ID = '1437087480364011732';
 const APPEAL_TICKET_CHANNEL_ID = '1519136441563611346';
+const ORG_PENALTIES_CHANNEL_ID = '1519105017309696153';
 const REACTION_ROLE_MAP = {
   // szara ikonka -> Organizacja Team
   '1553529625898909696': '1437087476140216331',
@@ -384,6 +385,63 @@ function buildTicketPanel() {
   };
 }
 
+async function ensureOrganizationPenaltiesPanel() {
+  try {
+    const channel = await client.channels.fetch(ORG_PENALTIES_CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) return;
+
+    const title = '⚠️ Kary nakładane na organizacje';
+
+    const embed = new EmbedBuilder()
+      .setTitle(title)
+      .setDescription(
+        '**Cheater w organizacji**\n' +
+        '→ 1 Warn + zawieszenie 24h\n\n' +
+        '**Złamanie limitów**\n' +
+        '→ 1 Warn\n\n' +
+        '**Masowe łamanie regulaminu serwera**\n' +
+        '→ 1 Warn\n\n' +
+        '**Niska aktywność organizacji**\n' +
+        '→ 1 Warn\n\n' +
+        '**Masowy metagaming**\n' +
+        '→ 1 Warn\n\n' +
+        '**Zakazane mody**\n' +
+        '→ 1 Warn\n\n' +
+        '**Brak propów**\n' +
+        '→ 1 Warn\n\n' +
+        '**Łamanie zasad RP**\n' +
+        '→ 1 Warn\n\n' +
+        '**Całkowicie bojówkarskie podejście do rozgrywki**\n' +
+        '→ Warn / usunięcie organizacji\n\n' +
+        '━━━━━━━━━━━━━━━━━━━━\n\n' +
+        '**📌 LIMIT WARNÓW**\n' +
+        'Organizacja przestępcza może posiadać maksymalnie **2 Warny**.\n' +
+        'Otrzymanie **3 Warna** skutkuje rozwiązaniem organizacji.\n\n' +
+        '**📨 ODWOŁANIA**\n' +
+        'Jeżeli uważacie, że **Warn** został nadany niesłusznie, skontaktujcie się z **Opiekunami Crime** poprzez ticket.\n\n' +
+        '**🎯 ANULOWANIE WARNA**\n' +
+        'Jeżeli organizacja chce anulować swojego **Warna**, musi otworzyć ticket. Następnie otrzyma zadania od **Mafii**, które musi wykonać.'
+      )
+      .setColor(0xed4245)
+      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+
+    const messages = await channel.messages.fetch({ limit: 50 }).catch(() => null);
+    const oldPanel = messages?.find(message =>
+      message.author.id === client.user.id &&
+      message.embeds.some(embed => embed.title === title)
+    );
+
+    if (oldPanel) {
+      await oldPanel.delete().catch(() => {});
+    }
+
+    await channel.send({ embeds: [embed] });
+    console.log('Panel kar organizacji został wysłany.');
+  } catch (error) {
+    console.error('Błąd podczas tworzenia panelu kar organizacji:', error);
+  }
+}
+
 async function ensureAppealInfoPanel() {
   try {
     const channel = await client.channels.fetch(APPEAL_INFO_CHANNEL_ID);
@@ -472,6 +530,7 @@ client.once(Events.ClientReady, async readyClient => {
   await ensureTicketPanel();
   await ensureReactionRolePanel();
   await ensureAppealInfoPanel();
+  await ensureOrganizationPenaltiesPanel();
   await listagangow.updateGangList(readyClient);
   await listaorganizacji.updateOrganizationList(readyClient);
 });
