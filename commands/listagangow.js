@@ -48,6 +48,7 @@ function buildGangListEmbed(guild, gangs) {
     .setTitle(PANEL_TITLE)
     .setColor(0xed4245)
     .setDescription('Status miejsc w gangach aktualizuje się automatycznie.')
+    .setFooter({ text: 'DreamLife RolePlay © 2026' })
     .setTimestamp();
 
   for (const gang of gangs) {
