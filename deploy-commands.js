@@ -11,9 +11,11 @@ const nadajrange = require('./commands/nadajrange');
 const changlog = require('./commands/changlog');
 const listagangow = require('./commands/listagangow');
 const listaorganizacji = require('./commands/listaorganizacji');
+const kolorgang = require('./commands/kolorgang');
+const kolororganizacje = require('./commands/kolororganizacje');
 const dodajticket = require('./commands/dodajticket');
 
-const commands = [ping.data.toJSON(), warn.data.toJSON(), dodajgang.data.toJSON(), dodajorganizacje.data.toJSON(), usungang.data.toJSON(), usunorganizacje.data.toJSON(), zawieszenie.data.toJSON(), nadajrange.data.toJSON(), changlog.data.toJSON(), listagangow.data.toJSON(), listaorganizacji.data.toJSON(), dodajticket.data.toJSON()];
+const commands = [ping.data.toJSON(), warn.data.toJSON(), dodajgang.data.toJSON(), dodajorganizacje.data.toJSON(), usungang.data.toJSON(), usunorganizacje.data.toJSON(), zawieszenie.data.toJSON(), nadajrange.data.toJSON(), changlog.data.toJSON(), listagangow.data.toJSON(), listaorganizacji.data.toJSON(), kolorgang.data.toJSON(), kolororganizacje.data.toJSON(), dodajticket.data.toJSON()];
 const GUILD_ID = '1437087475704266928';
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
