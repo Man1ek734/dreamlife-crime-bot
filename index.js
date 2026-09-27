@@ -64,8 +64,8 @@ const TICKET_OPTIONS = {
     emoji: '📜',
   },
   warn: {
-    label: 'Odwołania od warna',
-    description: 'Odwołania od warna',
+    label: 'Odwołania',
+    description: 'Odwołania',
     emoji: '📞',
   },
   zamowienia: {
@@ -236,7 +236,8 @@ function buildTicketPanel() {
       'Wybierz kategorię poniżej, aby utworzyć prywatny ticket.\n' +
       'Po wybraniu odpowiedniej opcji bot utworzy dla Ciebie osobny kanał.'
     )
-    .setColor(0x2b2d31);
+    .setColor(0x2b2d31)
+    .setFooter({ text: 'DreamLife RolePlay © 2026' });
 
   const menu = new StringSelectMenuBuilder()
     .setCustomId('ticket_select')
