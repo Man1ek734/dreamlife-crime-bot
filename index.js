@@ -25,6 +25,7 @@ const usungang = require('./commands/usungang');
 const zawieszenie = require('./commands/zawieszenie');
 const nadajrange = require('./commands/nadajrange');
 const changlog = require('./commands/changlog');
+const listagangow = require('./commands/listagangow');
 const dodajrange = require('./commands/dodajrange');
 
 const WELCOME_CHANNEL_ID = '1437087479089074303';
@@ -108,6 +109,7 @@ client.commands.set(usungang.data.name, usungang);
 client.commands.set(zawieszenie.data.name, zawieszenie);
 client.commands.set(nadajrange.data.name, nadajrange);
 client.commands.set(changlog.data.name, changlog);
+client.commands.set(listagangow.data.name, listagangow);
 client.commands.set(dodajrange.data.name, dodajrange);
 
 const messageCache = new Map();
@@ -267,6 +269,7 @@ client.once(Events.ClientReady, async readyClient => {
       zawieszenie.data.toJSON(),
       nadajrange.data.toJSON(),
       changlog.data.toJSON(),
+      listagangow.data.toJSON(),
       dodajrange.data.toJSON(),
     ]);
     console.log('Komendy slash zsynchronizowane.');
@@ -276,6 +279,7 @@ client.once(Events.ClientReady, async readyClient => {
 
   await ensureTicketPanel();
   await ensureReactionRolePanel();
+  await listagangow.updateGangList(readyClient);
 });
 
 
@@ -436,6 +440,16 @@ client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
 client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
   const addedRoles = newMember.roles.cache.filter(role => !oldMember.roles.cache.has(role.id));
   const removedRoles = oldMember.roles.cache.filter(role => !newMember.roles.cache.has(role.id));
+
+  const trackedGangRoleChanged =
+    addedRoles.some(role => listagangow.isTrackedRole(role.id)) ||
+    removedRoles.some(role => listagangow.isTrackedRole(role.id));
+
+  if (trackedGangRoleChanged) {
+    await listagangow.updateGangList(newMember.client).catch(error =>
+      console.error('Nie udało się odświeżyć listy gangów:', error)
+    );
+  }
 
   for (const role of addedRoles.values()) {
     const executor = await getAuditExecutor(newMember.guild, AuditLogEvent.MemberRoleUpdate, newMember.id);
