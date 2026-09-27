@@ -95,8 +95,8 @@ const TICKET_OPTIONS = {
     emoji: '📨',
   },
   cartel_orders: {
-    label: 'Zamówienia do Cartelu',
-    description: 'Zamówienia do Cartelu',
+    label: 'Zamówienia do Cartelu (IC)',
+    description: 'Zamówienia do Cartelu (IC)',
     emoji: '📦',
   },
   mafia_orders: {
@@ -249,6 +249,52 @@ async function ensureReactionRolePanel() {
   } catch (error) {
     console.error('Błąd podczas tworzenia panelu reaction roles:', error);
   }
+}
+
+function getTicketChannelBaseName(selected, ticketType) {
+  const customNames = {
+    zarzad: 'sprawa-do-zarzadu',
+    opiekunowie: 'sprawa-do-opiekunow-crime',
+    pytanie: 'pytanie',
+    warn: 'odwolania',
+    zamowienia: 'zamowienia',
+    fckck: 'podanie-fck-ck',
+    mafia: 'kontakt-z-mafia',
+    starterpack: 'odbierz-starterpack',
+    cartel: 'kontakt-z-cartelem',
+    cartel_orders: 'zamowienia-do-cartelu',
+    mafia_orders: 'zamowienia-do-mafii',
+  };
+
+  if (customNames[selected]) return customNames[selected];
+
+  return ticketType.label
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\(ic\)/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 70) || 'ticket';
+}
+
+function getNextTicketNumber(guild, baseName) {
+  let maxNumber = 0;
+  const prefix = baseName + '-';
+
+  for (const channel of guild.channels.cache.values()) {
+    if (channel.type !== ChannelType.GuildText) continue;
+    if (!channel.name.startsWith(prefix)) continue;
+
+    const suffix = channel.name.slice(prefix.length);
+    const number = Number.parseInt(suffix, 10);
+
+    if (Number.isFinite(number) && number > maxNumber) {
+      maxNumber = number;
+    }
+  }
+
+  return maxNumber + 1;
 }
 
 function buildTicketPanel() {
@@ -701,15 +747,12 @@ client.on(Events.InteractionCreate, async interaction => {
 
       await interaction.deferReply({ ephemeral: true });
 
-      const safeName = interaction.user.username
-        .toLowerCase()
-        .replace(/[^a-z0-9-_]/g, '')
-        .slice(0, 20) || 'uzytkownik';
-
       const parentId = interaction.channel.parentId ?? undefined;
+      const baseName = getTicketChannelBaseName(selected, ticketType);
+      const ticketNumber = getNextTicketNumber(interaction.guild, baseName);
 
       const ticketChannel = await interaction.guild.channels.create({
-        name: `ticket-${safeName}`,
+        name: `${baseName}-${ticketNumber}`,
         type: ChannelType.GuildText,
         parent: parentId,
         topic: `ticketOwner:${interaction.user.id} | type:${selected}`,
