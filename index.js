@@ -19,10 +19,8 @@ const {
 
 const ping = require('./commands/ping');
 const warn = require('./commands/warn');
-const dodaj = require('./commands/dodaj');
 const dodajgang = require('./commands/dodajgang');
 const dodajorganizacje = require('./commands/dodajorganizacje');
-const usunorg = require('./commands/usunorg');
 const usungang = require('./commands/usungang');
 const usunorganizacje = require('./commands/usunorganizacje');
 const zawieszenie = require('./commands/zawieszenie');
@@ -132,10 +130,8 @@ const client = new Client({
 client.commands = new Collection();
 client.commands.set(ping.data.name, ping);
 client.commands.set(warn.data.name, warn);
-client.commands.set(dodaj.data.name, dodaj);
 client.commands.set(dodajgang.data.name, dodajgang);
 client.commands.set(dodajorganizacje.data.name, dodajorganizacje);
-client.commands.set(usunorg.data.name, usunorg);
 client.commands.set(usungang.data.name, usungang);
 client.commands.set(usunorganizacje.data.name, usunorganizacje);
 client.commands.set(zawieszenie.data.name, zawieszenie);
@@ -514,10 +510,8 @@ client.once(Events.ClientReady, async readyClient => {
     await guild.commands.set([
       ping.data.toJSON(),
       warn.data.toJSON(),
-      dodaj.data.toJSON(),
       dodajgang.data.toJSON(),
       dodajorganizacje.data.toJSON(),
-      usunorg.data.toJSON(),
       usungang.data.toJSON(),
       usunorganizacje.data.toJSON(),
       zawieszenie.data.toJSON(),
