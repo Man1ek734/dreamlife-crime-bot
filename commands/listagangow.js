@@ -12,24 +12,32 @@ const DEFAULT_GANGS = [
 ];
 
 const PANEL_TITLE = '📋 Lista gangów';
+const trackedRoleIds = new Set(DEFAULT_GANGS.map(gang => gang.roleId));
 
 function getGangMap(guild, panel, extraRole = null) {
   const gangs = new Map();
 
   for (const gang of DEFAULT_GANGS) {
     const role = guild.roles.cache.get(gang.roleId);
-    if (role) gangs.set(role.id, { name: gang.name, roleId: role.id });
+    if (role) {
+      gangs.set(role.id, { name: gang.name, roleId: role.id });
+      trackedRoleIds.add(role.id);
+    }
   }
 
   if (panel?.embeds?.[0]?.fields) {
     for (const field of panel.embeds[0].fields) {
       const role = guild.roles.cache.find(r => r.name === field.name);
-      if (role) gangs.set(role.id, { name: role.name, roleId: role.id });
+      if (role) {
+        gangs.set(role.id, { name: role.name, roleId: role.id });
+        trackedRoleIds.add(role.id);
+      }
     }
   }
 
   if (extraRole) {
     gangs.set(extraRole.id, { name: extraRole.name, roleId: extraRole.id });
+    trackedRoleIds.add(extraRole.id);
   }
 
   return [...gangs.values()];
@@ -118,6 +126,6 @@ module.exports = {
   },
 
   isTrackedRole(roleId) {
-    return DEFAULT_GANGS.some(gang => gang.roleId === roleId);
+    return trackedRoleIds.has(roleId);
   },
 };
