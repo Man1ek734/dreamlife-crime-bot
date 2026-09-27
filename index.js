@@ -39,6 +39,8 @@ const AUTO_ROLE_ID = '1437087476111114370';
 const APPEAL_INFO_CHANNEL_ID = '1437087480364011732';
 const APPEAL_TICKET_CHANNEL_ID = '1519136441563611346';
 const ORG_PENALTIES_CHANNEL_ID = '1519105017309696153';
+const STARTER_PACK_CHANNEL_ID = '1536012375314927666';
+const STARTER_PACK_ROLE_ID = '1517920262937645217';
 const ORGANIZACJA_PARENT_ROLE_ID = '1437206381856948334';
 const REACTION_ROLE_MAP = {
   // szara ikonka -> Organizacja Team
@@ -384,6 +386,51 @@ function buildTicketPanel() {
   };
 }
 
+async function ensureStarterPackPanel() {
+  try {
+    const channel = await client.channels.fetch(STARTER_PACK_CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) return;
+
+    const title = '🎁 Starter Pack dla Organizacji';
+
+    const embed = new EmbedBuilder()
+      .setTitle(title)
+      .setDescription(
+        '**Pakiet startowy dla nowych organizacji:**\n\n' +
+        '🚙 **x1 SUV**\n' +
+        '🚗 **x1 Sedan**\n' +
+        '💵 **100 000$**\n' +
+        '🔫 **x3 Pistolety** *(do wyboru)*\n' +
+        '📦 **x150 Amunicji**\n\n' +
+        '━━━━━━━━━━━━━━━━━━━━\n\n' +
+        '**📩 ODBIÓR STARTER PACKA**\n' +
+        'Aby odebrać Starter Pack, otwórz ticket na kanale <#1519136441563611346>.'
+      )
+      .setColor(0xed4245)
+      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+
+    const messages = await channel.messages.fetch({ limit: 50 }).catch(() => null);
+    const oldPanel = messages?.find(message =>
+      message.author.id === client.user.id &&
+      message.embeds.some(embed => embed.title === title)
+    );
+
+    if (oldPanel) {
+      await oldPanel.delete().catch(() => {});
+    }
+
+    await channel.send({
+      content: '<@&' + STARTER_PACK_ROLE_ID + '>',
+      embeds: [embed],
+      allowedMentions: { roles: [STARTER_PACK_ROLE_ID] },
+    });
+
+    console.log('Panel Starter Pack dla organizacji został wysłany.');
+  } catch (error) {
+    console.error('Błąd podczas tworzenia panelu Starter Pack:', error);
+  }
+}
+
 async function ensureOrganizationPenaltiesPanel() {
   try {
     const channel = await client.channels.fetch(ORG_PENALTIES_CHANNEL_ID);
@@ -532,6 +579,7 @@ client.once(Events.ClientReady, async readyClient => {
   await ensureReactionRolePanel();
   await ensureAppealInfoPanel();
   await ensureOrganizationPenaltiesPanel();
+  await ensureStarterPackPanel();
   await listagangow.updateGangList(readyClient);
   await listaorganizacji.updateOrganizationList(readyClient);
 });
