@@ -417,13 +417,15 @@ async function ensureStarterPackPanel() {
       .setColor(0xed4245)
       .setFooter({ text: 'DreamLife RolePlay © 2026' });
 
-    const messages = await channel.messages.fetch({ limit: 50 }).catch(() => null);
-    const oldPanel = messages?.find(message =>
-      message.author.id === client.user.id &&
-      message.embeds.some(embed => embed.title === title)
-    );
+    const messages = await channel.messages.fetch({ limit: 100 }).catch(() => null);
+    const oldPanels = messages
+      ? [...messages.values()].filter(message =>
+          message.author.id === client.user.id &&
+          message.embeds.some(embed => embed.title === title)
+        )
+      : [];
 
-    if (oldPanel) {
+    for (const oldPanel of oldPanels) {
       await oldPanel.delete().catch(() => {});
     }
 
@@ -433,7 +435,7 @@ async function ensureStarterPackPanel() {
       allowedMentions: { roles: [STARTER_PACK_ROLE_ID] },
     });
 
-    console.log('Panel Starter Pack dla organizacji został wysłany.');
+    console.log('Panel Starter Pack dla organizacji został wysłany ponownie bez duplikatów.');
   } catch (error) {
     console.error('Błąd podczas tworzenia panelu Starter Pack:', error);
   }
@@ -465,13 +467,15 @@ async function ensureGangStarterPackPanel() {
       .setColor(0xed4245)
       .setFooter({ text: 'DreamLife RolePlay © 2026' });
 
-    const messages = await channel.messages.fetch({ limit: 50 }).catch(() => null);
-    const oldPanel = messages?.find(message =>
-      message.author.id === client.user.id &&
-      message.embeds.some(embed => embed.title === title)
-    );
+    const messages = await channel.messages.fetch({ limit: 100 }).catch(() => null);
+    const oldPanels = messages
+      ? [...messages.values()].filter(message =>
+          message.author.id === client.user.id &&
+          message.embeds.some(embed => embed.title === title)
+        )
+      : [];
 
-    if (oldPanel) {
+    for (const oldPanel of oldPanels) {
       await oldPanel.delete().catch(() => {});
     }
 
@@ -481,7 +485,7 @@ async function ensureGangStarterPackPanel() {
       allowedMentions: { roles: [STARTER_PACK_ROLE_ID] },
     });
 
-    console.log('Panel Starter Pack Gangu został wysłany.');
+    console.log('Panel Starter Pack Gangu został wysłany ponownie bez duplikatów.');
   } catch (error) {
     console.error('Błąd podczas tworzenia panelu Starter Pack Gangu:', error);
   }
