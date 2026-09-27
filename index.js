@@ -35,6 +35,8 @@ const BOT_LOG_CHANNEL_ID = '1437087481542479904';
 const GUILD_ID = '1437087475704266928';
 const REACTION_ROLE_CHANNEL_ID = '1553474554125361262';
 const AUTO_ROLE_ID = '1437087476111114370';
+const APPEAL_INFO_CHANNEL_ID = '1437087480364011732';
+const APPEAL_TICKET_CHANNEL_ID = '1519136441563611346';
 const REACTION_ROLE_MAP = {
   // szara ikonka -> Organizacja Team
   '1553529625898909696': '1437087476140216331',
@@ -254,6 +256,40 @@ function buildTicketPanel() {
   };
 }
 
+async function ensureAppealInfoPanel() {
+  try {
+    const channel = await client.channels.fetch(APPEAL_INFO_CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) return;
+
+    const title = '📢 Odwołania od kar';
+    const embed = new EmbedBuilder()
+      .setTitle(title)
+      .setDescription(
+        'Odwołania od **warna** lub **zawieszenia** składaj tylko na kanale <#' +
+        APPEAL_TICKET_CHANNEL_ID +
+        '>.'
+      )
+      .setColor(0xed4245)
+      .setFooter({ text: 'DreamLifeRP Crime' });
+
+    const messages = await channel.messages.fetch({ limit: 50 }).catch(() => null);
+    const panel = messages?.find(message =>
+      message.author.id === client.user.id &&
+      message.embeds.some(e => e.title === title)
+    );
+
+    if (panel) {
+      await panel.edit({ embeds: [embed] });
+    } else {
+      await channel.send({ embeds: [embed] });
+    }
+
+    console.log('Panel informacji o odwołaniach jest gotowy.');
+  } catch (error) {
+    console.error('Błąd podczas tworzenia informacji o odwołaniach:', error);
+  }
+}
+
 async function ensureTicketPanel() {
   try {
     const channel = await client.channels.fetch(TICKET_PANEL_CHANNEL_ID);
@@ -307,6 +343,7 @@ client.once(Events.ClientReady, async readyClient => {
 
   await ensureTicketPanel();
   await ensureReactionRolePanel();
+  await ensureAppealInfoPanel();
   await listagangow.updateGangList(readyClient);
   await listaorganizacji.updateOrganizationList(readyClient);
 });
