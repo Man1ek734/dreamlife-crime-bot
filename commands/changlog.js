@@ -72,8 +72,8 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle('📋 CHANGELOG #' + nextNumber)
-      .setDescription(changelog)
+      .setTitle('📋 CHANGELOG')
+      .setDescription('# CHANGELOG #' + nextNumber + '\n\n' + changelog)
       .setColor(0xed4245)
       .setFooter({ text: 'Wprowadził: ' + interaction.user.tag })
       .setTimestamp();
