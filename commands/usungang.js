@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const listagangow = require('./listagangow');
 
 const AUTHORIZED_ROLE_IDS = ['1517965039670132796', '1465810885489725533'];
 const GANG_PARENT_ROLE_ID = '1437087475704266929';
@@ -53,7 +54,10 @@ module.exports = {
 
     try {
       await role.delete('Usunięto rangę gangu przez ' + interaction.user.tag + ' komendą /usungang');
-      await interaction.editReply('✅ Usunięto rangę **' + roleName + '**.');
+      await listagangow.updateGangList(interaction.client).catch(error => {
+        console.error('Nie udało się odświeżyć listy gangów po usunięciu:', error);
+      });
+      await interaction.editReply('✅ Usunięto rangę **' + roleName + '** i usunięto ją z listy gangów.');
     } catch (error) {
       console.error(error);
       await interaction.editReply('❌ Nie udało się usunąć tej rangi.');
