@@ -43,6 +43,7 @@ const STARTER_PACK_CHANNEL_ID = '1536012375314927666';
 const STARTER_PACK_ROLE_ID = '1437087476111114370';
 const GANG_STARTER_PACK_CHANNEL_ID = '1536012429866049606';
 const ORG_COLORS_CHANNEL_ID = '1524480689154691152';
+const GANG_COLORS_CHANNEL_ID = '1526702996690440292';
 const ORGANIZACJA_PARENT_ROLE_ID = '1437206381856948334';
 const REACTION_ROLE_MAP = {
   // szara ikonka -> Organizacja Team
@@ -519,6 +520,52 @@ async function ensureOrganizationColorsPanel() {
   }
 }
 
+async function ensureGangColorsPanel() {
+  try {
+    const channel = await client.channels.fetch(GANG_COLORS_CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) return;
+
+    const title = '🎨 Kolory Gangów';
+
+    const embed = new EmbedBuilder()
+      .setTitle(title)
+      .setDescription(
+        '**Przypisane kolory gangów:**\n\n' +
+        '🩶 **MS-13** — Jasnoszary\n' +
+        '└ HEX: `#BDBDBD`\n\n' +
+        '🔵 **Varrios Los Aztecas** — Granatowy\n' +
+        '└ HEX: `#1A237E`\n\n' +
+        '🔴 **Rollin 20s Bloods** — Czerwony\n' +
+        '└ HEX: `#E53935`\n\n' +
+        '🟣 **Ballas** — Fioletowy\n' +
+        '└ HEX: `#8E24AA`\n\n' +
+        '🟢 **The Famillies** — Zielony\n' +
+        '└ HEX: `#43A047`\n\n' +
+        '⚫ **The Lost MC** — Ciemny szary\n' +
+        '└ HEX: `#424242`\n\n' +
+        '━━━━━━━━━━━━━━━━━━━━\n' +
+        '*Każdy gang posiada swój indywidualny kolor.*'
+      )
+      .setColor(0xed4245)
+      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+
+    const messages = await channel.messages.fetch({ limit: 50 }).catch(() => null);
+    const oldPanel = messages?.find(message =>
+      message.author.id === client.user.id &&
+      message.embeds.some(embed => embed.title === title)
+    );
+
+    if (oldPanel) {
+      await oldPanel.delete().catch(() => {});
+    }
+
+    await channel.send({ embeds: [embed] });
+    console.log('Panel kolorów gangów został wysłany.');
+  } catch (error) {
+    console.error('Błąd podczas tworzenia panelu kolorów gangów:', error);
+  }
+}
+
 async function ensureOrganizationPenaltiesPanel() {
   try {
     const channel = await client.channels.fetch(ORG_PENALTIES_CHANNEL_ID);
@@ -670,6 +717,7 @@ client.once(Events.ClientReady, async readyClient => {
   await ensureStarterPackPanel();
   await ensureGangStarterPackPanel();
   await ensureOrganizationColorsPanel();
+  await ensureGangColorsPanel();
   await listagangow.updateGangList(readyClient);
   await listaorganizacji.updateOrganizationList(readyClient);
 });
