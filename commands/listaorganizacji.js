@@ -69,9 +69,29 @@ async function updateOrganizationList(client, extraRole = null, removedRoleId = 
     roleIds.delete(removedRoleId);
   }
 
-  const organizations = [...roleIds]
-    .map(roleId => channel.guild.roles.cache.get(roleId))
-    .filter(Boolean);
+  const organizations = [];
+
+  for (const roleId of roleIds) {
+    if (removedRoleId && roleId === removedRoleId) continue;
+
+    if (extraRole && roleId === extraRole.id) {
+      organizations.push(extraRole);
+      continue;
+    }
+
+    const role = await channel.guild.roles.fetch(roleId).catch(() => null);
+    if (role) {
+      organizations.push(role);
+    }
+  }
+
+  if (
+    extraRole &&
+    !removedRoleId &&
+    !organizations.some(role => role.id === extraRole.id)
+  ) {
+    organizations.push(extraRole);
+  }
 
   for (const panel of panels) {
     await panel.delete().catch(() => {});
