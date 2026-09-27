@@ -42,6 +42,7 @@ const AUTO_ROLE_ID = '1437087476111114370';
 const APPEAL_INFO_CHANNEL_ID = '1437087480364011732';
 const APPEAL_TICKET_CHANNEL_ID = '1519136441563611346';
 const ORG_PENALTIES_CHANNEL_ID = '1519105017309696153';
+const ORGANIZACJA_PARENT_ROLE_ID = '1437206381856948334';
 const REACTION_ROLE_MAP = {
   // szara ikonka -> Organizacja Team
   '1553529625898909696': '1437087476140216331',
@@ -809,6 +810,24 @@ client.on(Events.GuildRoleCreate, async role => {
     .setTimestamp();
 
   await sendBotLog(role.guild, embed);
+
+  setTimeout(async () => {
+    try {
+      const refreshedRole = await role.guild.roles.fetch(role.id).catch(() => null);
+      const parentRole = await role.guild.roles.fetch(ORGANIZACJA_PARENT_ROLE_ID).catch(() => null);
+
+      if (
+        refreshedRole &&
+        parentRole &&
+        refreshedRole.position === parentRole.position - 1
+      ) {
+        await listaorganizacji.registerOrganization(client, refreshedRole);
+        console.log('Lista organizacji odświeżona po utworzeniu roli:', refreshedRole.name);
+      }
+    } catch (error) {
+      console.error('Nie udało się automatycznie odświeżyć listy organizacji po utworzeniu roli:', error);
+    }
+  }, 2500);
 });
 
 client.on(Events.ChannelCreate, async channel => {
