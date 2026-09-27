@@ -55,7 +55,7 @@ module.exports = {
     try {
       await role.delete('Usunięto rangę organizacji przez ' + interaction.user.tag + ' komendą /usunorganizacje');
 
-      await listaorganizacji.updateOrganizationList(interaction.client).catch(error => {
+      await listaorganizacji.updateOrganizationList(interaction.client, role.id).catch(error => {
         console.error('Nie udało się odświeżyć listy organizacji po usunięciu:', error);
       });
 
