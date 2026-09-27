@@ -810,24 +810,26 @@ client.on(Events.GuildRoleCreate, async role => {
     .setTimestamp();
 
   await sendBotLog(role.guild, embed);
+});
 
-  setTimeout(async () => {
-    try {
-      const refreshedRole = await role.guild.roles.fetch(role.id).catch(() => null);
-      const parentRole = await role.guild.roles.fetch(ORGANIZACJA_PARENT_ROLE_ID).catch(() => null);
+client.on(Events.GuildRoleDelete, async role => {
+  const executor = await getAuditExecutor(role.guild, AuditLogEvent.RoleDelete, role.id);
 
-      if (
-        refreshedRole &&
-        parentRole &&
-        refreshedRole.position === parentRole.position - 1
-      ) {
-        await listaorganizacji.registerOrganization(client, refreshedRole);
-        console.log('Lista organizacji odświeżona po utworzeniu roli:', refreshedRole.name);
-      }
-    } catch (error) {
-      console.error('Nie udało się automatycznie odświeżyć listy organizacji po utworzeniu roli:', error);
-    }
-  }, 2500);
+  const embed = new EmbedBuilder()
+    .setTitle('🗑️ Usunięto rolę')
+    .addFields(
+      { name: 'Nazwa', value: `\`${role.name}\``, inline: true },
+      { name: 'ID roli', value: `\`${role.id}\``, inline: true },
+      { name: 'Usunął', value: executor ? `${executor}` : 'Nie udało się ustalić', inline: true }
+    )
+    .setColor(0xed4245)
+    .setTimestamp();
+
+  await sendBotLog(role.guild, embed);
+
+  await listaorganizacji.updateOrganizationList(client, role.id).catch(error => {
+    console.error('Nie udało się odświeżyć listy organizacji po usunięciu roli:', error);
+  });
 });
 
 client.on(Events.ChannelCreate, async channel => {
