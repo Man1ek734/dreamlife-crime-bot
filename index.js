@@ -504,6 +504,9 @@ client.once(Events.ClientReady, async readyClient => {
   console.log(`Zalogowano jako ${readyClient.user.tag}`);
 
   try {
+    await readyClient.application.commands.set([]);
+    console.log('Stare globalne komendy slash zostały wyczyszczone.');
+
     const guild = await readyClient.guilds.fetch(GUILD_ID);
     await guild.commands.set([
       ping.data.toJSON(),
