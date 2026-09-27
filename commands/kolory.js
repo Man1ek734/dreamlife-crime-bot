@@ -90,6 +90,19 @@ async function ensurePanel(client, type) {
   return channel.send({ embeds: [buildEmbed(config, config.defaults)] });
 }
 
+async function removeColor(client, type, roleName) {
+  const { channel, panel, config } = await getPanel(client, type);
+  if (!panel) return ensurePanel(client, type);
+
+  const entries = parseEntries(panel.embeds?.[0]?.description || '')
+    .filter(entry =>
+      entry.name.toLocaleLowerCase('pl-PL') !== roleName.toLocaleLowerCase('pl-PL')
+    );
+
+  await panel.edit({ embeds: [buildEmbed(config, entries)] });
+  return panel;
+}
+
 async function upsertColor(client, type, role, colorName, hex) {
   const normalizedHex = normalizeHex(hex);
   if (!normalizedHex) throw new Error('INVALID_HEX');
@@ -122,4 +135,5 @@ module.exports = {
   normalizeHex,
   ensurePanel,
   upsertColor,
+  removeColor,
 };
