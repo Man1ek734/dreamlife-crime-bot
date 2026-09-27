@@ -28,6 +28,7 @@ const changlog = require('./commands/changlog');
 const listagangow = require('./commands/listagangow');
 const listaorganizacji = require('./commands/listaorganizacji');
 const dodajrange = require('./commands/dodajrange');
+const dodajticket = require('./commands/dodajticket');
 
 const WELCOME_CHANNEL_ID = '1437087479089074303';
 const TICKET_PANEL_CHANNEL_ID = '1519136441563611346';
@@ -83,6 +84,26 @@ const TICKET_OPTIONS = {
     description: 'Kontakt z Mafia (IC)',
     emoji: '✉️',
   },
+  starterpack: {
+    label: 'Odbierz starterpack',
+    description: 'Odbierz starterpack',
+    emoji: '🎁',
+  },
+  cartel: {
+    label: 'Kontakt z Cartelem (IC)',
+    description: 'Kontakt z Cartelem (IC)',
+    emoji: '📨',
+  },
+  cartel_orders: {
+    label: 'Zamówienia do Cartelu',
+    description: 'Zamówienia do Cartelu',
+    emoji: '📦',
+  },
+  mafia_orders: {
+    label: 'Zamówienia do Mafii (IC)',
+    description: 'Zamówienia do Mafii (IC)',
+    emoji: '💼',
+  },
 };
 
 const client = new Client({
@@ -116,6 +137,7 @@ client.commands.set(changlog.data.name, changlog);
 client.commands.set(listagangow.data.name, listagangow);
 client.commands.set(listaorganizacji.data.name, listaorganizacji);
 client.commands.set(dodajrange.data.name, dodajrange);
+client.commands.set(dodajticket.data.name, dodajticket);
 
 const messageCache = new Map();
 
@@ -334,6 +356,7 @@ client.once(Events.ClientReady, async readyClient => {
       listagangow.data.toJSON(),
       listaorganizacji.data.toJSON(),
       dodajrange.data.toJSON(),
+      dodajticket.data.toJSON(),
     ]);
     console.log('Komendy slash zsynchronizowane.');
     await ensureAutoRoleForExistingMembers(guild);
