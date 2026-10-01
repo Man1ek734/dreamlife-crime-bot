@@ -75,7 +75,7 @@ module.exports = {
       .setTitle('📋 CHANGELOG')
       .setDescription('# CHANGELOG #' + nextNumber + '\n\n' + changelog)
       .setColor(0xed4245)
-      .setFooter({ text: 'Wprowadził: ' + interaction.user.tag })
+      .setFooter({ text: 'DreamLife RolePlay © 2026' })
       .setTimestamp();
 
     await interaction.reply({ embeds: [embed] });
