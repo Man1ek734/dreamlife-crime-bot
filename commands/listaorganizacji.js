@@ -35,7 +35,7 @@ function buildOrganizationEmbed(roles) {
       list
     )
     .setColor(0xed4245)
-    .setFooter({ text: 'DreamLife RolePlay © 2026 • Lista aktualizuje się automatycznie' })
+    .setFooter({ text: 'DreamLife RolePlay © 2026' })
     .setTimestamp();
 }
 
