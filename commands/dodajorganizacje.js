@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const listaorganizacji = require('./listaorganizacji');
+const kolory = require('./kolory');
 
 const AUTHORIZED_ROLE_IDS = ['1517965039670132796', '1465810885489725533'];
 const ORGANIZACJA_PARENT_ROLE_ID = '1437206381856948334';
@@ -80,6 +81,16 @@ module.exports = {
       }
 
       const hex = '#' + color.toString(16).padStart(6, '0').toUpperCase();
+
+      await kolory.upsertColor(
+        interaction.client,
+        'organization',
+        role,
+        kolory.inferColorName(hex),
+        hex
+      ).catch(error => {
+        console.error('Nie udało się dodać koloru organizacji do panelu:', error);
+      });
 
       await interaction.editReply(
         '✅ Utworzono rangę ' + role +
