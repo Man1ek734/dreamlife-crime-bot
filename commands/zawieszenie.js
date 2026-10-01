@@ -128,7 +128,7 @@ module.exports = {
         { name: 'Od kiedy:', value: from, inline: true },
         { name: 'Do kiedy:', value: to, inline: true }
       )
-      .setFooter({ text: 'Wystawił: ' + interaction.user.tag })
+      .setFooter({ text: 'DreamLife RolePlay © 2026' })
       .setTimestamp();
 
     await interaction.reply({
