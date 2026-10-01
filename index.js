@@ -439,9 +439,9 @@ async function ensureStarterPackPanel() {
     }
 
     const payload = {
-      content: '<@&' + STARTER_PACK_ROLE_ID + '>',
+      content: '',
       embeds: [embed],
-      allowedMentions: { roles: [STARTER_PACK_ROLE_ID] },
+      allowedMentions: { parse: [] },
     };
 
     if (mainPanel) {
@@ -497,9 +497,9 @@ async function ensureGangStarterPackPanel() {
     }
 
     const payload = {
-      content: '<@&' + STARTER_PACK_ROLE_ID + '>',
+      content: '',
       embeds: [embed],
-      allowedMentions: { roles: [STARTER_PACK_ROLE_ID] },
+      allowedMentions: { parse: [] },
     };
 
     if (mainPanel) {
@@ -660,7 +660,9 @@ async function ensureAppealInfoPanel() {
     const channel = await client.channels.fetch(APPEAL_INFO_CHANNEL_ID);
     if (!channel || !channel.isTextBased()) return;
 
-    const title = '📢 Odwołania od kar';
+    const title = '📢 Odwołania';
+    const oldTitle = '📢 Odwołania od kar';
+
     const embed = new EmbedBuilder()
       .setTitle(title)
       .setDescription(
@@ -672,10 +674,18 @@ async function ensureAppealInfoPanel() {
       .setFooter({ text: 'DreamLife RolePlay © 2026' });
 
     const messages = await channel.messages.fetch({ limit: 50 }).catch(() => null);
-    const panel = messages?.find(message =>
-      message.author.id === client.user.id &&
-      message.embeds.some(e => e.title === title)
-    );
+    const panels = messages
+      ? [...messages.values()].filter(message =>
+          message.author.id === client.user.id &&
+          message.embeds.some(e => e.title === title || e.title === oldTitle)
+        )
+      : [];
+
+    const panel = panels[0] || null;
+
+    for (const duplicate of panels.slice(1)) {
+      await duplicate.delete().catch(() => {});
+    }
 
     if (panel) {
       await panel.edit({ embeds: [embed] });
