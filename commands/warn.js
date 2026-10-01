@@ -119,7 +119,7 @@ module.exports = {
           reason,
         ].join('\n')
       )
-      .setFooter({ text: `Wystawił: ${interaction.user.tag}` })
+      .setFooter({ text: 'DreamLife RolePlay © 2026' })
       .setTimestamp();
 
     await interaction.reply({
