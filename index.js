@@ -288,17 +288,24 @@ async function ensureReactionRolePanel() {
     if (!channel || !channel.isTextBased()) return;
 
     const messages = await channel.messages.fetch({ limit: 50 });
-    let panel = messages.find(
+    const panels = [...messages.values()].filter(
       message =>
         message.author.id === client.user.id &&
         message.embeds.some(embed => embed.title === '<:org:1553529625898909696> Crime DreamLife Roleplay')
     );
 
-    if (panel) {
-      await panel.delete().catch(() => {});
+    let panel = panels[0] || null;
+
+    for (const duplicate of panels.slice(1)) {
+      await duplicate.delete().catch(() => {});
     }
 
-    panel = await channel.send({ embeds: [buildReactionRolePanel()] });
+    if (panel) {
+      await panel.edit({ embeds: [buildReactionRolePanel()] });
+    } else {
+      panel = await channel.send({ embeds: [buildReactionRolePanel()] });
+    }
+
     reactionRoleMessageId = panel.id;
 
     const oldGunReaction = panel.reactions.cache.get('🔫');
@@ -425,17 +432,25 @@ async function ensureStarterPackPanel() {
         )
       : [];
 
-    for (const oldPanel of oldPanels) {
-      await oldPanel.delete().catch(() => {});
+    const mainPanel = oldPanels[0] || null;
+
+    for (const duplicate of oldPanels.slice(1)) {
+      await duplicate.delete().catch(() => {});
     }
 
-    await channel.send({
+    const payload = {
       content: '<@&' + STARTER_PACK_ROLE_ID + '>',
       embeds: [embed],
       allowedMentions: { roles: [STARTER_PACK_ROLE_ID] },
-    });
+    };
 
-    console.log('Panel Starter Pack dla organizacji został wysłany ponownie bez duplikatów.');
+    if (mainPanel) {
+      await mainPanel.edit(payload);
+      console.log('Panel Starter Pack dla organizacji odświeżony bez resend.');
+    } else {
+      await channel.send(payload);
+      console.log('Panel Starter Pack dla organizacji utworzony.');
+    }
   } catch (error) {
     console.error('Błąd podczas tworzenia panelu Starter Pack:', error);
   }
@@ -475,17 +490,25 @@ async function ensureGangStarterPackPanel() {
         )
       : [];
 
-    for (const oldPanel of oldPanels) {
-      await oldPanel.delete().catch(() => {});
+    const mainPanel = oldPanels[0] || null;
+
+    for (const duplicate of oldPanels.slice(1)) {
+      await duplicate.delete().catch(() => {});
     }
 
-    await channel.send({
+    const payload = {
       content: '<@&' + STARTER_PACK_ROLE_ID + '>',
       embeds: [embed],
       allowedMentions: { roles: [STARTER_PACK_ROLE_ID] },
-    });
+    };
 
-    console.log('Panel Starter Pack Gangu został wysłany ponownie bez duplikatów.');
+    if (mainPanel) {
+      await mainPanel.edit(payload);
+      console.log('Panel Starter Pack Gangu odświeżony bez resend.');
+    } else {
+      await channel.send(payload);
+      console.log('Panel Starter Pack Gangu utworzony.');
+    }
   } catch (error) {
     console.error('Błąd podczas tworzenia panelu Starter Pack Gangu:', error);
   }
@@ -672,7 +695,7 @@ async function ensureTicketPanel() {
     if (!channel || !channel.isTextBased()) return;
 
     const messages = await channel.messages.fetch({ limit: 50 });
-    const existingPanel = messages.find(
+    const panels = [...messages.values()].filter(
       message =>
         message.author.id === client.user.id &&
         message.components.some(row =>
@@ -680,12 +703,19 @@ async function ensureTicketPanel() {
         )
     );
 
-    if (existingPanel) {
-      await existingPanel.delete().catch(() => {});
+    const existingPanel = panels[0] || null;
+
+    for (const duplicate of panels.slice(1)) {
+      await duplicate.delete().catch(() => {});
     }
 
-    await channel.send(buildTicketPanel());
-    console.log('Panel ticketów został wysłany ponownie.');
+    if (existingPanel) {
+      await existingPanel.edit(buildTicketPanel());
+      console.log('Panel ticketów odświeżony bez tworzenia nowej wiadomości.');
+    } else {
+      await channel.send(buildTicketPanel());
+      console.log('Panel ticketów utworzony.');
+    }
   } catch (error) {
     console.error('Błąd podczas tworzenia panelu ticketów:', error);
   }
