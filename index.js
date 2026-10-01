@@ -432,10 +432,8 @@ async function ensureStarterPackPanel() {
         )
       : [];
 
-    const mainPanel = oldPanels[0] || null;
-
-    for (const duplicate of oldPanels.slice(1)) {
-      await duplicate.delete().catch(() => {});
+    for (const oldPanel of oldPanels) {
+      await oldPanel.delete().catch(() => {});
     }
 
     const payload = {
@@ -444,13 +442,8 @@ async function ensureStarterPackPanel() {
       allowedMentions: { parse: [] },
     };
 
-    if (mainPanel) {
-      await mainPanel.edit(payload);
-      console.log('Panel Starter Pack dla organizacji odświeżony bez resend.');
-    } else {
-      await channel.send(payload);
-      console.log('Panel Starter Pack dla organizacji utworzony.');
-    }
+    await channel.send(payload);
+    console.log('Panel Starter Pack dla organizacji wysłany ponownie bez duplikatów.');
   } catch (error) {
     console.error('Błąd podczas tworzenia panelu Starter Pack:', error);
   }
@@ -490,10 +483,8 @@ async function ensureGangStarterPackPanel() {
         )
       : [];
 
-    const mainPanel = oldPanels[0] || null;
-
-    for (const duplicate of oldPanels.slice(1)) {
-      await duplicate.delete().catch(() => {});
+    for (const oldPanel of oldPanels) {
+      await oldPanel.delete().catch(() => {});
     }
 
     const payload = {
@@ -502,13 +493,8 @@ async function ensureGangStarterPackPanel() {
       allowedMentions: { parse: [] },
     };
 
-    if (mainPanel) {
-      await mainPanel.edit(payload);
-      console.log('Panel Starter Pack Gangu odświeżony bez resend.');
-    } else {
-      await channel.send(payload);
-      console.log('Panel Starter Pack Gangu utworzony.');
-    }
+    await channel.send(payload);
+    console.log('Panel Starter Pack Gangu wysłany ponownie bez duplikatów.');
   } catch (error) {
     console.error('Błąd podczas tworzenia panelu Starter Pack Gangu:', error);
   }
