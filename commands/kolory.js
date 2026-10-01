@@ -224,10 +224,13 @@ async function syncRole(client, type, oldRole, newRole) {
 
   const hex = normalizeHex(newRole.hexColor) || '#000000';
   const colorChanged = oldRole.color !== newRole.color;
+  const panelAlreadyHasNewHex = entries[index].hex === hex;
 
   entries[index] = {
     name: newRole.name,
-    colorName: colorChanged ? inferColorName(hex) : entries[index].colorName,
+    colorName: colorChanged && !panelAlreadyHasNewHex
+      ? inferColorName(hex)
+      : entries[index].colorName,
     hex,
   };
 
