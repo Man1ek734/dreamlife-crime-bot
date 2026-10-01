@@ -646,7 +646,7 @@ async function ensureAppealInfoPanel() {
         '>.'
       )
       .setColor(0xed4245)
-      .setFooter({ text: 'DreamLifeRP Crime' });
+      .setFooter({ text: 'DreamLife RolePlay © 2026' });
 
     const messages = await channel.messages.fetch({ limit: 50 }).catch(() => null);
     const panel = messages?.find(message =>
@@ -799,7 +799,7 @@ client.on(Events.GuildMemberAdd, async member => {
     )
     .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
     .setColor(0xed4245)
-    .setFooter({ text: `Jesteś ${member.guild.memberCount}. osobą na serwerze.` })
+    .setFooter({ text: 'DreamLife RolePlay © 2026' })
     .setTimestamp();
 
   try {
@@ -1003,6 +1003,41 @@ client.on(Events.GuildRoleCreate, async role => {
   await sendBotLog(role.guild, embed);
 });
 
+client.on(Events.GuildRoleUpdate, async (oldRole, newRole) => {
+  try {
+    const isGang =
+      listagangow.isTrackedRole(newRole.id) ||
+      await kolory.hasEntry(client, 'gang', oldRole.name) ||
+      await kolory.hasEntry(client, 'gang', newRole.name);
+
+    if (isGang) {
+      await kolory.syncRole(client, 'gang', oldRole, newRole).catch(error => {
+        console.error('Nie udało się zsynchronizować koloru gangu:', error);
+      });
+
+      await listagangow.updateGangList(client).catch(error => {
+        console.error('Nie udało się odświeżyć listy gangów po zmianie roli:', error);
+      });
+    }
+
+    const isOrganization =
+      await kolory.hasEntry(client, 'organization', oldRole.name) ||
+      await kolory.hasEntry(client, 'organization', newRole.name);
+
+    if (isOrganization) {
+      await kolory.syncRole(client, 'organization', oldRole, newRole).catch(error => {
+        console.error('Nie udało się zsynchronizować koloru organizacji:', error);
+      });
+
+      await listaorganizacji.updateOrganizationList(client).catch(error => {
+        console.error('Nie udało się odświeżyć listy organizacji po zmianie roli:', error);
+      });
+    }
+  } catch (error) {
+    console.error('Błąd automatycznej synchronizacji zmiany roli:', error);
+  }
+});
+
 client.on(Events.GuildRoleDelete, async role => {
   const executor = await getAuditExecutor(role.guild, AuditLogEvent.RoleDelete, role.id);
 
@@ -1017,6 +1052,29 @@ client.on(Events.GuildRoleDelete, async role => {
     .setTimestamp();
 
   await sendBotLog(role.guild, embed);
+
+  const wasGang =
+    listagangow.isTrackedRole(role.id) ||
+    await kolory.hasEntry(client, 'gang', role.name).catch(() => false);
+
+  if (wasGang) {
+    await kolory.removeColor(client, 'gang', role.name).catch(error => {
+      console.error('Nie udało się usunąć koloru gangu po usunięciu roli:', error);
+    });
+
+    await listagangow.updateGangList(client).catch(error => {
+      console.error('Nie udało się odświeżyć listy gangów po usunięciu roli:', error);
+    });
+  }
+
+  const wasOrganization =
+    await kolory.hasEntry(client, 'organization', role.name).catch(() => false);
+
+  if (wasOrganization) {
+    await kolory.removeColor(client, 'organization', role.name).catch(error => {
+      console.error('Nie udało się usunąć koloru organizacji po usunięciu roli:', error);
+    });
+  }
 
   await listaorganizacji.updateOrganizationList(client, role.id).catch(error => {
     console.error('Nie udało się odświeżyć listy organizacji po usunięciu roli:', error);
