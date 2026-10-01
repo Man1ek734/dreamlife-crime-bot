@@ -133,20 +133,26 @@ async function getPanel(client, type) {
 
 async function ensurePanel(client, type) {
   const { channel, panels, config } = await getPanel(client, type);
-  const sourcePanel = panels[0] || null;
-  const entries = sourcePanel
-    ? parseEntries(sourcePanel.embeds?.[0]?.description || '')
+  const mainPanel = panels[0] || null;
+  const entries = mainPanel
+    ? parseEntries(mainPanel.embeds?.[0]?.description || '')
     : [...config.defaults];
 
-  for (const panel of panels) {
-    await panel.delete().catch(() => {});
+  for (const duplicate of panels.slice(1)) {
+    await duplicate.delete().catch(() => {});
+  }
+
+  if (mainPanel) {
+    await mainPanel.edit({ embeds: [buildEmbed(config, entries)] });
+    console.log(config.title + ' odświeżony bez tworzenia nowej wiadomości.');
+    return mainPanel;
   }
 
   const newPanel = await channel.send({
     embeds: [buildEmbed(config, entries)],
   });
 
-  console.log(config.title + ' wysłany ponownie bez duplikatów.');
+  console.log(config.title + ' utworzony, bo nie było panelu.');
   return newPanel;
 }
 
