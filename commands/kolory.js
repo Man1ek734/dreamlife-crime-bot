@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 
-const REMOVED_COLOR_NAMES = new Set(['pety', 'peciki']);
+const REMOVED_COLOR_NAMES = new Set(['pety', 'peciki', 'the lost mc']);
 
 const COLOR_NAMES = new Map([
   ['#E53935', 'Czerwony'],
@@ -49,7 +49,6 @@ const CONFIG = {
       { name: 'Rollin 20s Bloods', colorName: 'Czerwony', hex: '#E53935' },
       { name: 'Ballas', colorName: 'Fioletowy', hex: '#8E24AA' },
       { name: 'The Famillies', colorName: 'Zielony', hex: '#43A047' },
-      { name: 'The Lost MC', colorName: 'Ciemny szary', hex: '#424242' },
     ],
   },
   organization: {
