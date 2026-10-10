@@ -806,10 +806,6 @@ Każda organizacja oraz każdy gracz prowadzący działalność przestępczą po
         .setDescription(sections[i])
         .setColor(0xed4245);
 
-      if (i === sections.length - 1) {
-        embed.setFooter({ text: 'DreamLife RolePlay © 2026' });
-      }
-
       await channel.send({ embeds: [embed] });
     }
 
