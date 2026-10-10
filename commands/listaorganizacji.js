@@ -2,10 +2,11 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 const CHANNEL_ID = '1437087479932129354';
 
-const DEFAULT_ORGANIZATIONS = [
-  { name: 'Rose Dominion', roleId: '1547700105325322380' },
-  { name: 'Arizona', roleId: '1549125879454761012' },
-];
+const DEFAULT_ORGANIZATIONS = [];
+const REMOVED_ORGANIZATION_ROLE_IDS = new Set([
+  '1547700105325322380',
+  '1549125879454761012',
+]);
 
 const PANEL_TITLE = '🏢 Lista organizacji';
 
@@ -58,10 +59,12 @@ async function updateOrganizationList(client, extraRole = null, removedRoleId = 
   const roleIds = new Set(DEFAULT_ORGANIZATIONS.map(org => org.roleId));
 
   for (const roleId of extractRoleIdsFromPanels(panels)) {
-    roleIds.add(roleId);
+    if (!REMOVED_ORGANIZATION_ROLE_IDS.has(roleId)) {
+      roleIds.add(roleId);
+    }
   }
 
-  if (extraRole) {
+  if (extraRole && !REMOVED_ORGANIZATION_ROLE_IDS.has(extraRole.id)) {
     roleIds.add(extraRole.id);
   }
 
