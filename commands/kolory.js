@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 
-const REMOVED_COLOR_NAMES = new Set(['pety', 'peciki', 'the lost mc']);
+const REMOVED_COLOR_NAMES = new Set(['pety', 'peciki', 'the lost mc', 'arizona', 'rose dominion']);
 
 const COLOR_NAMES = new Map([
   ['#E53935', 'Czerwony'],
@@ -56,10 +56,7 @@ const CONFIG = {
     title: '🎨 Kolory Organizacji',
     heading: '**Przypisane kolory organizacji:**',
     footer: '*Każda organizacja posiada swój indywidualny kolor.*',
-    defaults: [
-      { name: 'Rose Dominion', colorName: 'Pomarańczowy', hex: '#FB8C00' },
-      { name: 'Arizona', colorName: 'Jasnoniebieski', hex: '#64B5F6' },
-    ],
+    defaults: [],
   },
 };
 
