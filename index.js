@@ -48,6 +48,7 @@ const GANG_STARTER_PACK_CHANNEL_ID = '1536012429866049606';
 const ORG_COLORS_CHANNEL_ID = '1524480689154691152';
 const GANG_COLORS_CHANNEL_ID = '1526702996690440292';
 const ORGANIZACJA_PARENT_ROLE_ID = '1437206381856948334';
+const CRIME_RULES_CHANNEL_ID = '1437087479411769545';
 const REACTION_ROLE_MAP = {
   // czerwona ikonka -> Organizacja Team
   '1553529685110034615': '1437087476140216331',
@@ -584,6 +585,97 @@ async function ensureGangColorsPanel() {
   }
 }
 
+async function ensureCrimeGlossaryPanel() {
+  try {
+    const channel = await client.channels.fetch(CRIME_RULES_CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) return;
+
+    const titles = [
+      '§11. SŁOWNIK NAJWAŻNIEJSZYCH POJĘĆ',
+      '§11. SŁOWNIK — ciąg dalszy',
+      'POSTANOWIENIE KOŃCOWE',
+    ];
+
+    const messages = await channel.messages.fetch({ limit: 100 }).catch(() => null);
+    const oldPanels = messages
+      ? [...messages.values()].filter(message =>
+          message.author.id === client.user.id &&
+          message.embeds.some(embed => titles.includes(embed.title))
+        )
+      : [];
+
+    for (const oldPanel of oldPanels) {
+      await oldPanel.delete().catch(() => {});
+    }
+
+    const embed1 = new EmbedBuilder()
+      .setTitle('§11. SŁOWNIK NAJWAŻNIEJSZYCH POJĘĆ')
+      .setDescription(
+        '**11.1. RP (RolePlay)** – odgrywanie fikcyjnej postaci w świecie gry, zgodnie z jej charakterem, historią oraz zasadami serwera.\n\n' +
+        '**11.2. IC (In Character)** – wszystkie działania, rozmowy i informacje dotyczące bezpośrednio odgrywanej postaci oraz świata gry.\n\n' +
+        '**11.3. OOC (Out of Character)** – informacje, rozmowy i działania niezwiązane bezpośrednio z odgrywaną postacią.\n\n' +
+        '**11.4. MG (Metagaming)** – wykorzystywanie informacji zdobytych poza rozgrywką IC do uzyskania przewagi w grze.\n\n' +
+        '**11.5. PG (Powergaming)** – wymuszanie określonych działań lub rezultatów RP na innych graczach bez umożliwienia im odpowiedniej reakcji.\n\n' +
+        '**11.6. FailRP** – zachowanie niezgodne z zasadami realistycznego odgrywania postaci lub sytuacji.\n\n' +
+        '**11.7. FearRP** – obowiązek realistycznego odgrywania strachu o życie i zdrowie swojej postaci w sytuacjach zagrożenia.\n\n' +
+        '**11.8. RDM (Random Deathmatch)** – atakowanie lub zabijanie innych graczy bez odpowiedniego uzasadnienia fabularnego.\n\n' +
+        '**11.9. VDM (Vehicle Deathmatch)** – celowe wykorzystywanie pojazdu jako broni przeciwko innym graczom w sposób niezgodny z zasadami RP.\n\n' +
+        '**11.10. BW (Brutally Wounded)** – stan ciężkiego zranienia lub nieprzytomności postaci, wymagający odpowiedniego odegrania sytuacji.'
+      )
+      .setColor(0xed4245)
+      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+
+    const embed2 = new EmbedBuilder()
+      .setTitle('§11. SŁOWNIK — ciąg dalszy')
+      .setDescription(
+        '**11.11. CK (Character Kill)** – trwałe zakończenie historii postaci, zgodnie z zasadami obowiązującymi na serwerze.\n\n' +
+        '**11.12. FCK (Faction Character Kill)** – zakończenie historii postaci w ramach wątku organizacyjnego, na zasadach określonych przez serwer.\n\n' +
+        '**11.13. CL (Combat Logging)** – celowe opuszczanie serwera podczas akcji RP w celu uniknięcia jej konsekwencji.\n\n' +
+        '**11.14. NLR (New Life Rule)** – zasada dotycząca ograniczenia pamięci postaci o wydarzeniach poprzedzających jej odrodzenie, zgodnie z regulaminem serwera.\n\n' +
+        '**11.15. Inicjacja RP** – jednoznaczne rozpoczęcie konfliktu lub zagrożenia poprzez odpowiednie działania, komunikaty bądź zachowanie postaci.\n\n' +
+        '**11.16. Looting** – przeszukiwanie i zabieranie przedmiotów z ekwipunku innego gracza zgodnie z mechanikami i zasadami serwera.\n\n' +
+        '**11.17. Cop Baiting** – celowe prowokowanie funkcjonariuszy policji bez odpowiedniego powodu fabularnego, najczęściej w celu wywołania pościgu lub strzelaniny.\n\n' +
+        '**11.18. Revenge Kill (RK)** – dokonanie odwetu na graczu po zakończeniu poprzedniej akcji, z naruszeniem zasad pamięci postaci lub kontynuacji RP.'
+      )
+      .setColor(0xed4245)
+      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+
+    const embed3 = new EmbedBuilder()
+      .setTitle('§11. SŁOWNIK — ciąg dalszy')
+      .setDescription(
+        '**11.19. Stream Sniping** – wykorzystywanie transmisji na żywo innego gracza do zdobywania informacji i przewagi w rozgrywce.\n\n' +
+        '**11.20. Exploiting** – świadome wykorzystywanie błędów gry, skryptów lub mechanik serwera w celu uzyskania nieuczciwej przewagi.\n\n' +
+        '**11.21. Hostage RP** – rozgrywka fabularna związana z przetrzymywaniem zakładnika, prowadzeniem negocjacji i stawianiem żądań.\n\n' +
+        '**11.22. Drive-By** – ostrzał prowadzony z pojazdu, podlegający zasadom inicjacji i używania broni na serwerze.\n\n' +
+        '**11.23. Hard RP** – styl rozgrywki kładący szczególny nacisk na realizm, konsekwencje działań oraz rozwijanie historii postaci.\n\n' +
+        '**11.24. Crime** – część rozgrywki obejmująca działalność przestępczą, organizacje, napady, porwania i inne nielegalne działania fabularne.\n\n' +
+        '**11.25. Administracja Crime** – osoby odpowiedzialne za nadzorowanie działalności przestępczej, organizacji i przestrzegania Regulaminu Crime na DreamLife RolePlay.'
+      )
+      .setColor(0xed4245)
+      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+
+    const finalEmbed = new EmbedBuilder()
+      .setTitle('POSTANOWIENIE KOŃCOWE')
+      .setDescription(
+        'Celem Regulaminu Crime jest zapewnienie realistycznej, sprawiedliwej i angażującej rozgrywki przestępczej na serwerze **DreamLife RolePlay**.\n\n' +
+        'Każda organizacja oraz każdy gracz prowadzący działalność przestępczą powinien rozwijać fabułę serwera, tworzyć interesujące sytuacje RP i respektować zasady uczciwej rozgrywki.\n\n' +
+        '**Z poważaniem,**\n\n' +
+        '**Administracja Crime | DreamLife RolePlay**\n\n' +
+        '© 2026 DreamLife RolePlay'
+      )
+      .setColor(0xed4245);
+
+    await channel.send({ embeds: [embed1] });
+    await channel.send({ embeds: [embed2] });
+    await channel.send({ embeds: [embed3] });
+    await channel.send({ embeds: [finalEmbed] });
+
+    console.log('Słownik Regulaminu Crime został wysłany.');
+  } catch (error) {
+    console.error('Błąd podczas wysyłania słownika Regulaminu Crime:', error);
+  }
+}
+
 async function ensureOrganizationPenaltiesPanel() {
   try {
     const channel = await client.channels.fetch(ORG_PENALTIES_CHANNEL_ID);
@@ -751,6 +843,7 @@ client.once(Events.ClientReady, async readyClient => {
   await ensureReactionRolePanel();
   await ensureAppealInfoPanel();
   await ensureOrganizationPenaltiesPanel();
+  await ensureCrimeGlossaryPanel();
   await ensureStarterPackPanel();
   await ensureGangStarterPackPanel();
   await kolory.ensurePanel(readyClient, 'organization');
