@@ -585,22 +585,25 @@ async function ensureGangColorsPanel() {
   }
 }
 
-async function ensureCrimeGlossaryPanel() {
+async function ensureCrimeRulesPanel() {
   try {
     const channel = await client.channels.fetch(CRIME_RULES_CHANNEL_ID);
     if (!channel || !channel.isTextBased()) return;
 
-    const titles = [
+    const oldTitles = new Set([
       '§11. SŁOWNIK NAJWAŻNIEJSZYCH POJĘĆ',
       '§11. SŁOWNIK — ciąg dalszy',
       'POSTANOWIENIE KOŃCOWE',
-    ];
+      '📕 REGULAMIN CRIME',
+      '📕 REGULAMIN CRIME — 2/3',
+      '📕 REGULAMIN CRIME — 3/3',
+    ]);
 
     const messages = await channel.messages.fetch({ limit: 100 }).catch(() => null);
     const oldPanels = messages
       ? [...messages.values()].filter(message =>
           message.author.id === client.user.id &&
-          message.embeds.some(embed => titles.includes(embed.title))
+          message.embeds.some(embed => oldTitles.has(embed.title))
         )
       : [];
 
@@ -608,71 +611,34 @@ async function ensureCrimeGlossaryPanel() {
       await oldPanel.delete().catch(() => {});
     }
 
-    const embed1 = new EmbedBuilder()
-      .setTitle('§11. SŁOWNIK NAJWAŻNIEJSZYCH POJĘĆ')
-      .setDescription(
-        '**11.1. RP (RolePlay)** – odgrywanie fikcyjnej postaci w świecie gry, zgodnie z jej charakterem, historią oraz zasadami serwera.\n\n' +
-        '**11.2. IC (In Character)** – wszystkie działania, rozmowy i informacje dotyczące bezpośrednio odgrywanej postaci oraz świata gry.\n\n' +
-        '**11.3. OOC (Out of Character)** – informacje, rozmowy i działania niezwiązane bezpośrednio z odgrywaną postacią.\n\n' +
-        '**11.4. MG (Metagaming)** – wykorzystywanie informacji zdobytych poza rozgrywką IC do uzyskania przewagi w grze.\n\n' +
-        '**11.5. PG (Powergaming)** – wymuszanie określonych działań lub rezultatów RP na innych graczach bez umożliwienia im odpowiedniej reakcji.\n\n' +
-        '**11.6. FailRP** – zachowanie niezgodne z zasadami realistycznego odgrywania postaci lub sytuacji.\n\n' +
-        '**11.7. FearRP** – obowiązek realistycznego odgrywania strachu o życie i zdrowie swojej postaci w sytuacjach zagrożenia.\n\n' +
-        '**11.8. RDM (Random Deathmatch)** – atakowanie lub zabijanie innych graczy bez odpowiedniego uzasadnienia fabularnego.\n\n' +
-        '**11.9. VDM (Vehicle Deathmatch)** – celowe wykorzystywanie pojazdu jako broni przeciwko innym graczom w sposób niezgodny z zasadami RP.\n\n' +
-        '**11.10. BW (Brutally Wounded)** – stan ciężkiego zranienia lub nieprzytomności postaci, wymagający odpowiedniego odegrania sytuacji.'
-      )
-      .setColor(0xed4245)
-      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+    const parts = [
+      {
+        title: '📕 REGULAMIN CRIME',
+        description: "# REGULAMIN CRIME\n### DreamLife RolePlay\n\n**WAŻNE INFORMACJE**\n\nNiniejszy regulamin obowiązuje wszystkich graczy prowadzących działalność przestępczą na serwerze **DreamLife RolePlay**.\n\nNieznajomość regulaminu nie zwalnia z obowiązku jego przestrzegania. Każdy gracz zobowiązany jest również do przestrzegania Regulaminu Głównego serwera.\n\nAdministracja Crime rozpatruje naruszenia indywidualnie, uwzględniając dostępne dowody, przebieg akcji oraz kontekst fabularny.\n\n## §1. POSTANOWIENIA OGÓLNE\n\n**1.1.** Każda akcja przestępcza musi posiadać logiczne uzasadnienie fabularne (IC) oraz być zgodna z charakterem odgrywanej postaci.\n\n**1.2.** Zabrania się Metagamingu, Powergamingu, FailRP oraz nieprzestrzegania zasad FearRP.\n\n**1.3.** Każdy gracz zobowiązany jest do poszanowania życia i zdrowia swojej postaci oraz realistycznego reagowania na zagrożenie.\n\n**1.4.** Zabrania się bezpodstawnego prowokowania służb porządkowych i innych graczy wyłącznie w celu wywołania pościgu lub strzelaniny.\n\n**1.5.** Każdy uczestnik akcji zobowiązany jest do umożliwienia drugiej stronie odpowiedniej interakcji RP.\n\n**1.6.** Zabrania się celowego wykorzystywania mechanik serwera w sposób sprzeczny z ich przeznaczeniem.\n\n**1.7.** Administracja ma prawo przerwać akcję w przypadku rażącego naruszenia regulaminu lub wystąpienia poważnych problemów technicznych.\n\n## §2. ORGANIZACJE PRZESTĘPCZE\n\n**2.1.** Utworzenie oficjalnej organizacji przestępczej wymaga akceptacji Administracji Crime.\n\n**2.2.** Lider organizacji odpowiada za jej funkcjonowanie, przestrzeganie regulaminu przez członków oraz utrzymywanie odpowiedniego poziomu RP.\n\n**2.3.** Każda organizacja powinna posiadać określony charakter działalności, strukturę oraz własną historię fabularną.\n\n**2.4.** Konflikty pomiędzy organizacjami muszą wynikać z wydarzeń IC i posiadać uzasadnienie fabularne.\n\n**2.5.** Zabrania się rozpoczynania wojen organizacyjnych wyłącznie w celu zdobywania broni, pieniędzy lub wyposażenia przeciwników.\n\n**2.6.** Organizacje mogą zawierać sojusze i prowadzić wspólne interesy, pod warunkiem przestrzegania zasad serwera.\n\n**2.7.** Zabrania się wykorzystywania nowych graczy wyłącznie jako uczestników walk bez zapewnienia im możliwości rozwijania własnego RP.\n\n**2.8.** Podszywanie się pod inną organizację wymaga odpowiedniego uzasadnienia IC i nie może służyć obchodzeniu regulaminu.\n\n**2.9.** Organizacje zobowiązane są do rozwijania swojej historii poprzez różnorodne działania RP, a nie wyłącznie napady i strzelaniny.\n\n## §3. NAPADY I RABUNKI\n\n**3.1.** Każdy napad musi zostać przeprowadzony w sposób realistyczny, z wykorzystaniem odpowiednich mechanik serwera.\n\n**3.2.** Zabrania się organizowania napadów wyłącznie w celu sprowokowania strzelaniny z policją.\n\n**3.3.** Żądania przedstawiane podczas negocjacji muszą być realistyczne, adekwatne do sytuacji oraz możliwe do spełnienia.\n\n**3.4.** Zabrania się wykorzystywania podstawionych zakładników, którzy dobrowolnie uczestniczą w napadzie w celu uzyskania korzyści negocjacyjnych.\n\n**3.5.** Zabrania się bezpodstawnego zabijania zakładników. Każde użycie przemocy musi wynikać z przebiegu sytuacji RP.\n\n**3.6.** Obie strony mają obowiązek prowadzenia negocjacji w sposób umożliwiający rozwój akcji RP.\n\n**3.7.** Ustalenia negocjacyjne powinny być respektowane przez obie strony, chyba że dalszy przebieg sytuacji IC uzasadnia ich zmianę."
+      },
+      {
+        title: '📕 REGULAMIN CRIME — 2/3',
+        description: "**3.8.** Zabrania się rozpoczynania kolejnego napadu wyłącznie w celu kontynuowania zakończonej strzelaniny.\n\n## §4. PORWANIA I ZAKŁADNICY\n\n**4.1.** Każde porwanie musi posiadać konkretny cel fabularny oraz odpowiednie uzasadnienie IC.\n\n**4.2.** Zabrania się porywania graczy wyłącznie dla zabawy, utrudniania rozgrywki lub bez uzasadnionego powodu.\n\n**4.3.** Zabrania się wielokrotnego porywania tej samej osoby w krótkim czasie bez odpowiedniej kontynuacji fabularnej.\n\n**4.4.** Osoba porwana zobowiązana jest do przestrzegania zasad FearRP i realistycznego odgrywania zagrożenia.\n\n**4.5.** Porywający zobowiązani są do aktywnego prowadzenia akcji RP. Zabrania się bezcelowego przetrzymywania gracza przez nadmiernie długi czas.\n\n**4.6.** Zabrania się wymuszania informacji, których postać nie posiada lub które zostały uzyskane w sposób OOC.\n\n**4.7.** Porwanie funkcjonariusza służb porządkowych wymaga odpowiedniego uzasadnienia fabularnego.\n\n**4.8.** Zabrania się porywania funkcjonariuszy wyłącznie w celu zdobycia ich wyposażenia służbowego.\n\n**4.9.** Zakładnicy muszą mieć możliwość aktywnego uczestniczenia w przebiegu akcji RP.\n\n## §5. INICJACJE I STRZELANINY\n\n**5.1.** Użycie broni przeciwko innemu graczowi wymaga odpowiedniej inicjacji RP lub bezpośredniego zagrożenia życia wynikającego z trwającej akcji.\n\n**5.2.** Inicjacja musi być jednoznaczna, zrozumiała i możliwa do odebrania przez drugą stronę. Należy zapewnić realną możliwość reakcji, jeśli pozwala na to sytuacja.\n\n**5.3.** Obowiązuje bezwzględny zakaz Random Deathmatch (RDM) oraz Vehicle Deathmatch (VDM).\n\n**5.4.** Zabrania się powrotu do tej samej akcji po odrodzeniu postaci w szpitalu lub zakończeniu jej udziału w akcji wskutek BW.\n\n**5.5.** Dołączenie do trwającej strzelaniny wymaga odpowiedniego powiązania IC z wydarzeniem. Zabrania się wykorzystywania informacji OOC do dołączania do akcji.\n\n**5.6.** Sama przynależność do wrogiej organizacji nie stanowi wystarczającego powodu do otwarcia ognia.\n\n**5.7.** Zabrania się rozpoczynania strzelanin wyłącznie w celu zdobywania ekwipunku przeciwników.\n\n**5.8.** Zabrania się wykorzystywania błędów animacji, tekstur oraz mechanik gry do uzyskiwania przewagi podczas walki.\n\n**5.9.** Konflikty powinny być rozwijane również poprzez negocjacje, groźby IC i inne formy RP, a nie wyłącznie poprzez wymianę ognia.\n\n## §6. INTERAKCJE Z POLICJĄ\n\n**6.1.** Zabrania się bezpodstawnego prowokowania funkcjonariuszy w celu wywołania pościgu lub strzelaniny.\n\n**6.2.** Rutynowa kontrola drogowa nie stanowi sama w sobie wystarczającego powodu do otwarcia ognia w kierunku funkcjonariuszy.\n\n**6.3.** Ucieczki przed policją muszą być prowadzone realistycznie, z uwzględnieniem możliwości pojazdu, jego uszkodzeń oraz warunków drogowych.\n\n**6.4.** Zabrania się wykorzystywania błędów mapy, niedostępnych obszarów i nierealistycznych manewrów w celu uniknięcia zatrzymania.\n\n**6.5.** Atak na funkcjonariusza musi posiadać odpowiednie uzasadnienie IC wynikające z przebiegu akcji.\n\n**6.6.** Zabrania się celowego wywoływania kolejnych interwencji policyjnych wyłącznie w celu prowadzenia ciągłych starć.\n\n**6.7.** Podczas zatrzymań i interwencji obie strony zobowiązane są do przestrzegania zasad FearRP oraz zakazu Powergamingu.\n\n## §7. KRADZIEŻE I PRZESZUKANIA\n\n**7.1.** Każda kradzież lub rabunek innego gracza musi posiadać uzasadnienie fabularne oraz zostać odpowiednio odegrana."
+      },
+      {
+        title: '📕 REGULAMIN CRIME — 3/3',
+        description: "**7.2.** Zabrania się masowego i bezpodstawnego okradania przypadkowych osób wyłącznie w celu zdobywania pieniędzy lub przedmiotów.\n\n**7.3.** Zabrania się zmuszania graczy do wypłacania pieniędzy z bankomatów, kont bankowych lub przekazywania majątku poza dozwolonymi mechanikami serwera.\n\n**7.4.** Zabrania się żądania przedmiotów, których postać nie posiada przy sobie.\n\n**7.5.** Przeszukanie gracza musi wynikać z prowadzonej sytuacji RP i odbywać się zgodnie z mechanikami serwera.\n\n**7.6.** Zabrania się wielokrotnego rabowania tej samej osoby bez odpowiedniego uzasadnienia IC.\n\n## §8. TERENY ORGANIZACJI\n\n**8.1.** Organizacje przestępcze mogą posiadać własne tereny, siedziby, kryjówki oraz magazyny.\n\n**8.2.** Wtargnięcie na teren innej organizacji może być powodem rozpoczęcia konfliktu IC, jednak nie daje automatycznego prawa do otwarcia ognia.\n\n**8.3.** Zabrania się przeprowadzania bezpodstawnych ataków na siedziby innych organizacji.\n\n**8.4.** Ataki na bazy, magazyny i kryjówki muszą wynikać z rozwiniętego konfliktu fabularnego.\n\n**8.5.** Przejmowanie terenów organizacyjnych musi odbywać się zgodnie z zasadami ustalonymi przez Administrację Crime.\n\n**8.6.** Zabrania się wykorzystywania błędów mapy i niedostępnych pomieszczeń w celu uzyskania przewagi.\n\n## §9. FAIR PLAY I KWESTIE TECHNICZNE\n\n**9.1.** Obowiązuje bezwzględny zakaz korzystania z cheatów, niedozwolonych skryptów oraz modyfikacji zapewniających nieuczciwą przewagę.\n\n**9.2.** Zabrania się wykorzystywania błędów gry, duplikowania przedmiotów oraz obchodzenia mechanik serwera.\n\n**9.3.** Zabrania się Combat Loggingu, czyli celowego opuszczania serwera podczas akcji RP w celu uniknięcia jej konsekwencji.\n\n**9.4.** W przypadku awarii gry podczas trwającej akcji należy, o ile to możliwe, niezwłocznie powrócić na serwer i poinformować uczestników o sytuacji.\n\n**9.5.** Zabrania się przenoszenia konfliktów IC do komunikacji OOC oraz wykorzystywania sporów OOC w rozgrywce IC.\n\n**9.6.** Każdy gracz zobowiązany jest do zachowania kultury osobistej w komunikacji OOC.\n\n**9.7.** Zabrania się celowego utrudniania rozgrywki innym graczom oraz świadomego wykorzystywania luk w regulaminie.\n\n## §10. KARY I POSTANOWIENIA KOŃCOWE\n\n**10.1.** Naruszenie regulaminu może skutkować ostrzeżeniem, karą administracyjną, czasową blokadą dostępu do Crime lub innymi sankcjami przewidzianymi w Regulaminie Głównym.\n\n**10.2.** Poważne lub powtarzające się naruszenia mogą skutkować ostrzeżeniem organizacyjnym, zawieszeniem działalności lub rozwiązaniem organizacji.\n\n**10.3.** Administracja Crime rozpatruje zgłoszenia indywidualnie, uwzględniając przedstawione dowody, przebieg akcji i okoliczności zdarzenia.\n\n**10.4.** Każdy gracz ma prawo odwołać się od nałożonej kary za pośrednictwem oficjalnego systemu odwołań DreamLife RolePlay.\n\n**10.5.** Administracja zastrzega sobie prawo do aktualizowania regulaminu, informując społeczność o istotnych zmianach.\n\n**10.6.** W sprawach nieuregulowanych niniejszym dokumentem zastosowanie ma Regulamin Główny DreamLife RolePlay.\n\n## POSTANOWIENIE KOŃCOWE\n\nCelem Regulaminu Crime jest zapewnienie realistycznej, sprawiedliwej i angażującej rozgrywki przestępczej na serwerze **DreamLife RolePlay**.\n\nKażda organizacja oraz każdy gracz prowadzący działalność przestępczą powinien rozwijać fabułę serwera, tworzyć interesujące sytuacje RP i respektować zasady uczciwej rozgrywki.\n\n**Z poważaniem,**\n\n**Administracja Crime | DreamLife RolePlay**\n\n© 2026 DreamLife RolePlay"
+      },
+    ];
 
-    const embed2 = new EmbedBuilder()
-      .setTitle('§11. SŁOWNIK — ciąg dalszy')
-      .setDescription(
-        '**11.11. CK (Character Kill)** – trwałe zakończenie historii postaci, zgodnie z zasadami obowiązującymi na serwerze.\n\n' +
-        '**11.12. FCK (Faction Character Kill)** – zakończenie historii postaci w ramach wątku organizacyjnego, na zasadach określonych przez serwer.\n\n' +
-        '**11.13. CL (Combat Logging)** – celowe opuszczanie serwera podczas akcji RP w celu uniknięcia jej konsekwencji.\n\n' +
-        '**11.14. NLR (New Life Rule)** – zasada dotycząca ograniczenia pamięci postaci o wydarzeniach poprzedzających jej odrodzenie, zgodnie z regulaminem serwera.\n\n' +
-        '**11.15. Inicjacja RP** – jednoznaczne rozpoczęcie konfliktu lub zagrożenia poprzez odpowiednie działania, komunikaty bądź zachowanie postaci.\n\n' +
-        '**11.16. Looting** – przeszukiwanie i zabieranie przedmiotów z ekwipunku innego gracza zgodnie z mechanikami i zasadami serwera.\n\n' +
-        '**11.17. Cop Baiting** – celowe prowokowanie funkcjonariuszy policji bez odpowiedniego powodu fabularnego, najczęściej w celu wywołania pościgu lub strzelaniny.\n\n' +
-        '**11.18. Revenge Kill (RK)** – dokonanie odwetu na graczu po zakończeniu poprzedniej akcji, z naruszeniem zasad pamięci postaci lub kontynuacji RP.'
-      )
-      .setColor(0xed4245)
-      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+    for (const part of parts) {
+      const embed = new EmbedBuilder()
+        .setTitle(part.title)
+        .setDescription(part.description)
+        .setColor(0xed4245)
+        .setFooter({ text: 'DreamLife RolePlay © 2026' });
 
-    const embed3 = new EmbedBuilder()
-      .setTitle('§11. SŁOWNIK — ciąg dalszy')
-      .setDescription(
-        '**11.19. Stream Sniping** – wykorzystywanie transmisji na żywo innego gracza do zdobywania informacji i przewagi w rozgrywce.\n\n' +
-        '**11.20. Exploiting** – świadome wykorzystywanie błędów gry, skryptów lub mechanik serwera w celu uzyskania nieuczciwej przewagi.\n\n' +
-        '**11.21. Hostage RP** – rozgrywka fabularna związana z przetrzymywaniem zakładnika, prowadzeniem negocjacji i stawianiem żądań.\n\n' +
-        '**11.22. Drive-By** – ostrzał prowadzony z pojazdu, podlegający zasadom inicjacji i używania broni na serwerze.\n\n' +
-        '**11.23. Hard RP** – styl rozgrywki kładący szczególny nacisk na realizm, konsekwencje działań oraz rozwijanie historii postaci.\n\n' +
-        '**11.24. Crime** – część rozgrywki obejmująca działalność przestępczą, organizacje, napady, porwania i inne nielegalne działania fabularne.\n\n' +
-        '**11.25. Administracja Crime** – osoby odpowiedzialne za nadzorowanie działalności przestępczej, organizacji i przestrzegania Regulaminu Crime na DreamLife RolePlay.'
-      )
-      .setColor(0xed4245)
-      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+      await channel.send({ embeds: [embed] });
+    }
 
-    const finalEmbed = new EmbedBuilder()
-      .setTitle('POSTANOWIENIE KOŃCOWE')
-      .setDescription(
-        'Celem Regulaminu Crime jest zapewnienie realistycznej, sprawiedliwej i angażującej rozgrywki przestępczej na serwerze **DreamLife RolePlay**.\n\n' +
-        'Każda organizacja oraz każdy gracz prowadzący działalność przestępczą powinien rozwijać fabułę serwera, tworzyć interesujące sytuacje RP i respektować zasady uczciwej rozgrywki.\n\n' +
-        '**Z poważaniem,**\n\n' +
-        '**Administracja Crime | DreamLife RolePlay**\n\n' +
-        '© 2026 DreamLife RolePlay'
-      )
-      .setColor(0xed4245);
-
-    await channel.send({ embeds: [embed1] });
-    await channel.send({ embeds: [embed2] });
-    await channel.send({ embeds: [embed3] });
-    await channel.send({ embeds: [finalEmbed] });
-
-    console.log('Słownik Regulaminu Crime został wysłany.');
+    console.log('Pełny Regulamin Crime został wysłany.');
   } catch (error) {
-    console.error('Błąd podczas wysyłania słownika Regulaminu Crime:', error);
+    console.error('Błąd podczas wysyłania Regulaminu Crime:', error);
   }
 }
 
@@ -843,7 +809,7 @@ client.once(Events.ClientReady, async readyClient => {
   await ensureReactionRolePanel();
   await ensureAppealInfoPanel();
   await ensureOrganizationPenaltiesPanel();
-  await ensureCrimeGlossaryPanel();
+  await ensureCrimeRulesPanel();
   await ensureStarterPackPanel();
   await ensureGangStarterPackPanel();
   await kolory.ensurePanel(readyClient, 'organization');
