@@ -801,11 +801,14 @@ Każda organizacja oraz każdy gracz prowadzący działalność przestępczą po
 © 2026 DreamLife RolePlay`,
     ];
 
-    for (const description of sections) {
+    for (let i = 0; i < sections.length; i++) {
       const embed = new EmbedBuilder()
-        .setDescription(description)
-        .setColor(0xed4245)
-        .setFooter({ text: 'DreamLife RolePlay © 2026' });
+        .setDescription(sections[i])
+        .setColor(0xed4245);
+
+      if (i === sections.length - 1) {
+        embed.setFooter({ text: 'DreamLife RolePlay © 2026' });
+      }
 
       await channel.send({ embeds: [embed] });
     }
