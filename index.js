@@ -618,7 +618,7 @@ Niniejszy regulamin obowiązuje wszystkich graczy prowadzących działalność p
 
 Nieznajomość regulaminu nie zwalnia z obowiązku jego przestrzegania. Każdy gracz zobowiązany jest również do przestrzegania Regulaminu Głównego serwera.
 
-Administracja Crime rozpatruje naruszenia indywidualnie, uwzględniając dostępne dowody, przebieg akcji oraz kontekst fabularny.`,
+Opiekun Crime rozpatruje naruszenia indywidualnie, uwzględniając dostępne dowody, przebieg akcji oraz kontekst fabularny.`,
 
       `## §1. POSTANOWIENIA OGÓLNE
 
@@ -634,11 +634,13 @@ Administracja Crime rozpatruje naruszenia indywidualnie, uwzględniając dostęp
 
 **1.6.** Zabrania się celowego wykorzystywania mechanik serwera w sposób sprzeczny z ich przeznaczeniem.
 
-**1.7.** Administracja ma prawo przerwać akcję w przypadku rażącego naruszenia regulaminu lub wystąpienia poważnych problemów technicznych.`,
+**1.7.** Zabrania się prowadzenia działalności Crime podczas noszenia stroju roboczego z legalnej pracy.
+
+**1.8.** Administracja ma prawo przerwać akcję w przypadku rażącego naruszenia regulaminu lub wystąpienia poważnych problemów technicznych.`,
 
       `## §2. ORGANIZACJE PRZESTĘPCZE
 
-**2.1.** Utworzenie oficjalnej organizacji przestępczej wymaga akceptacji Administracji Crime.
+**2.1.** Utworzenie oficjalnej organizacji przestępczej wymaga akceptacji Opiekuna Crime.
 
 **2.2.** Lider organizacji odpowiada za jej funkcjonowanie, przestrzeganie regulaminu przez członków oraz utrzymywanie odpowiedniego poziomu RP.
 
@@ -654,7 +656,9 @@ Administracja Crime rozpatruje naruszenia indywidualnie, uwzględniając dostęp
 
 **2.8.** Podszywanie się pod inną organizację wymaga odpowiedniego uzasadnienia IC i nie może służyć obchodzeniu regulaminu.
 
-**2.9.** Organizacje zobowiązane są do rozwijania swojej historii poprzez różnorodne działania RP, a nie wyłącznie napady i strzelaniny.`,
+**2.9.** Organizacje zobowiązane są do rozwijania swojej historii poprzez różnorodne działania RP, a nie wyłącznie napady i strzelaniny.
+
+**2.10.** Organizacje niezatwierdzone przez Opiekuna Crime mogą uczestniczyć w akcjach hostylnych w maksymalnie 5 osób.`,
 
       `## §3. NAPADY I RABUNKI
 
@@ -672,7 +676,9 @@ Administracja Crime rozpatruje naruszenia indywidualnie, uwzględniając dostęp
 
 **3.7.** Ustalenia negocjacyjne powinny być respektowane przez obie strony, chyba że dalszy przebieg sytuacji IC uzasadnia ich zmianę.
 
-**3.8.** Zabrania się rozpoczynania kolejnego napadu wyłącznie w celu kontynuowania zakończonej strzelaniny.`,
+**3.8.** Zabrania się rozpoczynania kolejnego napadu wyłącznie w celu kontynuowania zakończonej strzelaniny.
+
+**3.9.** Podczas napadów obowiązują limity uczestników określone w §10.`,
 
       `## §4. PORWANIA I ZAKŁADNICY
 
@@ -680,39 +686,49 @@ Administracja Crime rozpatruje naruszenia indywidualnie, uwzględniając dostęp
 
 **4.2.** Zabrania się porywania graczy wyłącznie dla zabawy, utrudniania rozgrywki lub bez uzasadnionego powodu.
 
-**4.3.** Zabrania się wielokrotnego porywania tej samej osoby w krótkim czasie bez odpowiedniej kontynuacji fabularnej.
+**4.3.** Zabrania się porywania osób na terenie miasta bez odpowiedniego podłoża RP.
 
-**4.4.** Osoba porwana zobowiązana jest do przestrzegania zasad FearRP i realistycznego odgrywania zagrożenia.
+**4.4.** Zabrania się wielokrotnego porywania tej samej osoby w krótkim czasie bez odpowiedniej kontynuacji fabularnej.
 
-**4.5.** Porywający zobowiązani są do aktywnego prowadzenia akcji RP. Zabrania się bezcelowego przetrzymywania gracza przez nadmiernie długi czas.
+**4.5.** Osoba porwana zobowiązana jest do przestrzegania zasad FearRP i realistycznego odgrywania zagrożenia.
 
-**4.6.** Zabrania się wymuszania informacji, których postać nie posiada lub które zostały uzyskane w sposób OOC.
+**4.6.** Porywający zobowiązani są do aktywnego prowadzenia akcji RP. Zabrania się bezcelowego przetrzymywania gracza przez nadmiernie długi czas.
 
-**4.7.** Porwanie funkcjonariusza służb porządkowych wymaga odpowiedniego uzasadnienia fabularnego.
+**4.7.** Zabrania się wymuszania informacji, których postać nie posiada lub które zostały uzyskane w sposób OOC.
 
-**4.8.** Zabrania się porywania funkcjonariuszy wyłącznie w celu zdobycia ich wyposażenia służbowego.
+**4.8.** Zabrania się porywania funkcjonariuszy LSPD/LSSD do akcji hostylnej, jeżeli na służbie znajduje się mniej niż 5 funkcjonariuszy. Wyjątkiem jest sytuacja, w której funkcjonariusze sami rozpoczną inicjację.
 
-**4.9.** Zakładnicy muszą mieć możliwość aktywnego uczestniczenia w przebiegu akcji RP.`,
+**4.9.** Zabrania się porywania pracowników EMS, jeżeli na służbie znajduje się mniej niż 5 medyków. Wyjątkiem jest sytuacja, w której sami rozpoczną inicjację.
+
+**4.10.** Zabrania się porywania funkcjonariuszy wyłącznie w celu zdobycia ich wyposażenia służbowego.
+
+**4.11.** Zakładnicy muszą mieć możliwość aktywnego uczestniczenia w przebiegu akcji RP.`,
 
       `## §5. INICJACJE I STRZELANINY
 
-**5.1.** Użycie broni przeciwko innemu graczowi wymaga odpowiedniej inicjacji RP lub bezpośredniego zagrożenia życia wynikającego z trwającej akcji.
+**5.1.** Każde rozpoczęcie wymiany ognia musi zostać poprzedzone odpowiednią inicjacją głosową.
 
-**5.2.** Inicjacja musi być jednoznaczna, zrozumiała i możliwa do odebrania przez drugą stronę. Należy zapewnić realną możliwość reakcji, jeśli pozwala na to sytuacja.
+**5.2.** Inicjacja musi być jednoznaczna, zrozumiała i możliwa do usłyszenia przez drugą stronę. Należy zapewnić realną możliwość reakcji.
 
-**5.3.** Obowiązuje bezwzględny zakaz Random Deathmatch (RDM) oraz Vehicle Deathmatch (VDM).
+**5.3.** Dozwolone przykłady komunikatów inicjacyjnych: „Poddaj się!”, „Podnieś ręce!”, „Zatrzymaj się i wyjdź z pojazdu z rękami w górze!”.
 
-**5.4.** Zabrania się powrotu do tej samej akcji po odrodzeniu postaci w szpitalu lub zakończeniu jej udziału w akcji wskutek BW.
+**5.4.** Samo wypowiedzenie komunikatu inicjacyjnego nie uprawnia do natychmiastowego otwarcia ognia, jeżeli druga strona nie miała realnej możliwości zareagowania.
 
-**5.5.** Dołączenie do trwającej strzelaniny wymaga odpowiedniego powiązania IC z wydarzeniem. Zabrania się wykorzystywania informacji OOC do dołączania do akcji.
+**5.5.** Na terenach Red Zone również obowiązuje inicjacja głosowa.
 
-**5.6.** Sama przynależność do wrogiej organizacji nie stanowi wystarczającego powodu do otwarcia ognia.
+**5.6.** Obowiązuje bezwzględny zakaz Random Deathmatch (RDM) oraz Vehicle Deathmatch (VDM).
 
-**5.7.** Zabrania się rozpoczynania strzelanin wyłącznie w celu zdobywania ekwipunku przeciwników.
+**5.7.** Zabrania się powrotu do tej samej akcji po odrodzeniu postaci w szpitalu lub zakończeniu jej udziału w akcji wskutek BW.
 
-**5.8.** Zabrania się wykorzystywania błędów animacji, tekstur oraz mechanik gry do uzyskiwania przewagi podczas walki.
+**5.8.** Dołączenie do trwającej strzelaniny wymaga powiązania IC z wydarzeniem. Zabrania się wykorzystywania informacji OOC.
 
-**5.9.** Konflikty powinny być rozwijane również poprzez negocjacje, groźby IC i inne formy RP, a nie wyłącznie poprzez wymianę ognia.`,
+**5.9.** Sama przynależność do wrogiej organizacji nie stanowi wystarczającego powodu do otwarcia ognia.
+
+**5.10.** Zabrania się rozpoczynania strzelanin wyłącznie w celu zdobywania ekwipunku przeciwników.
+
+**5.11.** Zabrania się wykorzystywania błędów animacji, tekstur oraz mechanik gry do uzyskiwania przewagi podczas walki.
+
+**5.12.** Konflikty powinny być rozwijane również poprzez negocjacje, groźby IC i inne formy RP.`,
 
       `## §6. INTERAKCJE Z POLICJĄ
 
@@ -728,7 +744,9 @@ Administracja Crime rozpatruje naruszenia indywidualnie, uwzględniając dostęp
 
 **6.6.** Zabrania się celowego wywoływania kolejnych interwencji policyjnych wyłącznie w celu prowadzenia ciągłych starć.
 
-**6.7.** Podczas zatrzymań i interwencji obie strony zobowiązane są do przestrzegania zasad FearRP oraz zakazu Powergamingu.`,
+**6.7.** Funkcjonariusze LSPD/LSSD mają zakaz interweniowania na Red Zone podczas trwającej wymiany ognia pomiędzy organizacjami przestępczymi.
+
+**6.8.** Podczas zatrzymań i interwencji obie strony zobowiązane są do przestrzegania zasad FearRP oraz zakazu Powergamingu.`,
 
       `## §7. KRADZIEŻE I PRZESZUKANIA
 
@@ -742,21 +760,35 @@ Administracja Crime rozpatruje naruszenia indywidualnie, uwzględniając dostęp
 
 **7.5.** Przeszukanie gracza musi wynikać z prowadzonej sytuacji RP i odbywać się zgodnie z mechanikami serwera.
 
-**7.6.** Zabrania się wielokrotnego rabowania tej samej osoby bez odpowiedniego uzasadnienia IC.`,
+**7.6.** Zabrania się wielokrotnego rabowania tej samej osoby bez odpowiedniego uzasadnienia IC.
 
-      `## §8. TERENY ORGANIZACJI
+**7.7.** Zabrania się okradania graczy podczas nielegalnych transakcji. Wyjątek stanowią działania LSPD/LSSD.`,
 
-**8.1.** Organizacje przestępcze mogą posiadać własne tereny, siedziby, kryjówki oraz magazyny.
+      `## §8. STREFY I TERENY ORGANIZACJI
 
-**8.2.** Wtargnięcie na teren innej organizacji może być powodem rozpoczęcia konfliktu IC, jednak nie daje automatycznego prawa do otwarcia ognia.
+**8.1.** Na terenie Green Zone obowiązuje zakaz prowadzenia nielegalnych interesów oraz rozpoczynania akcji przestępczych.
 
-**8.3.** Zabrania się przeprowadzania bezpodstawnych ataków na siedziby innych organizacji.
+**8.2.** Jeżeli gracz po wcześniejszej inicjacji ucieknie na Green Zone, dozwolona jest kontynuacja rozpoczętej akcji RP, z zastrzeżeniem punktu 8.3.
 
-**8.4.** Ataki na bazy, magazyny i kryjówki muszą wynikać z rozwiniętego konfliktu fabularnego.
+**8.3.** Na terenie szpitali, komend i więzień oraz w ich bezpośrednim otoczeniu obowiązuje całkowity zakaz odbijania, porywania i strzelanin. Wyjątek dotyczący LSPD/LSSD podlega zasadom ich działań służbowych.
 
-**8.5.** Przejmowanie terenów organizacyjnych musi odbywać się zgodnie z zasadami ustalonymi przez Administrację Crime.
+**8.4.** Green Zone: szpitale, komendy, warsztaty mechaniczne, urzędy, miejsca legalnej pracy i apartamenty.
 
-**8.6.** Zabrania się wykorzystywania błędów mapy i niedostępnych pomieszczeń w celu uzyskania przewagi.`,
+**8.5.** Red Zone: siedziby organizacji przestępczych i tereny związane z narkotykami.
+
+**8.6.** Na Red Zone nadal obowiązuje inicjacja głosowa.
+
+**8.7.** Organizacje mogą posiadać własne tereny, siedziby, kryjówki i magazyny.
+
+**8.8.** Wtargnięcie na teren innej organizacji może rozpocząć konflikt IC, lecz nie daje automatycznego prawa do otwarcia ognia.
+
+**8.9.** Zabrania się bezpodstawnych ataków na siedziby innych organizacji.
+
+**8.10.** Ataki na bazy, magazyny i kryjówki muszą wynikać z rozwiniętego konfliktu fabularnego.
+
+**8.11.** Przejmowanie terenów musi odbywać się zgodnie z zasadami ustalonymi przez Opiekuna Crime.
+
+**8.12.** Zabrania się wykorzystywania błędów mapy i niedostępnych pomieszczeń w celu uzyskania przewagi.`,
 
       `## §9. FAIR PLAY I KWESTIE TECHNICZNE
 
@@ -774,19 +806,107 @@ Administracja Crime rozpatruje naruszenia indywidualnie, uwzględniając dostęp
 
 **9.7.** Zabrania się celowego utrudniania rozgrywki innym graczom oraz świadomego wykorzystywania luk w regulaminie.`,
 
-      `## §10. KARY I POSTANOWIENIA KOŃCOWE
+      `## §10. LIMITY UCZESTNIKÓW AKCJI
+
+**Rodzaj akcji — Crime / LSPD-LSSD**
+
+Konwój — **10 / 12**
+
+Akcja hostylna — **8 / 10**
+
+Bankomat — **1–2 / 2–4**
+
+Sklep — **1–3 / 2–4**
+
+Bank Fleeca — **2–5 / 3–6**
+
+Jubiler — **3–6 / 3–7**
+
+Pacific Bank — **5–10 / 7–12**
+
+**10.1.** Każdy uczestnik zobowiązany jest do przestrzegania limitów przypisanych do rodzaju akcji.
+
+**10.2.** Limity dotyczą aktywnych uczestników po stronie Crime oraz LSPD/LSSD.
+
+**10.3.** Zabrania się angażowania dodatkowych osób w celu obejścia limitów.
+
+**10.4.** Organizacje niezatwierdzone mogą uczestniczyć w akcjach hostylnych w maksymalnie 5 osób.
+
+**10.5.** W przypadku przedziałów liczbowych obowiązuje zarówno minimum, jak i maksimum.
+
+**10.6.** Zmiany limitów wymagają poinformowania społeczności.`,
+
+      `## §11. KARY I POSTANOWIENIA ADMINISTRACYJNE
 
 **10.1.** Naruszenie regulaminu może skutkować ostrzeżeniem, karą administracyjną, czasową blokadą dostępu do Crime lub innymi sankcjami przewidzianymi w Regulaminie Głównym.
 
 **10.2.** Poważne lub powtarzające się naruszenia mogą skutkować ostrzeżeniem organizacyjnym, zawieszeniem działalności lub rozwiązaniem organizacji.
 
-**10.3.** Administracja Crime rozpatruje zgłoszenia indywidualnie, uwzględniając przedstawione dowody, przebieg akcji i okoliczności zdarzenia.
+**10.3.** Opiekun Crime rozpatruje zgłoszenia indywidualnie, uwzględniając przedstawione dowody, przebieg akcji i okoliczności zdarzenia.
 
 **10.4.** Każdy gracz ma prawo odwołać się od nałożonej kary za pośrednictwem oficjalnego systemu odwołań DreamLife RolePlay.
 
 **10.5.** Administracja zastrzega sobie prawo do aktualizowania regulaminu, informując społeczność o istotnych zmianach.
 
 **10.6.** W sprawach nieuregulowanych niniejszym dokumentem zastosowanie ma Regulamin Główny DreamLife RolePlay.`,
+
+      `## §12. SŁOWNIK NAJWAŻNIEJSZYCH POJĘĆ
+
+**12.1. RP (RolePlay)** – odgrywanie fikcyjnej postaci zgodnie z jej charakterem, historią i zasadami serwera.
+
+**12.2. IC (In Character)** – działania, rozmowy i informacje należące do świata gry.
+
+**12.3. OOC (Out of Character)** – informacje i rozmowy niezwiązane bezpośrednio z odgrywaną postacią.
+
+**12.4. MG (Metagaming)** – wykorzystywanie informacji zdobytych poza rozgrywką IC.
+
+**12.5. PG (Powergaming)** – wymuszanie działań lub rezultatów RP na innych graczach bez możliwości odpowiedniej reakcji.
+
+**12.6. FailRP** – zachowanie niezgodne z zasadami odgrywania postaci i realizmem sytuacji.
+
+**12.7. FearRP** – realistyczne odgrywanie strachu o życie i zdrowie postaci.
+
+**12.8. RDM (Random Deathmatch)** – atakowanie lub zabijanie graczy bez uzasadnienia RP.
+
+**12.9. VDM (Vehicle Deathmatch)** – wykorzystywanie pojazdu jako broni w sposób niezgodny z zasadami RP.
+
+**12.10. BW (Brutally Wounded)** – stan ciężkiego zranienia lub nieprzytomności postaci.
+
+**12.11. CK (Character Kill)** – trwałe zakończenie historii postaci zgodnie z zasadami serwera.
+
+**12.12. FCK (Faction Character Kill)** – zakończenie historii postaci w ramach wątku organizacyjnego.
+
+**12.13. CL (Combat Logging)** – celowe opuszczenie gry podczas akcji RP w celu uniknięcia konsekwencji.
+
+**12.14. NLR (New Life Rule)** – zasada dotycząca pamięci postaci po odrodzeniu, zależna od regulaminu serwera.
+
+**12.15. Inicjacja RP** – jednoznaczne rozpoczęcie konfliktu lub zagrożenia przez komunikat lub działanie.
+
+**12.16. Looting** – przeszukiwanie i zabieranie przedmiotów z ekwipunku innego gracza.
+
+**12.17. Cop Baiting** – celowe prowokowanie funkcjonariuszy bez uzasadnienia fabularnego.
+
+**12.18. Revenge Kill (RK)** – odwet z naruszeniem zasad pamięci postaci lub kontynuacji RP.
+
+**12.19. Stream Sniping** – wykorzystywanie transmisji innego gracza do zdobycia przewagi.
+
+**12.20. Exploiting** – świadome wykorzystywanie błędów gry lub mechanik serwera.
+
+**12.21. Hostage RP** – rozgrywka związana z przetrzymywaniem zakładnika i negocjacjami.
+
+**12.22. Drive-By** – prowadzenie ostrzału z pojazdu z zachowaniem zasad serwera.
+
+**12.23. Hard RP** – styl rozgrywki kładący nacisk na realizm, konsekwencje i historię postaci.
+
+**12.24. Crime** – działalność przestępcza w ramach rozgrywki RP.
+
+**12.25. Opiekun Crime** – osoba odpowiedzialna za nadzorowanie organizacji i egzekwowanie Regulaminu Crime.
+
+**12.26. Green Zone (GZ)** – strefa chroniona z ograniczeniami dotyczącymi działalności przestępczej.
+
+**12.27. Red Zone (RZ)** – strefa działalności przestępczej, w której nadal obowiązuje inicjacja.
+
+**12.28. Akcja hostylna** – bezpośredni konflikt, groźby, przemoc lub wymiana ognia między stronami.`,
 
       `## POSTANOWIENIE KOŃCOWE
 
@@ -796,7 +916,7 @@ Każda organizacja oraz każdy gracz prowadzący działalność przestępczą po
 
 **Z poważaniem,**
 
-**Administracja Crime | DreamLife RolePlay**
+**Opiekun Crime | DreamLife RolePlay**
 
 © 2026 DreamLife RolePlay`,
     ];
