@@ -66,10 +66,42 @@ function normalizeHex(input) {
   return '#' + value;
 }
 
+function hexToRgb(hex) {
+  const normalized = normalizeHex(hex);
+  if (!normalized) return null;
+
+  return {
+    r: Number.parseInt(normalized.slice(1, 3), 16),
+    g: Number.parseInt(normalized.slice(3, 5), 16),
+    b: Number.parseInt(normalized.slice(5, 7), 16),
+  };
+}
+
 function inferColorName(hex) {
   const normalized = normalizeHex(hex);
-  if (!normalized) return 'Niestandardowy';
-  return COLOR_NAMES.get(normalized) || 'Niestandardowy';
+  if (!normalized) return 'Nieznany';
+
+  const exact = COLOR_NAMES.get(normalized);
+  if (exact) return exact;
+
+  const target = hexToRgb(normalized);
+  let closestName = 'Nieznany';
+  let closestDistance = Number.POSITIVE_INFINITY;
+
+  for (const [knownHex, name] of COLOR_NAMES.entries()) {
+    const known = hexToRgb(knownHex);
+    const distance =
+      Math.pow(target.r - known.r, 2) +
+      Math.pow(target.g - known.g, 2) +
+      Math.pow(target.b - known.b, 2);
+
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestName = name;
+    }
+  }
+
+  return closestName;
 }
 
 function parseEntries(description = '') {
@@ -130,9 +162,15 @@ async function getPanel(client, type) {
 async function ensurePanel(client, type) {
   const { channel, panels, config } = await getPanel(client, type);
   const mainPanel = panels[0] || null;
-  const entries = mainPanel
+  const entries = (mainPanel
     ? parseEntries(mainPanel.embeds?.[0]?.description || '')
-    : [...config.defaults];
+    : [...config.defaults]
+  ).map(entry => ({
+    ...entry,
+    colorName: entry.colorName === 'Niestandardowy'
+      ? inferColorName(entry.hex)
+      : entry.colorName,
+  }));
 
   for (const duplicate of panels.slice(1)) {
     await duplicate.delete().catch(() => {});
@@ -192,7 +230,9 @@ async function upsertColor(client, type, role, colorName, hex) {
 
   const next = {
     name: role.name,
-    colorName: (colorName || inferColorName(normalizedHex)).trim(),
+    colorName: (!colorName || colorName.trim() === 'Niestandardowy'
+      ? inferColorName(normalizedHex)
+      : colorName.trim()),
     hex: normalizedHex,
   };
 
