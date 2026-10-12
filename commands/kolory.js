@@ -167,9 +167,7 @@ async function ensurePanel(client, type) {
     : [...config.defaults]
   ).map(entry => ({
     ...entry,
-    colorName: entry.colorName === 'Niestandardowy'
-      ? inferColorName(entry.hex)
-      : entry.colorName,
+    colorName: inferColorName(entry.hex),
   }));
 
   for (const duplicate of panels.slice(1)) {
