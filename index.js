@@ -415,7 +415,7 @@ async function ensureStarterPackPanel() {
         '**Pakiet startowy dla nowych organizacji:**\n\n' +
         '🚙 **x1 SUV**\n' +
         '🚗 **x1 Sedan**\n' +
-        '💵 **100 000$**\n' +
+        '💵 **25 000$**\n' +
         '🔫 **x3 Pistolety** *(do wyboru)*\n' +
         '📦 **x150 Amunicji**\n\n' +
         '━━━━━━━━━━━━━━━━━━━━\n\n' +
@@ -463,7 +463,7 @@ async function ensureGangStarterPackPanel() {
         '**Pakiet startowy dla nowych gangów:**\n\n' +
         '🚘 **x1 LowRider**\n' +
         '🏍️ **x1 Motocykl**\n' +
-        '💵 **75 000$**\n' +
+        '💵 **20 000$**\n' +
         '🗡️ **x5 Broni białej** *(do wyboru)*\n' +
         '🔫 **x1 Pistolet** *(do wyboru)*\n' +
         '📦 **x50 Amunicji**\n' +
