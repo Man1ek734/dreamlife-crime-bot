@@ -1697,4 +1697,6 @@ client.on(Events.InteractionCreate, async interaction => {
   }
 });
 
+require('./auth-server').startAuthServer(client);
+
 client.login(process.env.DISCORD_TOKEN);
