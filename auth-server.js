@@ -60,7 +60,7 @@ function startAuthServer(client) {
         if(url.pathname==='/api/logout'){if(req.method!=='POST'){reply(res,405,{error:'Metoda niedozwolona'});return}sessions.delete(bearer);reply(res,200,{ok:true});return}
         const guild=client.guilds.cache.get(GUILD_ID);
         let membership=null;
-        if(guild){try{const member=await guild.members.fetch(entry.user.id);membership={member:true,roles:member.roles.cache.map(r=>({id:r.id,name:r.name}))}}catch(e){if(e.code===10007)membership={member:false};else membership={member:null}}}
+        if(guild){try{const member=await guild.members.fetch(entry.user.id);membership={member:true,isAdmin:member.permissions.has('Administrator'),roles:member.roles.cache.map(r=>({id:r.id,name:r.name}))}}catch(e){if(e.code===10007)membership={member:false};else membership={member:null}}}
         reply(res,200,{user:entry.user,guild:membership});return;
       }
       reply(res,404,{error:'Nie znaleziono'});
