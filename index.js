@@ -590,22 +590,20 @@ async function ensureCrimeRulesPanel() {
     const channel = await client.channels.fetch(CRIME_RULES_CHANNEL_ID);
     if (!channel || !channel.isTextBased()) return;
 
-    const messages = await channel.messages.fetch({ limit: 100 }).catch(() => null);
-    const oldPanels = messages
-      ? [...messages.values()].filter(message =>
-          message.author.id === client.user.id &&
-          message.embeds.some(embed =>
-            embed.title?.includes('REGULAMIN CRIME') ||
-            embed.title?.includes('SŁOWNIK') ||
-            embed.title === 'POSTANOWIENIE KOŃCOWE' ||
-            embed.description?.includes('# REGULAMIN CRIME') ||
-            embed.description?.includes('## §1. POSTANOWIENIA OGÓLNE')
-          )
-        )
-      : [];
+    // Kanał regulaminu ma zawierać wyłącznie aktualną wersję.
+    // Przed ponownym wysłaniem usuń wszystkie wcześniejsze wiadomości,
+    // dzięki czemu po restarcie/aktualizacji nie powstają duplikaty.
+    while (true) {
+      const messages = await channel.messages.fetch({ limit: 100 }).catch(() => null);
+      if (!messages || messages.size === 0) break;
 
-    for (const oldPanel of oldPanels) {
-      await oldPanel.delete().catch(() => {});
+      for (const message of messages.values()) {
+        await message.delete().catch(error => {
+          console.error('Nie udało się usunąć starej wiadomości z kanału regulaminu:', error);
+        });
+      }
+
+      if (messages.size < 100) break;
     }
 
     const sections = [
