@@ -20,14 +20,15 @@ function getGangMap(guild, panel, extraRole = null) {
   for (const gang of DEFAULT_GANGS) {
     const role = guild.roles.cache.get(gang.roleId);
     if (role) {
-      gangs.set(role.id, { name: gang.name, roleId: role.id });
+      gangs.set(role.id, { name: role.name, roleId: role.id });
       trackedRoleIds.add(role.id);
     }
   }
 
   if (panel?.embeds?.[0]?.fields) {
     for (const field of panel.embeds[0].fields) {
-      const role = guild.roles.cache.find(r => r.name === field.name);
+      const id = field.value?.match(/<@&(\d{17,22})>/)?.[1];
+      const role = (id && guild.roles.cache.get(id)) || guild.roles.cache.find(r => r.name === field.name);
       if (role) {
         gangs.set(role.id, { name: role.name, roleId: role.id });
         trackedRoleIds.add(role.id);
@@ -60,7 +61,7 @@ function buildGangListEmbed(guild, gangs) {
 
     embed.addFields({
       name: role.name,
-      value: status,
+      value: status + '\nRola: <@&' + role.id + '>',
       inline: false,
     });
   }
