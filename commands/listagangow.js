@@ -61,7 +61,7 @@ function buildGangListEmbed(guild, gangs) {
 
     embed.addFields({
       name: role.name,
-      value: status + '\nRola: <@&' + role.id + '>',
+      value: status,
       inline: false,
     });
   }
