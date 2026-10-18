@@ -461,8 +461,10 @@ async function ensureGangStarterPackPanel() {
       .setTitle(title)
       .setDescription(
         '**Pakiet startowy dla nowych gangów:**\n\n' +
-        '🚘 **x1 LowRider**\n' +
-        '🏍️ **x1 Motocykl**\n' +
+        '🚘 **x3 LowRider**\n' +
+        '🚗 **x1 Sedan**\n' +
+        '🏍️ **x2 Motocykle**\n' +
+        '🚙 **x1 SUV**\n' +
         '💵 **20 000$**\n' +
         '🗡️ **x5 Broni białej** *(do wyboru)*\n' +
         '🔫 **x1 Pistolet** *(do wyboru)*\n' +
