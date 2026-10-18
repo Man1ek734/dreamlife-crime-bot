@@ -170,6 +170,36 @@ async function ensurePanel(client, type) {
     colorName: inferColorName(entry.hex),
   }));
 
+  if (type === 'gang' && channel.guild) {
+    await channel.guild.roles.fetch().catch(() => {});
+    const knownGangRoles = [
+      ['MS-13', '1553471165262209065'],
+      ['Varrios Los Aztecas', '1528923960689823876'],
+      ['Rollin 20s Bloods', '1437092676703879178'],
+      ['Ballas', '1437114621214593024'],
+      ['The Famillies', '1437116924902506728'],
+      ['The Lost MC', '1535749163537661963'],
+    ];
+    for (const [previousName, roleId] of knownGangRoles) {
+      const role = channel.guild.roles.cache.get(roleId);
+      if (!role) continue;
+      const index = entries.findIndex(entry =>
+        entry.name.toLocaleLowerCase('pl-PL') === previousName.toLocaleLowerCase('pl-PL') ||
+        entry.name.toLocaleLowerCase('pl-PL') === role.name.toLocaleLowerCase('pl-PL')
+      );
+      const hex = normalizeHex(role.hexColor) || '#000000';
+      const value = { name: role.name, hex, colorName: inferColorName(hex) };
+      if (index >= 0) entries[index] = value;
+      else entries.push(value);
+    }
+    const seen = new Set();
+    for (let index = entries.length - 1; index >= 0; index--) {
+      const name = entries[index].name.toLocaleLowerCase('pl-PL');
+      if (seen.has(name)) entries.splice(index, 1);
+      else seen.add(name);
+    }
+  }
+
   for (const duplicate of panels.slice(1)) {
     await duplicate.delete().catch(() => {});
   }
