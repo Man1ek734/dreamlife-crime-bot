@@ -413,8 +413,9 @@ async function ensureStarterPackPanel() {
       .setTitle(title)
       .setDescription(
         '**Pakiet startowy dla nowych organizacji:**\n\n' +
-        '🚙 **x1 SUV**\n' +
-        '🚗 **x1 Sedan**\n' +
+        '🚙 **x2 SUV**\n' +
+        '🚗 **x3 Sedany**\n' +
+        '🏍️ **x2 Motocykle**\n' +
         '💵 **25 000$**\n' +
         '🔫 **x3 Pistolety** *(do wyboru)*\n' +
         '📦 **x150 Amunicji**\n\n' +
