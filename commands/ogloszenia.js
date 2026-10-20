@@ -48,7 +48,6 @@ module.exports = {
     const tresc = interaction.fields.getTextInputValue('ogloszenia_tresc').trim();
 
     const embed = new EmbedBuilder()
-      .setTitle('📢 OGŁOSZENIE')
       .setDescription('# OGŁOSZENIE\n\n' + tresc)
       .setColor(0xed4245)
       .setFooter({ text: 'DreamLife RolePlay © 2026' })
