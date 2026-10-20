@@ -27,6 +27,7 @@ const zawieszenie = require('./commands/zawieszenie');
 const nadajrange = require('./commands/nadajrange');
 const changlog = require('./commands/changlog');
 const ogloszenia = require('./commands/ogloszenia');
+const clear = require('./commands/clear');
 const listagangow = require('./commands/listagangow');
 const listaorganizacji = require('./commands/listaorganizacji');
 const kolorgang = require('./commands/kolorgang');
@@ -147,6 +148,7 @@ client.commands.set(zawieszenie.data.name, zawieszenie);
 client.commands.set(nadajrange.data.name, nadajrange);
 client.commands.set(changlog.data.name, changlog);
 client.commands.set(ogloszenia.data.name, ogloszenia);
+client.commands.set(clear.data.name, clear);
 client.commands.set(listagangow.data.name, listagangow);
 client.commands.set(listaorganizacji.data.name, listaorganizacji);
 client.commands.set(kolorgang.data.name, kolorgang);
@@ -1090,6 +1092,7 @@ client.once(Events.ClientReady, async readyClient => {
       nadajrange.data.toJSON(),
       changlog.data.toJSON(),
       ogloszenia.data.toJSON(),
+      clear.data.toJSON(),
       listagangow.data.toJSON(),
       listaorganizacji.data.toJSON(),
       kolorgang.data.toJSON(),
