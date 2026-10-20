@@ -26,6 +26,7 @@ const usunorganizacje = require('./commands/usunorganizacje');
 const zawieszenie = require('./commands/zawieszenie');
 const nadajrange = require('./commands/nadajrange');
 const changlog = require('./commands/changlog');
+const ogloszenia = require('./commands/ogloszenia');
 const listagangow = require('./commands/listagangow');
 const listaorganizacji = require('./commands/listaorganizacji');
 const kolorgang = require('./commands/kolorgang');
@@ -145,6 +146,7 @@ client.commands.set(usunorganizacje.data.name, usunorganizacje);
 client.commands.set(zawieszenie.data.name, zawieszenie);
 client.commands.set(nadajrange.data.name, nadajrange);
 client.commands.set(changlog.data.name, changlog);
+client.commands.set(ogloszenia.data.name, ogloszenia);
 client.commands.set(listagangow.data.name, listagangow);
 client.commands.set(listaorganizacji.data.name, listaorganizacji);
 client.commands.set(kolorgang.data.name, kolorgang);
@@ -1087,6 +1089,7 @@ client.once(Events.ClientReady, async readyClient => {
       zawieszenie.data.toJSON(),
       nadajrange.data.toJSON(),
       changlog.data.toJSON(),
+      ogloszenia.data.toJSON(),
       listagangow.data.toJSON(),
       listaorganizacji.data.toJSON(),
       kolorgang.data.toJSON(),
@@ -1507,6 +1510,11 @@ client.on(Events.InteractionCreate, async interaction => {
 
     if (interaction.isModalSubmit() && interaction.customId === 'changlog_modal') {
       await changlog.handleModal(interaction);
+      return;
+    }
+
+    if (interaction.isModalSubmit() && interaction.customId === 'ogloszenia_modal') {
+      await ogloszenia.handleModal(interaction);
       return;
     }
 
