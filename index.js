@@ -1504,6 +1504,11 @@ client.on(Events.ChannelDelete, async channel => {
 
 client.on(Events.InteractionCreate, async interaction => {
   try {
+    if (interaction.isButton() && /^zamknij_(yes|no)_\d{17,22}$/.test(interaction.customId)) {
+      await zamknij.handleButton(interaction);
+      return;
+    }
+
     if (interaction.isModalSubmit() && interaction.customId.startsWith('warn_modal:')) {
       await warn.handleModal(interaction);
       return;
