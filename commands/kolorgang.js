@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const kolory = require('./kolory');
 
-const AUTHORIZED_ROLE_IDS = ['1517965039670132796', '1465810885489725533'];
+const AUTHORIZED_ROLE_IDS = ['1517965039670132796', '1465810885489725533', '1542655009626390729', '1537461404032958474'];
 
 function hasPermission(interaction) {
   return AUTHORIZED_ROLE_IDS.some(roleId => interaction.member.roles.cache.has(roleId));
