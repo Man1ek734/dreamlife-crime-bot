@@ -2,7 +2,7 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const listagangow = require('./listagangow');
 const kolory = require('./kolory');
 
-const AUTHORIZED_ROLE_IDS = ['1517965039670132796', '1465810885489725533'];
+const AUTHORIZED_ROLE_IDS = ['1517965039670132796', '1465810885489725533', '1542655009626390729', '1537461404032958474'];
 const GANG_PARENT_ROLE_ID = '1437087475704266929';
 
 function parseHex(input) {
