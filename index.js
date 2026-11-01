@@ -1580,6 +1580,28 @@ client.on(Events.InteractionCreate, async interaction => {
             ],
           },
           {
+            id: '1542655009626390729',
+            allow: [
+              PermissionFlagsBits.ViewChannel,
+              PermissionFlagsBits.SendMessages,
+              PermissionFlagsBits.ReadMessageHistory,
+              PermissionFlagsBits.AttachFiles,
+              PermissionFlagsBits.EmbedLinks,
+              PermissionFlagsBits.ManageMessages,
+            ],
+          },
+          {
+            id: '1537461404032958474',
+            allow: [
+              PermissionFlagsBits.ViewChannel,
+              PermissionFlagsBits.SendMessages,
+              PermissionFlagsBits.ReadMessageHistory,
+              PermissionFlagsBits.AttachFiles,
+              PermissionFlagsBits.EmbedLinks,
+              PermissionFlagsBits.ManageMessages,
+            ],
+          },
+          {
             id: client.user.id,
             allow: [
               PermissionFlagsBits.ViewChannel,
@@ -1651,6 +1673,8 @@ client.on(Events.InteractionCreate, async interaction => {
 
       const canClose =
         interaction.user.id === ownerId ||
+        interaction.member.roles.cache.has('1542655009626390729') ||
+        interaction.member.roles.cache.has('1537461404032958474') ||
         interaction.memberPermissions?.has(PermissionFlagsBits.ManageChannels) ||
         interaction.memberPermissions?.has(PermissionFlagsBits.Administrator);
 
