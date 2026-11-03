@@ -753,7 +753,13 @@ Opiekun Crime rozpatruje naruszenia indywidualnie, uwzględniając dostępne dow
 
 **6.7.** Funkcjonariusze LSPD/LSSD mają zakaz interweniowania na Red Zone podczas trwającej wymiany ognia pomiędzy organizacjami przestępczymi.
 
-**6.8.** Podczas zatrzymań i interwencji obie strony zobowiązane są do przestrzegania zasad FearRP oraz zakazu Powergamingu.`,
+**6.8.** Funkcjonariusze LSPD/LSSD nie reagują na zwykłe zgłoszenia dotyczące strzałów ani handlu narkotykami na terenach gangów, o ile zdarzenie nie jest powiązane z porwaniem funkcjonariusza, porwaniem obywatela, trwającym napadem lub inną poważną akcją wymagającą interwencji.
+
+**6.9.** Na obszarze Mirror Park oznaczonym jako Red Zone Light funkcjonariusze LSPD/LSSD mogą wjechać na teren, jednak nie mogą zatrzymywać ani aresztować osób bez wyraźnej podstawy wynikającej z prowadzonej akcji RP. Za uzasadnioną podstawę uznaje się m.in. porwanie funkcjonariusza, porwanie obywatela, pościg rozpoczęty przed wjazdem do strefy lub bezpośredni związek z trwającym napadem.
+
+**6.10.** Ucieczka na Red Zone lub Red Zone Light nie przerywa wcześniej rozpoczętego pościgu ani akcji RP. Gracz nie może wykorzystywać strefy wyłącznie w celu uniknięcia konsekwencji trwającej akcji.
+
+**6.11.** Podczas zatrzymań i interwencji obie strony zobowiązane są do przestrzegania zasad FearRP oraz zakazu Powergamingu.`,
 
       `## §7. KRADZIEŻE I PRZESZUKANIA
 
@@ -795,7 +801,13 @@ Opiekun Crime rozpatruje naruszenia indywidualnie, uwzględniając dostępne dow
 
 **8.11.** Przejmowanie terenów musi odbywać się zgodnie z zasadami ustalonymi przez Opiekuna Crime.
 
-**8.12.** Zabrania się wykorzystywania błędów mapy i niedostępnych pomieszczeń w celu uzyskania przewagi.`,
+**8.12.** Mirror Park dzieli się na dwie strefy:
+- **Red Zone** – główna ulica wraz z domkiem. W przypadku wjazdu LSPD/LSSD na ten obszar członkowie Crime mogą podjąć wobec funkcjonariuszy działania zbrojne zgodnie z zasadami inicjacji i przebiegiem sytuacji RP.
+- **Red Zone Light** – pozostała część Mirror Park. LSPD/LSSD może poruszać się po tej strefie, jednak obowiązują ograniczenia określone w §6.
+
+**8.13.** Zabrania się wykorzystywania Red Zone lub Red Zone Light jako bezpiecznego schronienia podczas wcześniej rozpoczętego pościgu, napadu lub innej trwającej akcji.
+
+**8.14.** Zabrania się wykorzystywania błędów mapy i niedostępnych pomieszczeń w celu uzyskania przewagi.`,
 
       `## §9. FAIR PLAY I KWESTIE TECHNICZNE
 
@@ -841,7 +853,11 @@ Pacific Bank — **5–10 / 7–12**
 
 **10.5.** W przypadku przedziałów liczbowych obowiązuje zarówno minimum, jak i maksimum.
 
-**10.6.** Zmiany limitów wymagają poinformowania społeczności.`,
+**10.6.** W przypadku interwencji związanej z narkotykami lub pościgu za pojedynczym pojazdem liczba pojazdów LSPD/LSSD powinna być proporcjonalna do skali akcji. Zabrania się dołączania nadmiernej liczby patroli do pościgu za jednym pojazdem, jeżeli nie występuje dodatkowe zagrożenie uzasadniające zwiększenie sił.
+
+**10.7.** Jeżeli po stronie LSPD/LSSD dostępna jest ograniczona liczba funkcjonariuszy, nie należy angażować kolejnych patroli wyłącznie w celu uzyskania przewagi liczebnej nad pojedynczym pojazdem lub małą grupą Crime.
+
+**10.8.** Zmiany limitów wymagają poinformowania społeczności.`,
 
       `## §11. KARY I POSTANOWIENIA ADMINISTRACYJNE
 
