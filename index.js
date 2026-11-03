@@ -741,7 +741,7 @@ Opiekun Crime rozpatruje naruszenia indywidualnie, uwzględniając dostępne dow
 
 **6.1.** Zabrania się bezpodstawnego prowokowania funkcjonariuszy w celu wywołania pościgu lub strzelaniny.
 
-**6.2.** Rutynowa kontrola drogowa nie stanowi sama w sobie wystarczającego powodu do otwarcia ognia w kierunku funkcjonariuszy.
+**6.2.** Sama obecność lub interwencja funkcjonariuszy nie stanowi wystarczającego powodu do otwarcia ognia. Atak na LSPD/LSSD musi wynikać z przebiegu konkretnej sytuacji RP.
 
 **6.3.** Ucieczki przed policją muszą być prowadzone realistycznie, z uwzględnieniem możliwości pojazdu, jego uszkodzeń oraz warunków drogowych.
 
@@ -753,7 +753,7 @@ Opiekun Crime rozpatruje naruszenia indywidualnie, uwzględniając dostępne dow
 
 **6.7.** Funkcjonariusze LSPD/LSSD mają zakaz interweniowania na Red Zone podczas trwającej wymiany ognia pomiędzy organizacjami przestępczymi.
 
-**6.8.** Funkcjonariusze LSPD/LSSD nie reagują na zwykłe zgłoszenia dotyczące strzałów ani handlu narkotykami na terenach gangów, o ile zdarzenie nie jest powiązane z porwaniem funkcjonariusza, porwaniem obywatela, trwającym napadem lub inną poważną akcją wymagającą interwencji.
+**6.8.** Funkcjonariusze LSPD/LSSD mogą reagować na handel narkotykami, przestępstwa, podejrzane działania oraz inne zdarzenia wymagające interwencji. Na terenach gangów interwencja powinna być proporcjonalna do sytuacji i nie może służyć wyłącznie do prowokowania konfliktu z Crime.
 
 **6.9.** Na obszarze Mirror Park oznaczonym jako Red Zone Light funkcjonariusze LSPD/LSSD mogą wjechać na teren, jednak nie mogą zatrzymywać ani aresztować osób bez wyraźnej podstawy wynikającej z prowadzonej akcji RP. Za uzasadnioną podstawę uznaje się m.in. porwanie funkcjonariusza, porwanie obywatela, pościg rozpoczęty przed wjazdem do strefy lub bezpośredni związek z trwającym napadem.
 
