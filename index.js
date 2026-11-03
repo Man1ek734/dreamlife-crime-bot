@@ -759,7 +759,9 @@ Opiekun Crime rozpatruje naruszenia indywidualnie, uwzględniając dostępne dow
 
 **6.10.** Ucieczka na Red Zone lub Red Zone Light nie przerywa wcześniej rozpoczętego pościgu ani akcji RP. Gracz nie może wykorzystywać strefy wyłącznie w celu uniknięcia konsekwencji trwającej akcji.
 
-**6.11.** Podczas zatrzymań i interwencji obie strony zobowiązane są do przestrzegania zasad FearRP oraz zakazu Powergamingu.`,
+**6.11.** Po zakończeniu wojny gangów, strzelaniny lub innego większego konfliktu pomiędzy organizacjami przestępczymi funkcjonariusze LSPD/LSSD mogą wkroczyć na teren i podjąć interwencję wobec uczestników obu stron. Dotyczy to zarówno osób z grupy, która wygrała starcie, jak i osób z grupy, która je przegrała. Wynik konfliktu nie chroni żadnej ze stron przed zatrzymaniem, przeszukaniem ani innymi konsekwencjami wynikającymi z prowadzonej akcji RP.
+
+**6.12.** Podczas zatrzymań i interwencji obie strony zobowiązane są do przestrzegania zasad FearRP oraz zakazu Powergamingu.`,
 
       `## §7. KRADZIEŻE I PRZESZUKANIA
 
