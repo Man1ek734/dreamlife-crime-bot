@@ -981,14 +981,44 @@ Każda organizacja oraz każdy gracz prowadzący działalność przestępczą po
     ];
 
     for (let i = 0; i < sections.length; i++) {
-      const embed = new EmbedBuilder()
-        .setDescription(sections[i])
-        .setColor(0xed4245);
+      const section = sections[i];
+      const paragraphs = section.split('\n\n');
+      const chunks = [];
+      let currentChunk = '';
 
-      await channel.send({ embeds: [embed] });
+      for (const paragraph of paragraphs) {
+        const candidate = currentChunk
+          ? currentChunk + '\n\n' + paragraph
+          : paragraph;
+
+        if (candidate.length > 3900 && currentChunk) {
+          chunks.push(currentChunk);
+          currentChunk = paragraph;
+        } else {
+          currentChunk = candidate;
+        }
+      }
+
+      if (currentChunk) {
+        chunks.push(currentChunk);
+      }
+
+      const sectionHeading = section.split('\n')[0];
+
+      for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex++) {
+        const description = chunkIndex === 0
+          ? chunks[chunkIndex]
+          : sectionHeading + ' — CIĄG DALSZY\n\n' + chunks[chunkIndex];
+
+        const embed = new EmbedBuilder()
+          .setDescription(description)
+          .setColor(0xed4245);
+
+        await channel.send({ embeds: [embed] });
+      }
     }
 
-    console.log('Regulamin Crime wysłany: każda sekcja w osobnej wiadomości.');
+    console.log('Regulamin Crime wysłany w całości.');
   } catch (error) {
     console.error('Błąd podczas wysyłania Regulaminu Crime:', error);
   }
