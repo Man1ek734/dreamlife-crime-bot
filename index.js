@@ -933,7 +933,39 @@ Pacific Bank — **5–10 / 6–12**
 
 **12.27. Red Zone (RZ)** – strefa działalności przestępczej, w której nadal obowiązuje inicjacja.
 
-**12.28. Akcja hostylna** – bezpośredni konflikt, groźby, przemoc lub wymiana ognia między stronami.`,
+**12.28. Akcja hostylna** – bezpośredni konflikt, groźby, przemoc lub wymiana ognia między stronami.
+
+**12.29. CN (Celebrity Name)** – nazwanie postaci imieniem i nazwiskiem znanej osoby ze świata realnego. Takie zachowanie jest karane.
+
+**12.30. NZ (Nieposzanowanie Życia)** – brak poszanowania własnego życia mimo realnego zagrożenia. Takie zachowanie jest karane.
+
+**12.31. WZR (Wychodzenie z roli)** – celowe przerywanie lub porzucanie odgrywania postaci podczas aktywnej sytuacji RP bez uzasadnionego powodu. Takie zachowanie jest karane.
+
+**12.32. Trash Talk** – celowe obrażanie, prowokowanie lub poniżanie innych graczy w sposób wykraczający poza normalne odgrywanie konfliktu RP. Takie zachowanie jest karane.
+
+**12.33. LootRP** – zabieranie ekwipunku z gracza bez odpowiedniego odegrania sytuacji RP. Takie zachowanie jest karane.
+
+**12.34. WMG** – wykorzystywanie mechaniki gry w sposób dający nienaturalną przewagę nad innymi graczami. Takie zachowanie jest karane.
+
+**12.35. Trolling** – celowe psucie rozgrywki i przeszkadzanie innym graczom bez celu RP. Takie zachowanie jest karane.
+
+**12.36. Bug Abuse** – świadome wykorzystywanie błędów serwera, gry lub skryptów dla własnej korzyści. Takie zachowanie jest karane.
+
+**12.37. Cheaty** – używanie oprogramowania zapewniającego nieuczciwą przewagę. Takie zachowanie jest karane.
+
+**12.38. Ban Evasion** – omijanie bana poprzez inne konto lub inne sposoby. Takie zachowanie jest karane.
+
+**12.39. NWC (Niewłaściwy Citizen)** – używanie citizenów zapewniających nienaturalną przewagę nad innymi graczami. Zakazane jest również używanie rozdzielczości 4:3, 5:4 i podobnych. Dozwolone są rozdzielczości 16:9 oraz 16:10.
+
+**12.40. Nieodgrywanie bólu po medyku** – brak odgrywania bólu po udzieleniu pomocy medycznej. Ból należy odgrywać przez minimum 10 minut. Takie zachowanie jest karane.
+
+**12.41. Poddawanie na Green Zone** – poddawanie osób na Green Zone jest zabronione, chyba że istnieje odpowiedni powód wynikający z prowadzonej sytuacji RP.
+
+**12.42. Poddawanie bez podłoża RP** – poddawanie gracza bez jakiegokolwiek uzasadnienia RP, np. bez wcześniejszej akcji, konfliktu lub napadu. Takie zachowanie jest karane.
+
+**12.43. Przenoszenie rzeczy na drugą postać** – przenoszenie itemów lub pieniędzy na drugą postać w celu uzyskania łatwiejszego startu. Takie zachowanie jest karane.
+
+**12.44. Działanie na szkodę serwera** – działania prowadzące do poważnego naruszenia ekonomii serwera lub celowego ograniczania liczby graczy. Takie zachowanie jest karane.`,
 
       `## POSTANOWIENIE KOŃCOWE
 
