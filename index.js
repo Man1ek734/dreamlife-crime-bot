@@ -835,15 +835,17 @@ Konwój — **10 / 12**
 
 Akcja hostylna — **8 / 10**
 
-Bankomat — **1–2 / 2–4**
-
 Sklep — **1–3 / 2–4**
 
-Bank Fleeca — **2–5 / 3–6**
+Bankomat — **1–2 / 2–4**
 
-Jubiler — **3–6 / 3–7**
+Ammunation — **2–4 / 3–5**
 
-Pacific Bank — **5–10 / 7–12**
+Bank Fleeca — **2–5 / 4–6**
+
+Jubiler — **3–6 / 5–7**
+
+Pacific Bank — **5–10 / 6–12**
 
 **10.1.** Każdy uczestnik zobowiązany jest do przestrzegania limitów przypisanych do rodzaju akcji.
 
