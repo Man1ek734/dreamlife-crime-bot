@@ -2,13 +2,16 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 const CHANNEL_ID = '1437087479932129354';
 
-const DEFAULT_ORGANIZATIONS = [];
+const DEFAULT_ORGANIZATIONS = [
+  { name: 'T6', roleId: '1567621318642368673' },
+];
 const REMOVED_ORGANIZATION_ROLE_IDS = new Set([
   '1547700105325322380',
   '1549125879454761012',
 ]);
 
 const PANEL_TITLE = '📋 Lista organizacji';
+const OLD_PANEL_TITLE = '🏢 Lista organizacji';
 
 function extractRoleIdsFromPanels(panels) {
   const ids = new Set();
@@ -61,7 +64,9 @@ async function updateOrganizationList(client, extraRole = null, removedRoleId = 
 
   const panels = [...messages.values()].filter(message =>
     message.author.id === client.user.id &&
-    message.embeds.some(embed => embed.title === PANEL_TITLE)
+    message.embeds.some(embed =>
+      embed.title === PANEL_TITLE || embed.title === OLD_PANEL_TITLE
+    )
   );
 
   const roleIds = new Set(DEFAULT_ORGANIZATIONS.map(org => org.roleId));
