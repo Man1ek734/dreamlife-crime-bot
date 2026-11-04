@@ -31,7 +31,7 @@ function extractOrganizationNamesFromPanels(panels) {
 
 function buildOrganizationEmbed(roles) {
   const list = roles.length
-    ? roles.map(role => '・ **' + role.name + '**').join('\n')
+    ? roles.map(role => '**' + role.name + '**').join('\n')
     : '*Brak organizacji na liście.*';
 
   return new EmbedBuilder()
