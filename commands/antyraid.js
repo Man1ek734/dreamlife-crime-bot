@@ -40,8 +40,9 @@ function hasPermission(interaction) {
   );
 }
 
-function isExempt() {
-  return false;
+function isExempt(member) {
+  if (!member) return false;
+  return member.id === member.guild.ownerId;
 }
 
 function saveState() {
