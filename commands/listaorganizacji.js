@@ -8,7 +8,7 @@ const REMOVED_ORGANIZATION_ROLE_IDS = new Set([
   '1549125879454761012',
 ]);
 
-const PANEL_TITLE = '🏢 Lista organizacji';
+const PANEL_TITLE = '📋 Lista organizacji';
 
 function extractRoleIdsFromPanels(panels) {
   const ids = new Set();
@@ -25,19 +25,27 @@ function extractRoleIdsFromPanels(panels) {
 }
 
 function buildOrganizationEmbed(roles) {
-  const list = roles.length
-    ? roles.map((role, index) => '**' + (index + 1) + '.** ' + role.toString()).join('\n')
-    : '*Brak organizacji na liście.*';
-
-  return new EmbedBuilder()
+  const embed = new EmbedBuilder()
     .setTitle(PANEL_TITLE)
-    .setDescription(
-      '**Aktualna lista organizacji na DreamLifeRP Crime**\n\n' +
-      list
-    )
     .setColor(0xed4245)
+    .setDescription('Lista organizacji aktualizuje się automatycznie.')
     .setFooter({ text: 'DreamLife RolePlay © 2026' })
     .setTimestamp();
+
+  if (!roles.length) {
+    embed.setDescription('Lista organizacji aktualizuje się automatycznie.\n\n*Brak organizacji na liście.*');
+    return embed;
+  }
+
+  for (const role of roles) {
+    embed.addFields({
+      name: role.name,
+      value: role.toString(),
+      inline: false,
+    });
+  }
+
+  return embed;
 }
 
 async function updateOrganizationList(client, extraRole = null, removedRoleId = null) {
