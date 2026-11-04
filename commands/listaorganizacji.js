@@ -20,9 +20,17 @@ function extractOrganizationNamesFromPanels(panels) {
     const embed = panel.embeds?.[0];
     if (!embed) continue;
 
-    for (const field of embed.fields || []) {
-      const name = field.name?.replace(/^・/, '').trim();
-      if (name) names.add(name);
+    const description = embed.description || '';
+    const lines = description.split('\n');
+
+    for (const line of lines) {
+      const match = line.trim().match(/^\*\*(.+)\*\*$/);
+      if (!match) continue;
+
+      const name = match[1].trim();
+      if (!name || name === 'Aktualna lista organizacji DreamLifeRP Crime') continue;
+
+      names.add(name);
     }
   }
 
