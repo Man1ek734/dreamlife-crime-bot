@@ -38,7 +38,7 @@ function buildOrganizationEmbed(roles) {
     .setTitle(PANEL_TITLE)
     .setColor(0xed4245)
     .setDescription(
-      '**Aktualna lista organizacji DreamLifeRP Crime**\n\n' +
+      '**Aktualna lista organizacji DreamLifeRP Crime**\n' +
       list
     )
     .setFooter({ text: 'DreamLife RolePlay © 2026' })
