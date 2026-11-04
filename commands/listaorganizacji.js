@@ -13,18 +13,20 @@ const REMOVED_ORGANIZATION_ROLE_IDS = new Set([
 const PANEL_TITLE = '📋 Lista organizacji';
 const OLD_PANEL_TITLE = '🏢 Lista organizacji';
 
-function extractRoleIdsFromPanels(panels) {
-  const ids = new Set();
+function extractOrganizationNamesFromPanels(panels) {
+  const names = new Set();
 
   for (const panel of panels) {
-    const description = panel.embeds?.[0]?.description || '';
+    const embed = panel.embeds?.[0];
+    if (!embed) continue;
 
-    for (const match of description.matchAll(/<@&(\d+)>/g)) {
-      ids.add(match[1]);
+    for (const field of embed.fields || []) {
+      const name = field.name?.replace(/^・/, '').trim();
+      if (name) names.add(name);
     }
   }
 
-  return ids;
+  return names;
 }
 
 function buildOrganizationEmbed(roles) {
@@ -42,7 +44,7 @@ function buildOrganizationEmbed(roles) {
 
   for (const role of roles) {
     embed.addFields({
-      name: role.name,
+      name: '・' + role.name,
       value: '‎',
       inline: false,
     });
@@ -71,9 +73,13 @@ async function updateOrganizationList(client, extraRole = null, removedRoleId = 
 
   const roleIds = new Set(DEFAULT_ORGANIZATIONS.map(org => org.roleId));
 
-  for (const roleId of extractRoleIdsFromPanels(panels)) {
-    if (!REMOVED_ORGANIZATION_ROLE_IDS.has(roleId)) {
-      roleIds.add(roleId);
+  for (const name of extractOrganizationNamesFromPanels(panels)) {
+    const role = channel.guild.roles.cache.find(
+      guildRole => guildRole.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (role && !REMOVED_ORGANIZATION_ROLE_IDS.has(role.id)) {
+      roleIds.add(role.id);
     }
   }
 
