@@ -30,27 +30,19 @@ function extractOrganizationNamesFromPanels(panels) {
 }
 
 function buildOrganizationEmbed(roles) {
-  const embed = new EmbedBuilder()
+  const list = roles.length
+    ? roles.map(role => '・ **' + role.name + '**').join('\n')
+    : '*Brak organizacji na liście.*';
+
+  return new EmbedBuilder()
     .setTitle(PANEL_TITLE)
     .setColor(0xed4245)
-    .setDescription('Lista organizacji aktualizuje się automatycznie.')
+    .setDescription(
+      '**Aktualna lista organizacji DreamLifeRP Crime**\n\n' +
+      list
+    )
     .setFooter({ text: 'DreamLife RolePlay © 2026' })
     .setTimestamp();
-
-  if (!roles.length) {
-    embed.setDescription('Lista organizacji aktualizuje się automatycznie.\n\n*Brak organizacji na liście.*');
-    return embed;
-  }
-
-  for (const role of roles) {
-    embed.addFields({
-      name: '・' + role.name,
-      value: '‎',
-      inline: false,
-    });
-  }
-
-  return embed;
 }
 
 async function updateOrganizationList(client, extraRole = null, removedRoleId = null) {
