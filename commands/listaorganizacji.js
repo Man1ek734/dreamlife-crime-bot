@@ -115,13 +115,21 @@ async function updateOrganizationList(client, extraRole = null, removedRoleId = 
     organizations.push(extraRole);
   }
 
-  for (const panel of panels) {
-    await panel.delete().catch(() => {});
+  const payload = {
+    embeds: [buildOrganizationEmbed(organizations)],
+  };
+
+  let mainPanel = panels[0] || null;
+
+  for (const duplicate of panels.slice(1)) {
+    await duplicate.delete().catch(() => {});
   }
 
-  const newPanel = await channel.send({
-    embeds: [buildOrganizationEmbed(organizations)],
-  });
+  if (mainPanel) {
+    await mainPanel.edit(payload);
+  } else {
+    mainPanel = await channel.send(payload);
+  }
 
   console.log(
     'Lista organizacji odświeżona na kanale ' +
@@ -130,7 +138,7 @@ async function updateOrganizationList(client, extraRole = null, removedRoleId = 
     organizations.length
   );
 
-  return newPanel;
+  return mainPanel;
 }
 
 module.exports = {
