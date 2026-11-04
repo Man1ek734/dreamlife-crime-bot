@@ -43,7 +43,7 @@ function buildOrganizationEmbed(roles) {
   for (const role of roles) {
     embed.addFields({
       name: role.name,
-      value: role.toString(),
+      value: '‎',
       inline: false,
     });
   }
