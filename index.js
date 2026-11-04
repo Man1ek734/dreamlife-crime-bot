@@ -29,6 +29,7 @@ const changlog = require('./commands/changlog');
 const ogloszenia = require('./commands/ogloszenia');
 const clear = require('./commands/clear');
 const zamknij = require('./commands/zamknij');
+const antyraid = require('./commands/antyraid');
 const listagangow = require('./commands/listagangow');
 const listaorganizacji = require('./commands/listaorganizacji');
 const kolorgang = require('./commands/kolorgang');
@@ -151,6 +152,7 @@ client.commands.set(changlog.data.name, changlog);
 client.commands.set(ogloszenia.data.name, ogloszenia);
 client.commands.set(clear.data.name, clear);
 client.commands.set(zamknij.data.name, zamknij);
+client.commands.set(antyraid.data.name, antyraid);
 client.commands.set(listagangow.data.name, listagangow);
 client.commands.set(listaorganizacji.data.name, listaorganizacji);
 client.commands.set(kolorgang.data.name, kolorgang);
@@ -1178,6 +1180,7 @@ client.once(Events.ClientReady, async readyClient => {
       ogloszenia.data.toJSON(),
       clear.data.toJSON(),
       zamknij.data.toJSON(),
+      antyraid.data.toJSON(),
       listagangow.data.toJSON(),
       listaorganizacji.data.toJSON(),
       kolorgang.data.toJSON(),
@@ -1185,6 +1188,7 @@ client.once(Events.ClientReady, async readyClient => {
       dodajticket.data.toJSON(),
     ]);
     console.log('Komendy slash zsynchronizowane.');
+    await antyraid.init(readyClient, { logChannelId: BOT_LOG_CHANNEL_ID });
     await ensureAutoRoleForExistingMembers(guild);
   } catch (error) {
     console.error('Błąd synchronizacji komend slash:', error);
@@ -1251,6 +1255,8 @@ client.on(Events.MessageReactionRemove, async (reaction, user) => {
 });
 
 client.on(Events.GuildMemberAdd, async member => {
+  await antyraid.handleMemberAdd(member).catch(error => console.error('Błąd Anti-Raid przy wejściu użytkownika:', error));
+
   try {
     if (!member.roles.cache.has(AUTO_ROLE_ID)) {
       await member.roles.add(AUTO_ROLE_ID, 'Automatyczna ranga dla nowego członka');
@@ -1280,6 +1286,8 @@ client.on(Events.GuildMemberAdd, async member => {
 });
 
 client.on(Events.MessageCreate, async message => {
+  await antyraid.handleMessage(message).catch(error => console.error('Błąd Anti-Raid wiadomości:', error));
+
   if (message.guild && !message.author?.bot && !message.system) {
     messageCache.set(message.id, {
       content: message.content,
