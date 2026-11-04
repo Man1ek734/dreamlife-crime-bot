@@ -14,8 +14,8 @@ const AUTHORIZED_ROLE_IDS = [
   '1537461404032958474',
 ];
 
-const MESSAGE_LIMIT = 9;
-const MESSAGE_WINDOW_MS = 8000;
+const MESSAGE_LIMIT = 6;
+const MESSAGE_WINDOW_MS = 5000;
 const TIMEOUT_MS = 10 * 60 * 1000;
 const JOIN_LIMIT = 8;
 const JOIN_WINDOW_MS = 30000;
@@ -42,11 +42,7 @@ function hasPermission(interaction) {
 
 function isExempt(member) {
   if (!member) return false;
-  return (
-    member.permissions.has(PermissionFlagsBits.Administrator) ||
-    member.permissions.has(PermissionFlagsBits.ManageGuild) ||
-    AUTHORIZED_ROLE_IDS.some(roleId => member.roles.cache.has(roleId))
-  );
+  return member.id === member.guild.ownerId;
 }
 
 function saveState() {
@@ -205,14 +201,19 @@ async function disableLockdown(guild, reason = 'Ręczne wyłączenie blokady Ant
 async function punishSpam(message, reason) {
   await message.delete().catch(() => {});
 
+  let timeoutApplied = false;
+
   if (message.member?.moderatable) {
-    await message.member.timeout(TIMEOUT_MS, reason).catch(() => {});
+    timeoutApplied = await message.member
+      .timeout(TIMEOUT_MS, reason)
+      .then(() => true)
+      .catch(() => false);
   }
 
   await sendLog(
     message.guild,
     '🛡️ ANTI-RAID — WYKRYTO SPAM',
-    'Użytkownik: ' + message.author + '\nKanał: ' + message.channel.toString() + '\nPowód: **' + reason + '**\nKara: **Timeout 10 minut**'
+    'Użytkownik: ' + message.author + '\nKanał: ' + message.channel.toString() + '\nPowód: **' + reason + '**\nKara: **' + (timeoutApplied ? 'Timeout 10 minut' : 'Nie udało się nadać timeoutu — sprawdź hierarchię roli bota') + '**'
   );
 }
 
