@@ -890,7 +890,7 @@ async function ensureCrimeRulesPanel() {
 
 **10.3.** Jeżeli akcja została rozpoczęta w określonej liczbie osób, zabrania się dojeżdżania kolejnych uczestników w trakcie jej trwania.
 
-**10.4.** Dozwolone są wcześniej zaplanowane **zastawki oraz przesiadki**, pod warunkiem że osoby biorące w nich udział są wliczone do limitu całej akcji od samego początku.
+**10.4.** Dozwolone są wcześniej zaplanowane **zastawki oraz przesiadki**. Osoby wykonujące zastawkę lub przesiadkę **nie wliczają się do limitu samego napadu**, o ile nie biorą bezpośredniego udziału w napadzie. Przykład: jeżeli limit napadu na sklep wynosi 2 osoby po stronie Crime, trzecia osoba może przygotować zastawkę lub przesiadkę.
 
 **10.5.** Zabrania się wzywania dodatkowych osób dopiero po rozpoczęciu pościgu, strzelaniny, napadu lub innej aktywnej akcji.
 
