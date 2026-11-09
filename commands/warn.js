@@ -104,23 +104,45 @@ module.exports = {
     const organizationText = interaction.fields.getTextInputValue('warn_organization').trim();
     const reason = interaction.fields.getTextInputValue('warn_reason').trim();
 
+    const issuer = interaction.user;
+    const unixTime = Math.floor(Date.now() / 1000);
+
     const embed = new EmbedBuilder()
       .setColor(0xed4245)
-      .setTitle('⚠️ WARN')
-      .setDescription(
-        [
-          '**Kto:**',
-          `${target}`,
-          '',
-          '**Jakiej organizacji/gangowi:**',
-          `${organization}`,
-          '',
-          '**Za co:**',
-          reason,
-        ].join('\n')
+      .setAuthor({
+        name: 'DreamLifeRP • System kar organizacyjnych',
+        iconURL: interaction.guild.iconURL({ size: 128 }) || undefined,
+      })
+      .setTitle('⚠️ WARN ORGANIZACYJNY')
+      .setDescription(`${target} • ${organization}`)
+      .addFields(
+        {
+          name: '👤 Kto',
+          value: `${target}`,
+          inline: true,
+        },
+        {
+          name: '🏷️ Organizacja / Gang',
+          value: `${organization}`,
+          inline: true,
+        },
+        {
+          name: '📝 Powód',
+          value: reason,
+          inline: false,
+        },
+        {
+          name: '🛡️ Wystawił',
+          value: `${issuer}`,
+          inline: true,
+        },
+        {
+          name: '🕒 Data',
+          value: `<t:${unixTime}:d> <t:${unixTime}:t>`,
+          inline: true,
+        },
       )
-      .setFooter({ text: 'DreamLife RolePlay © 2026' })
-      .setTimestamp();
+      .setFooter({ text: 'DreamLife RolePlay © 2026' });
 
     await interaction.reply({
       content: `${target} ・ ${organization}`,
