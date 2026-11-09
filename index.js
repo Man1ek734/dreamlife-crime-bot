@@ -741,11 +741,11 @@ async function ensureCrimeRulesPanel() {
 
 **5.13.** Konflikty powinny być rozwijane również poprzez negocjacje, groźby IC i inne formy RP.`,
 
-      `## §6. INTERAKCJE Z LSPD/LSSD
+      `## §6. INTERAKCJE Z LSPD/LSSD/BCSO
 
 **6.1.** Zabrania się bezpodstawnego prowokowania funkcjonariuszy w celu rozpoczęcia pościgu lub strzelaniny.
 
-**6.2.** Sama obecność lub interwencja LSPD/LSSD nie jest powodem do otwarcia ognia.
+**6.2.** Sama obecność lub interwencja LSPD/LSSD/BCSO nie jest powodem do otwarcia ognia.
 
 **6.3.** Atak na funkcjonariuszy musi wynikać z konkretnej sytuacji RP.
 
@@ -755,11 +755,11 @@ async function ensureCrimeRulesPanel() {
 
 **6.6.** Zabrania się wywoływania kolejnych interwencji policyjnych wyłącznie dla prowadzenia ciągłych walk.
 
-**6.7.** LSPD/LSSD mają zakaz wjeżdżania na aktywną Red Zone podczas trwającej wymiany ognia pomiędzy organizacjami.
+**6.7.** LSPD/LSSD/BCSO mają zakaz wjeżdżania na aktywną Red Zone podczas trwającej wymiany ognia pomiędzy organizacjami.
 
-**6.8.** LSPD/LSSD mogą reagować na handel narkotykami, przestępstwa, podejrzane działania, strzały, porwania, napady oraz inne zdarzenia wymagające interwencji.
+**6.8.** LSPD/LSSD/BCSO mogą reagować na handel narkotykami, przestępstwa, podejrzane działania, strzały, porwania, napady oraz inne zdarzenia wymagające interwencji.
 
-**6.9.** Interwencja LSPD/LSSD na terenach organizacji powinna być proporcjonalna do sytuacji.
+**6.9.** Interwencja LSPD/LSSD/BCSO na terenach organizacji powinna być proporcjonalna do sytuacji.
 
 **6.10.** Ucieczka na Red Zone nie kończy wcześniej rozpoczętego pościgu.
 
@@ -802,30 +802,43 @@ async function ensureCrimeRulesPanel() {
 **8.4.** Do Green Zone zaliczają się:
 - szpitale,
 - komendy,
-- warsztaty,
+- warsztaty mechaniczne,
 - urzędy,
-- legalne miejsca pracy.
+- miejsca legalnej pracy,
+- firmy.
 
 **8.5.** Na terenie szpitala, komisariatu oraz więzienia obowiązuje bezwzględny zakaz rozpoczynania strzelanin, odbić oraz porwań, o ile regulamin nie określa wyjątku.
 
+**8.6.** Warsztat mechaniczny nie może być wykorzystywany jako siedziba gangu, organizacji przestępczej, grupy Crime ani innej działalności przestępczej.
+
+**8.7.** Zabrania się wykorzystywania warsztatu mechanicznego jako magazynu Crime, miejsca przechowywania nielegalnego wyposażenia, miejsca planowania akcji przestępczych lub stałego punktu działalności organizacji.
+
+**8.8.** Status Green Zone nie chroni warsztatu mechanicznego w sytuacji, gdy osoby znajdujące się na jego terenie rozpoczną lub będą kontynuować działalność przestępczą, strzelaninę, atak na służby, porwanie lub inną akcję hostylną.
+
+**8.9.** Jeżeli na terenie warsztatu prowadzona jest aktywna działalność Crime lub dochodzi do strzelaniny albo innego poważnego przestępstwa, **LSPD/LSSD/BCSO mają prawo wkroczyć na teren warsztatu i przeprowadzić interwencję**.
+
+**8.10.** W przypadku poważnych lub powtarzających się naruszeń prawa na terenie warsztatu, wykorzystywania firmy do działalności przestępczej albo świadomego wspierania Crime, **DOJ może w ramach prowadzonego RP czasowo zawiesić działalność lub zamknąć warsztat mechaniczny**.
+
+**8.11.** Właściciel oraz pracownicy warsztatu odpowiadają IC za działania prowadzone na terenie firmy, jeżeli świadomie uczestniczą w działalności przestępczej lub umożliwiają jej prowadzenie.
+
 ### Red Zone
 
-**8.6.** Red Zone obejmuje:
+**8.12.** Red Zone obejmuje:
 - siedziby organizacji,
 - miejsca związane z narkotykami,
 - wyznaczone strefy Crime.
 
-**8.7.** Na Red Zone nadal obowiązują zasady RP oraz inicjacja.
+**8.13.** Na Red Zone nadal obowiązują zasady RP oraz inicjacja.
 
-**8.8.** Wtargnięcie na teren organizacji może rozpocząć konflikt IC, ale samo w sobie nie daje automatycznego prawa do zabicia osoby.
+**8.14.** Sama obecność gracza na Red Zone nie daje automatycznego prawa do jego zaatakowania lub zabicia.
 
-**8.9.** Zabrania się bezpodstawnych ataków na siedziby innych organizacji.
+**8.15.** Zabrania się **bezpodstawnego wjazdu na siedziby Crime**. Wjazd na teren organizacji powinien posiadać uzasadnienie wynikające z prowadzonej sytuacji RP.
 
-**8.10.** Atak na bazę, magazyn lub inną strefę organizacji musi wynikać z rozwiniętego konfliktu.
+**8.16.** Zabrania się wykorzystywania Red Zone jako bezpiecznego schronienia podczas wcześniej rozpoczętego pościgu, napadu lub innej aktywnej akcji.
 
-**8.11.** Zabrania się uciekania na Red Zone wyłącznie po to, aby przerwać pościg.
+**8.17.** Wjazd na Red Zone nie kończy wcześniej rozpoczętego pościgu lub innej sytuacji RP.
 
-**8.12.** Zabrania się wykorzystywania błędów mapy, interiorów i niedostępnych miejsc w celu zdobycia przewagi.`,
+**8.18.** Zabrania się wykorzystywania błędów mapy, interiorów i niedostępnych miejsc w celu zdobycia przewagi.`,
 
       `## §9. FAIR PLAY I MECHANIKI GRY
 
@@ -857,7 +870,7 @@ async function ensureCrimeRulesPanel() {
 
 **Akcja Hostylna:** 8 / 10
 
-**Sprzedaż narkotyków:** 1–3 / 3–5
+**Sprzedaż narkotyków:** 1–3 / 3–5 **(1–3 osoby na organizację)**
 
 **Sklep:** 1–3 / 2–4
 
