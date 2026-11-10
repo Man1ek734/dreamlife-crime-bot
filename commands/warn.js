@@ -138,6 +138,5 @@ module.exports = {
         roles: [organization.id],
       },
     });
-    });
   },
 };
