@@ -9,7 +9,12 @@ const DEFAULT_GANGS = [
   { name: 'MS-13', roleId: '1553471165262209065' },
   { name: 'The Famillies', roleId: '1437116924902506728' },
   { name: 'The Lost MC', roleId: '1535749163537661963' },
+  { name: 'Gang', roleId: '1561114378454175824' },
 ];
+
+const FORCE_OCCUPIED_ROLE_IDS = new Set([
+  '1561114378454175824',
+]);
 
 const PANEL_TITLE = '📋 Lista gangów';
 const trackedRoleIds = new Set(DEFAULT_GANGS.map(gang => gang.roleId));
@@ -57,7 +62,7 @@ function buildGangListEmbed(guild, gangs) {
     if (!role) continue;
 
     const count = role.members.size;
-    const status = count === 0 ? '🟢 WOLNE' : '🔴 ZAJĘTE';
+    const status = FORCE_OCCUPIED_ROLE_IDS.has(role.id) || count > 0 ? '🔴 ZAJĘTE' : '🟢 WOLNE';
 
     embed.addFields({
       name: role.name,
