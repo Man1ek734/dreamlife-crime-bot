@@ -110,45 +110,28 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(0xed4245)
       .setAuthor({
-        name: 'DreamLifeRP • System kar organizacyjnych',
+        name: 'DreamLifeRP',
         iconURL: interaction.guild.iconURL({ size: 128 }) || undefined,
       })
       .setTitle('⚠️ WARN ORGANIZACYJNY')
-      .setDescription(`${target} • ${organization}`)
-      .addFields(
-        {
-          name: '👤 Kto',
-          value: `${target}`,
-          inline: true,
-        },
-        {
-          name: '🏷️ Organizacja / Gang',
-          value: `${organization}`,
-          inline: true,
-        },
-        {
-          name: '📝 Powód',
-          value: reason,
-          inline: false,
-        },
-        {
-          name: '🛡️ Wystawił',
-          value: `${issuer}`,
-          inline: true,
-        },
-        {
-          name: '🕒 Data',
-          value: `<t:${unixTime}:d> <t:${unixTime}:t>`,
-          inline: true,
-        },
+      .setDescription(
+        [
+          `👤 **Użytkownik**\n${target}`,
+          '',
+          `🏷️ **Organizacja / Gang**\n${organization}`,
+          '',
+          `📝 **Powód**\n${reason}`,
+          '',
+          `🛡️ **Wystawił:** ${issuer}`,
+          `🕒 **Data:** <t:${unixTime}:f>`,
+        ].join('\n')
       )
       .setFooter({ text: 'DreamLife RolePlay © 2026' });
 
     await interaction.reply({
-      content: `${target} ・ ${organization}`,
       embeds: [embed],
       allowedMentions: {
-        users: [target.id],
+        users: [target.id, issuer.id],
         roles: [organization.id],
       },
     });
