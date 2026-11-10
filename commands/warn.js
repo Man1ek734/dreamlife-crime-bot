@@ -126,6 +126,11 @@ module.exports = {
           '',
           `**Wystawił:** ${issuer}`,
           `**Data:** <t:${unixTime}:d> • <t:${unixTime}:t>`,
+          '',
+          '**STATUS**',
+          '🔴 Aktywny',
+          '',
+          '*Odwołanie od warna możesz złożyć poprzez ticket.*',
         ].join('\n')
       )
       .setThumbnail(interaction.guild.iconURL({ size: 256 }) || null)
