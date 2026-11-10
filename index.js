@@ -872,7 +872,7 @@ async function ensureCrimeRulesPanel() {
 
 **Sprzedaż narkotyków:** 1–3 / 3–5 **(1–3 osoby na organizację)**
 
-**Sklep:** 1–3 / 2–4
+**Sklep:** 1–3 / 2–5
 
 **Bankomat:** 1–2 / 2–4
 
