@@ -108,25 +108,28 @@ module.exports = {
     const unixTime = Math.floor(Date.now() / 1000);
 
     const embed = new EmbedBuilder()
-      .setColor(0xed4245)
-      .setAuthor({
-        name: 'DreamLifeRP',
-        iconURL: interaction.guild.iconURL({ size: 128 }) || undefined,
-      })
-      .setTitle('⚠️ WARN ORGANIZACYJNY')
+      .setColor(0xff3b30)
+      .setTitle('WARN • ORGANIZACJA')
       .setDescription(
         [
-          `👤 **Użytkownik**\n${target}`,
+          '> **Nałożono ostrzeżenie organizacyjne**',
           '',
-          `🏷️ **Organizacja / Gang**\n${organization}`,
+          `**${organization.name}**`,
+          `${target}`,
           '',
-          `📝 **Powód**\n${reason}`,
+          '━━━━━━━━━━━━━━━━━━━━',
           '',
-          `🛡️ **Wystawił:** ${issuer}`,
-          `🕒 **Data:** <t:${unixTime}:f>`,
+          '**POWÓD**',
+          `${reason}`,
+          '',
+          '━━━━━━━━━━━━━━━━━━━━',
+          '',
+          `**Wystawił:** ${issuer}`,
+          `**Data:** <t:${unixTime}:d> • <t:${unixTime}:t>`,
         ].join('\n')
       )
-      .setFooter({ text: 'DreamLife RolePlay © 2026' });
+      .setThumbnail(interaction.guild.iconURL({ size: 256 }) || null)
+      .setFooter({ text: 'DreamLifeRP • Crime Management' });
 
     await interaction.reply({
       embeds: [embed],
@@ -134,6 +137,7 @@ module.exports = {
         users: [...new Set([target.id, issuer.id])],
         roles: [organization.id],
       },
+    });
     });
   },
 };
