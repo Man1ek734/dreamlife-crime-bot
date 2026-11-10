@@ -878,9 +878,9 @@ async function ensureCrimeRulesPanel() {
 
 **Ammunation:** 2–4 / 3–5
 
-**Fleeca:** 2–5 / 4–6
+**Fleeca:** 2–5 / 4–7
 
-**Jubiler:** 3–6 / 5–7
+**Jubiler:** 3–6 / 5–8
 
 **Pacific Bank:** 5–10 / 6–12
 
