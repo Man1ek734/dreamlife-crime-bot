@@ -131,7 +131,7 @@ module.exports = {
     await interaction.reply({
       embeds: [embed],
       allowedMentions: {
-        users: [target.id, issuer.id],
+        users: [...new Set([target.id, issuer.id])],
         roles: [organization.id],
       },
     });
