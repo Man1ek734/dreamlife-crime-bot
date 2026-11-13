@@ -1561,25 +1561,33 @@ client.on(Events.MessageCreate, async message => {
   }
 
   const team = ownedTeams[0];
-  const memberRoleNames = team.type === 'gang'
-    ? ['członek gangu', 'czlonek gangu']
-    : ['członek organizacji', 'czlonek organizacji'];
+  const roleConfig = team.type === 'gang'
+    ? {
+        sectionRoleId: '1539768710670196776',
+        memberRoleId: '1437089947331989724',
+      }
+    : {
+        sectionRoleId: '1539768507040800858',
+        memberRoleId: '1517920262937645217',
+      };
 
-  const memberRole = message.guild.roles.cache.find(role =>
-    memberRoleNames.includes(role.name.trim().toLocaleLowerCase('pl-PL'))
-  );
+  const sectionRole = message.guild.roles.cache.get(roleConfig.sectionRoleId)
+    || await message.guild.roles.fetch(roleConfig.sectionRoleId).catch(() => null);
 
-  if (!memberRole) {
+  const memberRole = message.guild.roles.cache.get(roleConfig.memberRoleId)
+    || await message.guild.roles.fetch(roleConfig.memberRoleId).catch(() => null);
+
+  if (!sectionRole || !memberRole) {
     await message.reply(
       team.type === 'gang'
-        ? '❌ Nie znalazłem roli „Członek Gangu”.'
-        : '❌ Nie znalazłem roli „Członek Organizacji”.'
+        ? '❌ Nie znalazłem wymaganych rang gangu.'
+        : '❌ Nie znalazłem wymaganych rang organizacji.'
     ).catch(() => {});
     return;
   }
 
   const me = message.guild.members.me;
-  const rolesToAdd = [team.role, memberRole];
+  const rolesToAdd = [team.role, sectionRole, memberRole];
 
   if (
     !me ||
