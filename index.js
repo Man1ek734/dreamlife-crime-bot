@@ -1508,6 +1508,105 @@ client.on(Events.GuildMemberRemove, async member => {
   await sendBotLog(member.guild, embed);
 });
 
+
+client.on(Events.MessageCreate, async message => {
+  if (!message.guild || message.author.bot) return;
+
+  const normalized = message.content
+    .replace(/<@!?\d{17,22}>/g, '')
+    .trim()
+    .toLocaleLowerCase('pl-PL');
+
+  if (normalized !== 'członek' && normalized !== 'czlonek') return;
+
+  const mentionedMembers = [...message.mentions.members.values()];
+  if (mentionedMembers.length !== 1) return;
+
+  const authorMember = await message.guild.members.fetch(message.author.id).catch(() => null);
+  const targetMember = mentionedMembers[0];
+  if (!authorMember || !targetMember) return;
+
+  await message.guild.roles.fetch().catch(() => {});
+
+  const gangRoles = authorMember.roles.cache.filter(role =>
+    role.id !== message.guild.roles.everyone.id &&
+    listagangow.isTrackedRole(role.id)
+  );
+
+  const organizationRoles = [];
+  for (const role of authorMember.roles.cache.values()) {
+    if (role.id === message.guild.roles.everyone.id) continue;
+
+    const isOrganization = await kolory
+      .hasEntry(client, 'organization', role.name)
+      .catch(() => false);
+
+    if (isOrganization) {
+      organizationRoles.push(role);
+    }
+  }
+
+  const ownedTeams = [
+    ...gangRoles.map(role => ({ type: 'gang', role })),
+    ...organizationRoles.map(role => ({ type: 'organization', role })),
+  ];
+
+  if (ownedTeams.length !== 1) {
+    await message.reply(
+      ownedTeams.length === 0
+        ? '❌ Nie udało mi się ustalić Twojego gangu lub organizacji.'
+        : '❌ Masz przypisaną więcej niż jedną ekipę. Nie mogę automatycznie wybrać właściwej.'
+    ).catch(() => {});
+    return;
+  }
+
+  const team = ownedTeams[0];
+  const memberRoleNames = team.type === 'gang'
+    ? ['członek gangu', 'czlonek gangu']
+    : ['członek organizacji', 'czlonek organizacji'];
+
+  const memberRole = message.guild.roles.cache.find(role =>
+    memberRoleNames.includes(role.name.trim().toLocaleLowerCase('pl-PL'))
+  );
+
+  if (!memberRole) {
+    await message.reply(
+      team.type === 'gang'
+        ? '❌ Nie znalazłem roli „Członek Gangu”.'
+        : '❌ Nie znalazłem roli „Członek Organizacji”.'
+    ).catch(() => {});
+    return;
+  }
+
+  const me = message.guild.members.me;
+  const rolesToAdd = [team.role, memberRole];
+
+  if (
+    !me ||
+    !me.permissions.has(PermissionFlagsBits.ManageRoles) ||
+    rolesToAdd.some(role => role.managed || me.roles.highest.position <= role.position)
+  ) {
+    await message.reply('❌ Nie mogę nadać wymaganych rang. Sprawdź hierarchię roli bota.').catch(() => {});
+    return;
+  }
+
+  try {
+    await targetMember.roles.add(
+      rolesToAdd.map(role => role.id),
+      'Automatyczne nadanie członkostwa na podstawie wiadomości ' + message.author.tag
+    );
+
+    await message.react('✅').catch(() => {});
+
+    await message.reply(
+      `✅ ${targetMember} otrzymał role ${memberRole} oraz ${team.role}.`
+    ).catch(() => {});
+  } catch (error) {
+    console.error('Błąd automatycznego nadawania ról członka:', error);
+    await message.reply('❌ Nie udało się nadać rang tej osobie.').catch(() => {});
+  }
+});
+
 client.on(Events.GuildRoleCreate, async role => {
   const executor = await getAuditExecutor(role.guild, AuditLogEvent.RoleCreate, role.id);
 
