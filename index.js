@@ -1517,7 +1517,10 @@ client.on(Events.MessageCreate, async message => {
     .trim()
     .toLocaleLowerCase('pl-PL');
 
-  if (normalized !== 'członek' && normalized !== 'czlonek') return;
+  const isAddMember = normalized === 'członek' || normalized === 'czlonek';
+  const isRemoveAll = normalized === 'zabrać all' || normalized === 'zabrac all';
+
+  if (!isAddMember && !isRemoveAll) return;
 
   const mentionedMembers = [...message.mentions.members.values()];
   if (mentionedMembers.length !== 1) return;
@@ -1565,10 +1568,12 @@ client.on(Events.MessageCreate, async message => {
     ? {
         sectionRoleId: '1539768710670196776',
         memberRoleId: '1437089947331989724',
+        managementRoleId: '1437113897671720961',
       }
     : {
         sectionRoleId: '1539768507040800858',
         memberRoleId: '1517920262937645217',
+        managementRoleId: '1517920258390757407',
       };
 
   const sectionRole = message.guild.roles.cache.get(roleConfig.sectionRoleId)
@@ -1577,7 +1582,10 @@ client.on(Events.MessageCreate, async message => {
   const memberRole = message.guild.roles.cache.get(roleConfig.memberRoleId)
     || await message.guild.roles.fetch(roleConfig.memberRoleId).catch(() => null);
 
-  if (!sectionRole || !memberRole) {
+  const managementRole = message.guild.roles.cache.get(roleConfig.managementRoleId)
+    || await message.guild.roles.fetch(roleConfig.managementRoleId).catch(() => null);
+
+  if (!sectionRole || !memberRole || !managementRole) {
     await message.reply(
       team.type === 'gang'
         ? '❌ Nie znalazłem wymaganych rang gangu.'
@@ -1587,31 +1595,63 @@ client.on(Events.MessageCreate, async message => {
   }
 
   const me = message.guild.members.me;
-  const rolesToAdd = [team.role, sectionRole, memberRole];
+  if (!me || !me.permissions.has(PermissionFlagsBits.ManageRoles)) {
+    await message.reply('❌ Bot nie ma permisji Zarządzanie rolami.').catch(() => {});
+    return;
+  }
 
-  if (
-    !me ||
-    !me.permissions.has(PermissionFlagsBits.ManageRoles) ||
-    rolesToAdd.some(role => role.managed || me.roles.highest.position <= role.position)
-  ) {
-    await message.reply('❌ Nie mogę nadać wymaganych rang. Sprawdź hierarchię roli bota.').catch(() => {});
+  if (isAddMember) {
+    const rolesToAdd = [team.role, sectionRole, memberRole];
+
+    if (rolesToAdd.some(role => role.managed || me.roles.highest.position <= role.position)) {
+      await message.reply('❌ Nie mogę nadać wymaganych rang. Sprawdź hierarchię roli bota.').catch(() => {});
+      return;
+    }
+
+    try {
+      await targetMember.roles.add(
+        rolesToAdd.map(role => role.id),
+        'Automatyczne nadanie członkostwa na podstawie wiadomości ' + message.author.tag
+      );
+
+      await message.react('✅').catch(() => {});
+      await message.reply(
+        `✅ ${targetMember} otrzymał role ${memberRole} oraz ${team.role}.`
+      ).catch(() => {});
+    } catch (error) {
+      console.error('Błąd automatycznego nadawania ról członka:', error);
+      await message.reply('❌ Nie udało się nadać rang tej osobie.').catch(() => {});
+    }
+
+    return;
+  }
+
+  const rolesToRemove = [team.role, sectionRole, memberRole, managementRole]
+    .filter(role => targetMember.roles.cache.has(role.id));
+
+  if (!rolesToRemove.length) {
+    await message.reply('❌ Ta osoba nie ma żadnych rang tej ekipy do zabrania.').catch(() => {});
+    return;
+  }
+
+  if (rolesToRemove.some(role => role.managed || me.roles.highest.position <= role.position)) {
+    await message.reply('❌ Nie mogę zabrać części wymaganych rang. Sprawdź hierarchię roli bota.').catch(() => {});
     return;
   }
 
   try {
-    await targetMember.roles.add(
-      rolesToAdd.map(role => role.id),
-      'Automatyczne nadanie członkostwa na podstawie wiadomości ' + message.author.tag
+    await targetMember.roles.remove(
+      rolesToRemove.map(role => role.id),
+      'Automatyczne zabranie wszystkich rang ekipy na podstawie wiadomości ' + message.author.tag
     );
 
     await message.react('✅').catch(() => {});
-
     await message.reply(
-      `✅ ${targetMember} otrzymał role ${memberRole} oraz ${team.role}.`
+      `✅ Zabrano ${targetMember} wszystkie rangi związane z ekipą **${team.role.name}**.`
     ).catch(() => {});
   } catch (error) {
-    console.error('Błąd automatycznego nadawania ról członka:', error);
-    await message.reply('❌ Nie udało się nadać rang tej osobie.').catch(() => {});
+    console.error('Błąd automatycznego zabierania rang ekipy:', error);
+    await message.reply('❌ Nie udało się zabrać rang tej osobie.').catch(() => {});
   }
 });
 
