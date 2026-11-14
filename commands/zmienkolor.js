@@ -12,7 +12,13 @@ const AUTHORIZED_ROLE_IDS = [
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('zmienkolor')
-    .setDescription('Zmień kolor swojego gangu lub organizacji.')
+    .setDescription('Zmień kolor wybranego gangu lub organizacji.')
+    .addStringOption(option =>
+      option
+        .setName('nazwa')
+        .setDescription('Nazwa gangu lub organizacji, np. Ballas')
+        .setRequired(true)
+    )
     .addStringOption(option =>
       option
         .setName('hex')
@@ -39,45 +45,45 @@ module.exports = {
 
     await interaction.guild.roles.fetch().catch(() => {});
 
-    const gangRoles = member.roles.cache.filter(role =>
-      role.id !== interaction.guild.roles.everyone.id &&
-      listagangow.isTrackedRole(role.id)
-    );
-
-    const organizationRoles = [];
-    for (const role of member.roles.cache.values()) {
-      if (role.id === interaction.guild.roles.everyone.id) continue;
-
-      const isOrganization = await kolory
-        .hasEntry(interaction.client, 'organization', role.name)
-        .catch(() => false);
-
-      if (isOrganization) {
-        organizationRoles.push(role);
-      }
-    }
-
-    const ownedTeams = [
-      ...gangRoles.map(role => ({ type: 'gang', role })),
-      ...organizationRoles.map(role => ({ type: 'organization', role })),
-    ];
-
-    if (ownedTeams.length !== 1) {
-      await interaction.editReply(
-        ownedTeams.length === 0
-          ? '❌ Nie udało mi się ustalić Twojego gangu lub organizacji.'
-          : '❌ Masz przypisaną więcej niż jedną ekipę. Nie mogę automatycznie wybrać właściwej.'
-      );
-      return;
-    }
-
-    const team = ownedTeams[0];
     const hasPermission = AUTHORIZED_ROLE_IDS.some(roleId => member.roles.cache.has(roleId));
 
     if (!hasPermission) {
       await interaction.editReply('❌ Nie masz uprawnień do tej komendy.');
       return;
     }
+
+    const teamName = interaction.options.getString('nazwa', true).trim();
+    const wantedName = teamName.toLocaleLowerCase('pl-PL');
+
+    const matchingRoles = interaction.guild.roles.cache.filter(role =>
+      role.id !== interaction.guild.roles.everyone.id &&
+      role.name.trim().toLocaleLowerCase('pl-PL') === wantedName
+    );
+
+    if (matchingRoles.size !== 1) {
+      await interaction.editReply(
+        matchingRoles.size === 0
+          ? '❌ Nie znalazłem gangu ani organizacji o nazwie **' + teamName + '**.'
+          : '❌ Znalazłem więcej niż jedną rolę o tej nazwie. Zmień nazwę jednej z nich.'
+      );
+      return;
+    }
+
+    const role = matchingRoles.first();
+    const isGang = listagangow.isTrackedRole(role.id);
+    const isOrganization = await kolory
+      .hasEntry(interaction.client, 'organization', role.name)
+      .catch(() => false);
+
+    if (!isGang && !isOrganization) {
+      await interaction.editReply('❌ Ta rola nie jest przypisana do żadnego gangu ani organizacji.');
+      return;
+    }
+
+    const team = {
+      type: isGang ? 'gang' : 'organization',
+      role,
+    };
 
     const me = interaction.guild.members.me;
     if (
