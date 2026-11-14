@@ -1566,15 +1566,20 @@ client.on(Events.MessageCreate, async message => {
   const team = ownedTeams[0];
   const roleConfig = team.type === 'gang'
     ? {
+        parentRoleId: '1437087475704266929',
         sectionRoleId: '1539768710670196776',
         memberRoleId: '1437089947331989724',
         managementRoleId: '1437113897671720961',
       }
     : {
+        parentRoleId: '1437206381856948334',
         sectionRoleId: '1539768507040800858',
         memberRoleId: '1517920262937645217',
         managementRoleId: '1517920258390757407',
       };
+
+  const parentRole = message.guild.roles.cache.get(roleConfig.parentRoleId)
+    || await message.guild.roles.fetch(roleConfig.parentRoleId).catch(() => null);
 
   const sectionRole = message.guild.roles.cache.get(roleConfig.sectionRoleId)
     || await message.guild.roles.fetch(roleConfig.sectionRoleId).catch(() => null);
@@ -1585,7 +1590,7 @@ client.on(Events.MessageCreate, async message => {
   const managementRole = message.guild.roles.cache.get(roleConfig.managementRoleId)
     || await message.guild.roles.fetch(roleConfig.managementRoleId).catch(() => null);
 
-  if (!sectionRole || !memberRole || !managementRole) {
+  if (!parentRole || !sectionRole || !memberRole || !managementRole) {
     await message.reply(
       team.type === 'gang'
         ? '❌ Nie znalazłem wymaganych rang gangu.'
@@ -1601,7 +1606,7 @@ client.on(Events.MessageCreate, async message => {
   }
 
   if (isAddMember) {
-    const rolesToAdd = [team.role, sectionRole, memberRole];
+    const rolesToAdd = [parentRole, team.role, sectionRole, memberRole];
 
     if (rolesToAdd.some(role => role.managed || me.roles.highest.position <= role.position)) {
       await message.reply('❌ Nie mogę nadać wymaganych rang. Sprawdź hierarchię roli bota.').catch(() => {});
@@ -1626,7 +1631,7 @@ client.on(Events.MessageCreate, async message => {
     return;
   }
 
-  const rolesToRemove = [team.role, sectionRole, memberRole, managementRole]
+  const rolesToRemove = [parentRole, team.role, sectionRole, memberRole, managementRole]
     .filter(role => targetMember.roles.cache.has(role.id));
 
   if (!rolesToRemove.length) {
