@@ -1539,9 +1539,10 @@ client.on(Events.MessageCreate, async message => {
   const isAddManagement = normalized === 'zarząd' || normalized === 'zarzad';
   const isAddFounder = normalized === 'założyciel' || normalized === 'zalozyciel';
   const isAddOg = normalized === 'og';
+  const isRemoveManagement = normalized === 'zabierz zarząd' || normalized === 'zabierz zarzad';
   const isRemoveAll = normalized === 'zabrać all' || normalized === 'zabrac all';
 
-  if (!isAddMember && !isAddManagement && !isAddFounder && !isAddOg && !isRemoveAll) return;
+  if (!isAddMember && !isAddManagement && !isAddFounder && !isAddOg && !isRemoveManagement && !isRemoveAll) return;
 
   const mentionedMembers = [...message.mentions.members.values()];
   if (mentionedMembers.length !== 1) return;
@@ -1642,6 +1643,47 @@ client.on(Events.MessageCreate, async message => {
   const me = message.guild.members.me;
   if (!me || !me.permissions.has(PermissionFlagsBits.ManageRoles)) {
     await message.reply('❌ Bot nie ma permisji Zarządzanie rolami.').catch(() => {});
+    return;
+  }
+
+  if (isRemoveManagement) {
+    const rolesToRemove = [managementRole, founderRole, ogRole]
+      .filter(Boolean)
+      .filter(role => targetMember.roles.cache.has(role.id));
+
+    const rolesToEnsure = [parentRole, team.role, sectionRole, memberRole]
+      .filter((role, index, array) => role && array.findIndex(item => item.id === role.id) === index);
+
+    if (
+      rolesToRemove.some(role => role.managed || me.roles.highest.position <= role.position) ||
+      rolesToEnsure.some(role => role.managed || me.roles.highest.position <= role.position)
+    ) {
+      await message.reply('❌ Nie mogę zmienić wymaganych rang. Sprawdź hierarchię roli bota.').catch(() => {});
+      return;
+    }
+
+    try {
+      if (rolesToRemove.length) {
+        await targetMember.roles.remove(
+          rolesToRemove.map(role => role.id),
+          'Automatyczne zabranie rangi Zarząd na podstawie wiadomości ' + message.author.tag
+        );
+      }
+
+      await targetMember.roles.add(
+        rolesToEnsure.map(role => role.id),
+        'Automatyczne pozostawienie rangi Członek po zabraniu Zarządu ' + message.author.tag
+      );
+
+      await message.react('✅').catch(() => {});
+      await message.reply(
+        `✅ Zabrano ${targetMember} wyższą rangę i pozostawiono rangę ${memberRole}.`
+      ).catch(() => {});
+    } catch (error) {
+      console.error('Błąd automatycznego zabierania rangi Zarząd:', error);
+      await message.reply('❌ Nie udało się zmienić rang tej osobie.').catch(() => {});
+    }
+
     return;
   }
 
