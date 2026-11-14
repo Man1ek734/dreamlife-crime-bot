@@ -43,6 +43,7 @@ const BOT_LOG_CHANNEL_ID = '1437087481542479904';
 const GUILD_ID = '1437087475704266928';
 const REACTION_ROLE_CHANNEL_ID = '1553474554125361262';
 const AUTO_ROLE_ID = '1437087476111114370';
+const SECONDARY_AUTO_ROLE_ID = '1561870040897290382';
 const APPEAL_INFO_CHANNEL_ID = '1437087480364011732';
 const APPEAL_TICKET_CHANNEL_ID = '1519136441563611346';
 const ORG_PENALTIES_CHANNEL_ID = '1519105017309696153';
@@ -257,23 +258,36 @@ function trimLogText(text, fallback = '*brak treści*') {
 async function ensureAutoRoleForExistingMembers(guild) {
   try {
     const members = await guild.members.fetch();
-    let added = 0;
+    let addedPrimary = 0;
+    let addedSecondary = 0;
 
     for (const member of members.values()) {
       if (member.user.bot) continue;
-      if (member.roles.cache.has(AUTO_ROLE_ID)) continue;
+
+      const rolesToAdd = [];
+      if (!member.roles.cache.has(AUTO_ROLE_ID)) {
+        rolesToAdd.push(AUTO_ROLE_ID);
+        addedPrimary++;
+      }
+      if (!member.roles.cache.has(SECONDARY_AUTO_ROLE_ID)) {
+        rolesToAdd.push(SECONDARY_AUTO_ROLE_ID);
+        addedSecondary++;
+      }
+
+      if (!rolesToAdd.length) continue;
 
       try {
-        await member.roles.add(AUTO_ROLE_ID, 'Automatyczne nadanie rangi Przyszły Gangster wszystkim członkom');
-        added++;
+        await member.roles.add(rolesToAdd, 'Automatyczne nadanie rang startowych wszystkim członkom');
       } catch (error) {
-        console.error(`Nie udało się nadać auto-rangi użytkownikowi ${member.user.tag}:`, error);
+        if (rolesToAdd.includes(AUTO_ROLE_ID)) addedPrimary--;
+        if (rolesToAdd.includes(SECONDARY_AUTO_ROLE_ID)) addedSecondary--;
+        console.error(`Nie udało się nadać auto-rang użytkownikowi ${member.user.tag}:`, error);
       }
     }
 
-    console.log(`Auto-ranga Przyszły Gangster: nadano ${added} osobom.`);
+    console.log(`Auto-rangi: główna nadana ${addedPrimary} osobom, dodatkowa nadana ${addedSecondary} osobom.`);
   } catch (error) {
-    console.error('Nie udało się nadać auto-rangi obecnym członkom:', error);
+    console.error('Nie udało się nadać auto-rang obecnym członkom:', error);
   }
 }
 
@@ -1301,11 +1315,15 @@ client.on(Events.GuildMemberAdd, async member => {
   await antyraid.handleMemberAdd(member).catch(error => console.error('Błąd Anti-Raid przy wejściu użytkownika:', error));
 
   try {
-    if (!member.roles.cache.has(AUTO_ROLE_ID)) {
-      await member.roles.add(AUTO_ROLE_ID, 'Automatyczna ranga dla nowego członka');
+    const rolesToAdd = [];
+    if (!member.roles.cache.has(AUTO_ROLE_ID)) rolesToAdd.push(AUTO_ROLE_ID);
+    if (!member.roles.cache.has(SECONDARY_AUTO_ROLE_ID)) rolesToAdd.push(SECONDARY_AUTO_ROLE_ID);
+
+    if (rolesToAdd.length) {
+      await member.roles.add(rolesToAdd, 'Automatyczne rangi dla nowego członka');
     }
   } catch (error) {
-    console.error('Nie udało się nadać automatycznej rangi Przyszły Gangster:', error);
+    console.error('Nie udało się nadać automatycznych rang nowemu członkowi:', error);
   }
 
   const channel = member.guild.channels.cache.get(WELCOME_CHANNEL_ID);
