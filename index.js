@@ -1647,15 +1647,20 @@ client.on(Events.MessageCreate, async message => {
 
   if (!isRemoveAll) {
     let selectedRole = null;
+    let hierarchyRoles = [];
 
     if (isAddMember) {
       selectedRole = memberRole;
+      hierarchyRoles = [memberRole];
     } else if (isAddManagement) {
       selectedRole = managementRole;
+      hierarchyRoles = [memberRole, managementRole];
     } else if (isAddFounder && team.type === 'organization') {
       selectedRole = founderRole;
+      hierarchyRoles = [memberRole, managementRole, founderRole];
     } else if (isAddOg && team.type === 'gang') {
       selectedRole = ogRole;
+      hierarchyRoles = [memberRole, managementRole, ogRole];
     }
 
     if (!selectedRole) {
@@ -1667,7 +1672,8 @@ client.on(Events.MessageCreate, async message => {
       return;
     }
 
-    const rolesToAdd = [parentRole, team.role, sectionRole, selectedRole];
+    const rolesToAdd = [parentRole, team.role, sectionRole, ...hierarchyRoles]
+      .filter((role, index, array) => role && array.findIndex(item => item.id === role.id) === index);
 
     if (rolesToAdd.some(role => role.managed || me.roles.highest.position <= role.position)) {
       await message.reply('❌ Nie mogę nadać wymaganych rang. Sprawdź hierarchię roli bota.').catch(() => {});
@@ -1682,7 +1688,7 @@ client.on(Events.MessageCreate, async message => {
 
       await message.react('✅').catch(() => {});
       await message.reply(
-        `✅ ${targetMember} otrzymał rangę ${selectedRole} oraz dostęp do ekipy ${team.role}.`
+        `✅ ${targetMember} otrzymał rangę ${selectedRole} wraz z niższymi rangami oraz dostęp do ekipy ${team.role}.`
       ).catch(() => {});
     } catch (error) {
       console.error('Błąd automatycznego nadawania rangi ekipy:', error);
