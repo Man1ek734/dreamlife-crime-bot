@@ -52,24 +52,37 @@ module.exports = {
       return;
     }
 
-    const teamName = interaction.options.getString('nazwa', true).trim();
-    const wantedName = teamName.toLocaleLowerCase('pl-PL');
+    const teamInput = interaction.options.getString('nazwa', true).trim();
+    const roleMentionMatch = teamInput.match(/^<@&(\d{17,22})>$/);
 
-    const matchingRoles = interaction.guild.roles.cache.filter(role =>
-      role.id !== interaction.guild.roles.everyone.id &&
-      role.name.trim().toLocaleLowerCase('pl-PL') === wantedName
-    );
+    let role = null;
 
-    if (matchingRoles.size !== 1) {
-      await interaction.editReply(
-        matchingRoles.size === 0
-          ? '❌ Nie znalazłem gangu ani organizacji o nazwie **' + teamName + '**.'
-          : '❌ Znalazłem więcej niż jedną rolę o tej nazwie. Zmień nazwę jednej z nich.'
+    if (roleMentionMatch) {
+      role = interaction.guild.roles.cache.get(roleMentionMatch[1])
+        || await interaction.guild.roles.fetch(roleMentionMatch[1]).catch(() => null);
+    } else {
+      const wantedName = teamInput
+        .replace(/^@/, '')
+        .trim()
+        .toLocaleLowerCase('pl-PL');
+
+      const matchingRoles = interaction.guild.roles.cache.filter(candidate =>
+        candidate.id !== interaction.guild.roles.everyone.id &&
+        candidate.name.trim().toLocaleLowerCase('pl-PL') === wantedName
       );
-      return;
+
+      if (matchingRoles.size > 1) {
+        await interaction.editReply('❌ Znalazłem więcej niż jedną rolę o tej nazwie. Użyj oznaczenia roli.');
+        return;
+      }
+
+      role = matchingRoles.first() || null;
     }
 
-    const role = matchingRoles.first();
+    if (!role) {
+      await interaction.editReply('❌ Nie znalazłem gangu ani organizacji dla **' + teamInput + '**.');
+      return;
+    }
     const isGang = listagangow.isTrackedRole(role.id);
     const isOrganization = await kolory
       .hasEntry(interaction.client, 'organization', role.name)
