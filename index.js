@@ -1536,9 +1536,12 @@ client.on(Events.MessageCreate, async message => {
     .toLocaleLowerCase('pl-PL');
 
   const isAddMember = normalized === 'członek' || normalized === 'czlonek';
+  const isAddManagement = normalized === 'zarząd' || normalized === 'zarzad';
+  const isAddFounder = normalized === 'założyciel' || normalized === 'zalozyciel';
+  const isAddOg = normalized === 'og';
   const isRemoveAll = normalized === 'zabrać all' || normalized === 'zabrac all';
 
-  if (!isAddMember && !isRemoveAll) return;
+  if (!isAddMember && !isAddManagement && !isAddFounder && !isAddOg && !isRemoveAll) return;
 
   const mentionedMembers = [...message.mentions.members.values()];
   if (mentionedMembers.length !== 1) return;
@@ -1588,12 +1591,14 @@ client.on(Events.MessageCreate, async message => {
         sectionRoleId: '1539768710670196776',
         memberRoleId: '1437089947331989724',
         managementRoleId: '1437113897671720961',
+        ogRoleId: '1437092776675377303',
       }
     : {
         parentRoleId: '1437206381856948334',
         sectionRoleId: '1539768507040800858',
         memberRoleId: '1517920262937645217',
         managementRoleId: '1517920258390757407',
+        founderRoleId: '1517920073011036212',
       };
 
   const parentRole = message.guild.roles.cache.get(roleConfig.parentRoleId)
@@ -1608,7 +1613,24 @@ client.on(Events.MessageCreate, async message => {
   const managementRole = message.guild.roles.cache.get(roleConfig.managementRoleId)
     || await message.guild.roles.fetch(roleConfig.managementRoleId).catch(() => null);
 
-  if (!parentRole || !sectionRole || !memberRole || !managementRole) {
+  const founderRole = roleConfig.founderRoleId
+    ? message.guild.roles.cache.get(roleConfig.founderRoleId)
+      || await message.guild.roles.fetch(roleConfig.founderRoleId).catch(() => null)
+    : null;
+
+  const ogRole = roleConfig.ogRoleId
+    ? message.guild.roles.cache.get(roleConfig.ogRoleId)
+      || await message.guild.roles.fetch(roleConfig.ogRoleId).catch(() => null)
+    : null;
+
+  if (
+    !parentRole ||
+    !sectionRole ||
+    !memberRole ||
+    !managementRole ||
+    (team.type === 'organization' && !founderRole) ||
+    (team.type === 'gang' && !ogRole)
+  ) {
     await message.reply(
       team.type === 'gang'
         ? '❌ Nie znalazłem wymaganych rang gangu.'
@@ -1623,8 +1645,29 @@ client.on(Events.MessageCreate, async message => {
     return;
   }
 
-  if (isAddMember) {
-    const rolesToAdd = [parentRole, team.role, sectionRole, memberRole];
+  if (!isRemoveAll) {
+    let selectedRole = null;
+
+    if (isAddMember) {
+      selectedRole = memberRole;
+    } else if (isAddManagement) {
+      selectedRole = managementRole;
+    } else if (isAddFounder && team.type === 'organization') {
+      selectedRole = founderRole;
+    } else if (isAddOg && team.type === 'gang') {
+      selectedRole = ogRole;
+    }
+
+    if (!selectedRole) {
+      await message.reply(
+        team.type === 'gang'
+          ? '❌ W gangu możesz nadać: członek, zarząd albo OG.'
+          : '❌ W organizacji możesz nadać: członek, zarząd albo założyciel.'
+      ).catch(() => {});
+      return;
+    }
+
+    const rolesToAdd = [parentRole, team.role, sectionRole, selectedRole];
 
     if (rolesToAdd.some(role => role.managed || me.roles.highest.position <= role.position)) {
       await message.reply('❌ Nie mogę nadać wymaganych rang. Sprawdź hierarchię roli bota.').catch(() => {});
@@ -1634,22 +1677,23 @@ client.on(Events.MessageCreate, async message => {
     try {
       await targetMember.roles.add(
         rolesToAdd.map(role => role.id),
-        'Automatyczne nadanie członkostwa na podstawie wiadomości ' + message.author.tag
+        'Automatyczne nadanie rangi ekipy na podstawie wiadomości ' + message.author.tag
       );
 
       await message.react('✅').catch(() => {});
       await message.reply(
-        `✅ ${targetMember} otrzymał role ${memberRole} oraz ${team.role}.`
+        `✅ ${targetMember} otrzymał rangę ${selectedRole} oraz dostęp do ekipy ${team.role}.`
       ).catch(() => {});
     } catch (error) {
-      console.error('Błąd automatycznego nadawania ról członka:', error);
+      console.error('Błąd automatycznego nadawania rangi ekipy:', error);
       await message.reply('❌ Nie udało się nadać rang tej osobie.').catch(() => {});
     }
 
     return;
   }
 
-  const rolesToRemove = [parentRole, team.role, sectionRole, memberRole, managementRole]
+  const rolesToRemove = [parentRole, team.role, sectionRole, memberRole, managementRole, founderRole, ogRole]
+    .filter(Boolean)
     .filter(role => targetMember.roles.cache.has(role.id));
 
   if (!rolesToRemove.length) {
