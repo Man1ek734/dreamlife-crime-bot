@@ -34,6 +34,7 @@ const listagangow = require('./commands/listagangow');
 const listaorganizacji = require('./commands/listaorganizacji');
 const kolorgang = require('./commands/kolorgang');
 const kolororganizacje = require('./commands/kolororganizacje');
+const zmienkolor = require('./commands/zmienkolor');
 const kolory = require('./commands/kolory');
 const dodajticket = require('./commands/dodajticket');
 
@@ -158,6 +159,7 @@ client.commands.set(listagangow.data.name, listagangow);
 client.commands.set(listaorganizacji.data.name, listaorganizacji);
 client.commands.set(kolorgang.data.name, kolorgang);
 client.commands.set(kolororganizacje.data.name, kolororganizacje);
+client.commands.set(zmienkolor.data.name, zmienkolor);
 client.commands.set(dodajticket.data.name, dodajticket);
 
 const messageCache = new Map();
@@ -1242,6 +1244,7 @@ client.once(Events.ClientReady, async readyClient => {
       listaorganizacji.data.toJSON(),
       kolorgang.data.toJSON(),
       kolororganizacje.data.toJSON(),
+      zmienkolor.data.toJSON(),
       dodajticket.data.toJSON(),
     ]);
     console.log('Komendy slash zsynchronizowane.');
