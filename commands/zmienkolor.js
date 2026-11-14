@@ -2,9 +2,12 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const kolory = require('./kolory');
 const listagangow = require('./listagangow');
 
-const STAFF_ROLE_IDS = ['1517965039670132796', '1465810885489725533', '1542655009626390729', '1537461404032958474'];
-const GANG_MANAGEMENT_ROLE_IDS = ['1437113897671720961', '1437092776675377303'];
-const ORGANIZATION_MANAGEMENT_ROLE_IDS = ['1517920258390757407', '1517920073011036212'];
+const AUTHORIZED_ROLE_IDS = [
+  '1537461404032958474',
+  '1542655009626390729',
+  '1517965039670132796',
+  '1465810885489725533',
+];
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -69,17 +72,10 @@ module.exports = {
     }
 
     const team = ownedTeams[0];
-    const isStaff = STAFF_ROLE_IDS.some(roleId => member.roles.cache.has(roleId));
-    const hasTeamPermission = team.type === 'gang'
-      ? GANG_MANAGEMENT_ROLE_IDS.some(roleId => member.roles.cache.has(roleId))
-      : ORGANIZATION_MANAGEMENT_ROLE_IDS.some(roleId => member.roles.cache.has(roleId));
+    const hasPermission = AUTHORIZED_ROLE_IDS.some(roleId => member.roles.cache.has(roleId));
 
-    if (!isStaff && !hasTeamPermission) {
-      await interaction.editReply(
-        team.type === 'gang'
-          ? '❌ Kolor gangu może zmienić tylko Zarząd Gangu lub OG Gangu.'
-          : '❌ Kolor organizacji może zmienić tylko Zarząd Organizacji lub Założyciel Organizacji.'
-      );
+    if (!hasPermission) {
+      await interaction.editReply('❌ Nie masz uprawnień do tej komendy.');
       return;
     }
 
